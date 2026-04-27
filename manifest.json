@@ -1,0 +1,9 @@
+{
+  "name": "Advocacia",
+  "short_name": "Advocacia",
+  "start_url": "/site1/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c9a15b",
+  "icons": []
+}
