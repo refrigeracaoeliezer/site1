@@ -387,7 +387,7 @@ async function init() {
   // 2. Buscar timeline
   try {
     // Usar URL_API_GLOBAL ou definir URL_API localmente, dependendo da sua estrutura
-    const res  = await fetch('https://api-advogada.siterefrigeracaoeliezer.workers.dev/api/v1', {
+
       method:'POST', credentials:'include',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ action:'timeline' })
