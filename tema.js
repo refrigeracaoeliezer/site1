@@ -1,6 +1,7 @@
 // tema.js
 
 // URLs de API (ajuste conforme necessário, mas use um único ponto de verdade)
+const URL_BASE = 'https://api-advogada.siterefrigeracaoeliezer.workers.dev';
 
 const URL_API_GLOBAL  = URL_BASE_GLOBAL + '/api/v1';
 
