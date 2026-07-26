@@ -55,7 +55,9 @@
       const { data } = await supabaseClient.auth.getSession();
       if (!data || !data.session) {
         window.location.replace('index.html');
+        return;
       }
+      enviarTokenAoServiceWorker(data.session.access_token);
     } catch (err) {
       console.error('[auth-guard] Erro ao verificar sessão:', err);
       window.location.replace('index.html');
@@ -64,11 +66,29 @@
   verificarSessao();
 
   // ── 3) Reage a logout/expiração em tempo real ───────────────────────────
-  supabaseClient.auth.onAuthStateChange((event) => {
+  supabaseClient.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT') {
       window.location.replace('index.html');
+    } else if (session) {
+      // Cobre TOKEN_REFRESHED, SIGNED_IN etc. — mantém o Service Worker
+      // sempre com o token mais recente para as checagens de agenda em
+      // segundo plano (sw.js), que agora também exigem autenticação.
+      enviarTokenAoServiceWorker(session.access_token);
     }
   });
+
+  // ── 3.1) Repassa o token atual ao Service Worker (sw.js) ────────────────
+  function enviarTokenAoServiceWorker(token) {
+    if (!token || !('serviceWorker' in navigator)) return;
+    const mandar = (sw) => sw && sw.postMessage({ type: 'SET_AUTH_TOKEN', token });
+    if (navigator.serviceWorker.controller) {
+      mandar(navigator.serviceWorker.controller);
+    } else {
+      // Ainda não há um SW controlando a página (ex: primeiro carregamento
+      // após instalar) — manda assim que ele assumir o controle.
+      navigator.serviceWorker.ready.then((reg) => mandar(reg.active));
+    }
+  }
 
   // ── 4) Função global de logout, para usar em um botão "Sair" ───────────
   window.logout = async function () {

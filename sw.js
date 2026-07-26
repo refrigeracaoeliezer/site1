@@ -84,12 +84,33 @@ self.addEventListener('periodicsync', event => {
 
 self.addEventListener('message', event => {
   if (event.data?.type === 'VERIFICAR_AGORA') verificarAgendaLocal();
+  // O Worker do Cloudflare agora exige "Authorization: Bearer <token>" em
+  // toda chamada (validação de sessão Supabase). O Service Worker não tem
+  // acesso ao localStorage/sessão da página, então a própria página
+  // (auth-guard.js) envia o token de acesso atual sempre que ele estiver
+  // disponível/for renovado, e guardamos aqui via Cache Storage — assim o
+  // token sobrevive mesmo que o Service Worker "durma" e reinicie entre o
+  // recebimento da mensagem e o disparo do periodicsync.
+  if (event.data?.type === 'SET_AUTH_TOKEN' && event.data.token) {
+    salvarToken(event.data.token);
+  }
 });
 
 // ─── VERIFICAÇÃO LOCAL (fallback com app aberto) ──────────────────────────────
 async function verificarAgendaLocal() {
   try {
-    const res    = await fetch(URL_AGENDA + '&t=' + Date.now());
+    const token   = await obterToken();
+    const headers = token ? { Authorization: 'Bearer ' + token } : {};
+    const res     = await fetch(URL_AGENDA + '&t=' + Date.now(), { headers });
+
+    if (res.status === 401) {
+      // Token ausente/expirado — nada a fazer aqui (o SW não consegue
+      // renovar sozinho); a próxima vez que a página abrir, o
+      // auth-guard.js manda um token novo automaticamente.
+      console.warn('[SW] Sem token válido para checar a agenda (401).');
+      return;
+    }
+
     const agenda = await res.json();
 
     // ✅ FIX: Usar sempre horário de Brasília (UTC-3) de forma explícita
@@ -220,3 +241,18 @@ function formatarHora(h) {
 
 async function checarFlag(key) { const c = await caches.open(FLAG_CACHE); return !!(await c.match('/' + key)); }
 async function salvarFlag(key) { const c = await caches.open(FLAG_CACHE); await c.put('/' + key, new Response('1')); }
+
+// ─── TOKEN DE AUTENTICAÇÃO (Supabase) ─────────────────────────────────────────
+// Guardado no mesmo Cache Storage usado pelas flags de notificação, já que é
+// a única forma de persistência disponível para o Service Worker.
+async function salvarToken(token) {
+  const c = await caches.open(FLAG_CACHE);
+  await c.put('/__auth_token__', new Response(token));
+}
+async function obterToken() {
+  try {
+    const c = await caches.open(FLAG_CACHE);
+    const r = await c.match('/__auth_token__');
+    return r ? await r.text() : null;
+  } catch { return null; }
+}
