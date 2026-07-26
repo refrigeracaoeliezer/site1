@@ -336,7 +336,7 @@
         ok.hide();
 
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://refrigeracaoeliezer.github.io/site1/resetar-senha.html'
+            redirectTo: 'https://refrigeracao-eliezer.pages.dev/resetar-senha.html'
         });
 
         if (error) {
