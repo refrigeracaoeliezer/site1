@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Controlador MT-512 | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { -webkit-user-select: none; user-select: none; }
+        input, select, textarea { -webkit-user-select: text !important; user-select: text !important; }
+        img { pointer-events: none !important; -webkit-user-drag: none !important; }
+
+        :root {
+            --bg: #0d1117;
+            --text: #ffffff;
+            --sub: rgba(255,255,255,0.38);
+            --glass: rgba(255,255,255,0.03);
+            --border: rgba(255,255,255,0.08);
+            --input-bg: rgba(255,255,255,0.05);
+        }
+        body.light-mode {
+            --bg: #f0f2f5;
+            --text: #1a1f26;
+            --sub: rgba(0,0,0,0.45);
+            --glass: rgba(255,255,255,0.82);
+            --border: rgba(0,0,0,0.09);
+            --input-bg: rgba(0,0,0,0.04);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px 40px;
+            position: relative;
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient glow (mesma identidade do painel de sistemas) */
+        .glow { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(90px); z-index: 0; }
+        .glow-a { width: 500px; height: 500px; top: -180px; right: -140px; background: rgba(30,64,175,0.08); }
+        .glow-b { width: 380px; height: 380px; bottom: -120px; left: -120px; background: rgba(16,185,129,0.05); }
+
+        .page {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            animation: fadeUp 0.5s ease-out both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: 16px;
+        }
+        .brand-title { font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1; }
+        .brand-title span { color: #1e40af; }
+        .brand-sub { font-size: 9px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.14em; margin-top: 4px; }
+        .header-actions { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 38px; height: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .icon-btn:hover { background: rgba(30,64,175,0.12); }
+
+        /* ── Filtros por categoria (carrossel arrastável) ── */
+        .filtros-wrap {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .filtros {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
+            touch-action: pan-y;
+            padding-bottom: 4px;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .filtros.arrastando { cursor: grabbing; scroll-behavior: auto; }
+        .filtros::-webkit-scrollbar { display: none; }
+        .filtros { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Sombra nas bordas indicando que há mais botões fora da tela */
+        .filtros-wrap::before,
+        .filtros-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 4px;
+            width: 24px;
+            pointer-events: none;
+            z-index: 2;
+            transition: opacity 0.2s;
+            opacity: 0;
+        }
+        .filtros-wrap::before {
+            left: 0;
+            background: linear-gradient(90deg, var(--bg), transparent);
+        }
+        .filtros-wrap::after {
+            right: 0;
+            background: linear-gradient(270deg, var(--bg), transparent);
+        }
+        .filtros-wrap.tem-overflow-esq::before { opacity: 1; }
+        .filtros-wrap.tem-overflow-dir::after { opacity: 1; }
+
+        .filtro-btn {
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--sub);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .filtro-btn:hover { border-color: rgba(59,130,246,0.4); }
+        .filtro-btn.active {
+            background: linear-gradient(135deg,#1e40af,#3b82f6);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* ── Busca ── */
+        .search-wrap { position: relative; margin-bottom: 18px; }
+        .search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 13px; }
+        #buscaInput {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 13px 40px 13px 38px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #buscaInput:focus { border-color: #3b82f6; }
+        #buscaInput::placeholder { color: var(--sub); }
+        #limparBusca {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--border);
+            color: var(--text);
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: none;
+            font-size: 11px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        #limparBusca.show { display: flex; }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--sub);
+            margin-bottom: 10px;
+            margin-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* ── Lista de tópicos (cartões-resumo, clicáveis) ── */
+        .lista-topicos { display: flex; flex-direction: column; gap: 8px; }
+
+        .topico-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 13px 14px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, background 0.2s;
+        }
+        .topico-card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.35); background: rgba(59,130,246,0.06); }
+        .topico-card:active { transform: scale(0.98); }
+
+        .topico-card-icon {
+            width: 40px; height: 40px;
+            border-radius: 11px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg,#1e40af,#3b82f6);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px;
+        }
+        /* Ícones coloridos por grupo: funções que trabalham juntas usam a mesma cor,
+           pra reconhecer visualmente o "parceiro" de cada parâmetro sem precisar ler. */
+        .topico-card-icon.grupo-setpoint { background: linear-gradient(135deg,#0e7490,#22d3ee); } /* F02 · F06 · F07 */
+        .topico-card-icon.grupo-faixa    { background: linear-gradient(135deg,#6d28d9,#c084fc); } /* F04 · F05 */
+        .topico-card-icon.grupo-tempos   { background: linear-gradient(135deg,#9d174d,#f472b6); } /* F08 · F09 */
+        .topico-card-icon.grupo-degelo   { background: linear-gradient(135deg,#c2410c,#fb923c); } /* F10 · F11 · F12 · F13 */
+        .topico-card-icon.grupo-erro     { background: linear-gradient(135deg,#991b1b,#f87171); } /* F16 · F17 · F18 */
+        .topico-card-text { min-width: 0; flex: 1; }
+        .topico-card-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+        .topico-card-text span {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 13px;
+            color: var(--sub);
+            font-weight: 500;
+            margin-top: 3px;
+            line-height: 1.45;
+        }
+        .topico-card-cat {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #3b82f6;
+            margin-top: 5px;
+        }
+        .topico-card-senha {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #f59e0b;
+            margin-top: 4px;
+            margin-left: 8px;
+        }
+        .aviso-senha {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(245,158,11,0.08);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+        }
+        .aviso-senha .aviso-icone {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#92400e,#f59e0b);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .aviso-senha .aviso-texto { font-size: 13.5px; line-height: 1.5; }
+        .aviso-senha .aviso-texto strong { color: #f59e0b; }
+        .topico-card-arrow { color: var(--sub); font-size: 11px; flex-shrink: 0; }
+        .topico-card:hover .topico-card-arrow { color: var(--text); }
+
+        /* ── Botão voltar (dentro do detalhe do tópico) ── */
+        .btn-voltar-topico {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            margin-bottom: 18px;
+            transition: background 0.2s;
+        }
+        .btn-voltar-topico:hover { background: rgba(59,130,246,0.1); }
+
+        /* ── Grupo / Tópico (visão detalhada) ── */
+        .topico { margin-bottom: 26px; }
+        .topico-header { text-align: center; margin-bottom: 16px; }
+        .topico-titulo {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.25;
+        }
+        .topico-titulo .marca { color: #3b82f6; }
+        .topico-modelo {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--sub);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 2px;
+        }
+
+        /* ── Linha de ações (voltar + exportar) ── */
+        .topico-acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 18px; }
+        .topico-acoes .btn-voltar-topico { margin-bottom: 0; flex-shrink: 0; }
+        .btn-exportar-topico {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex: 1 1 130px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #3b82f6;
+        }
+        .btn-exportar-topico:hover { background: rgba(59,130,246,0.18); }
+
+        /* ── Toast de feedback (ex: "copiado!") ── */
+        .toast-feedback {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%) translateY(20px);
+            background: #111827;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 999;
+        }
+        .toast-feedback.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast-feedback i { color: #22c55e; }
+
+        /* ── Tópicos relacionados (rodapé do tópico) ── */
+        .relacionados { margin-top: 22px; }
+        .relacionados-titulo {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--sub);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .relacionados-lista { display: flex; flex-direction: column; gap: 8px; }
+        .relacionado-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 12px;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .relacionado-item:hover { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); }
+        .relacionado-item .topico-card-icon { width: 32px; height: 32px; font-size: 13px; border-radius: 9px; }
+        .relacionado-item span { font-size: 13px; font-weight: 700; line-height: 1.25; }
+        .relacionado-item i.chevron { margin-left: auto; color: var(--sub); font-size: 11px; }
+
+        /* ── Passos (cards) ── */
+        .passos { display: flex; flex-direction: column; gap: 14px; }
+
+        .passo-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .passo-card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,0.35); }
+
+        .passo-numero {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-start;
+        }
+        .passo-numero .badge {
+            width: 22px; height: 22px;
+            border-radius: 7px;
+            background: linear-gradient(135deg,#1e40af,#3b82f6);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .passo-label {
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #3b82f6;
+        }
+
+        .passo-desc {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text);
+            text-align: center;
+            padding: 0 4px;
+        }
+
+        .passo-imagem {
+            width: 100%;
+            max-width: 260px;
+            aspect-ratio: 1 / 1;
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+            background: var(--input-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .passo-imagem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .passo-imagem.vazio {
+            flex-direction: column;
+            gap: 6px;
+            color: var(--sub);
+        }
+        .passo-imagem.vazio i { font-size: 20px; }
+        .passo-imagem.vazio span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* ── Estado vazio (nenhum resultado na busca) ── */
+        .sem-resultado {
+            text-align: center;
+            color: var(--sub);
+            font-size: 13px;
+            padding: 40px 20px;
+        }
+        .sem-resultado i { font-size: 26px; display: block; margin-bottom: 10px; opacity: 0.5; }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body>
+
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+
+<div class="page">
+
+    <header class="header">
+        <div>
+            <div class="brand-title">Controlador <span>MT-512</span></div>
+            <div class="brand-sub">Guias e Procedimentos</div>
+        </div>
+        <div class="header-actions">
+            <a href="sistemas.html" class="icon-btn" title="Voltar">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <button onclick="toggleTheme()" class="icon-btn" title="Tema">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="filtros-wrap" id="filtrosWrap">
+        <div class="filtros" id="filtrosCategoria"></div>
+    </div>
+
+    <div class="search-wrap" id="searchWrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="buscaInput" placeholder="Buscar por função, código de erro (Er1, F06)...">
+        <button id="limparBusca" title="Limpar busca">&times;</button>
+    </div>
+
+    <div id="listaTopicos"></div>
+
+</div>
+
+<script>
+    // =====================================================================
+    // 🏢 IDENTIDADE DA EMPRESA — usada no cabeçalho dos arquivos exportados
+    // e no texto que vai pro WhatsApp/compartilhamento. Pra trocar nome ou
+    // logo, edite só aqui — não precisa mexer no resto do código.
+    // =====================================================================
+    const NOME_EMPRESA = "Refrigeração Eliezer";
+    let LOGO_EMPRESA = "https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117";
+    // A logo acima é o padrão de fallback. Se a planilha tiver uma logo salva
+    // (aba "empresa", campo emp_logo), ela é usada no lugar automaticamente.
+    buscarConfigEmpresa().then(cfg => {
+        const item = Array.isArray(cfg) ? cfg.find(d => d.emp_nome) : null;
+        const url = item && item.emp_logo;
+        if (url) LOGO_EMPRESA = url;
+    });
+
+    // =====================================================================
+    // 📋 CONTEÚDO DO MANUAL — edite/adicione aqui
+    // =====================================================================
+    // Cada item de TOPICOS é um assunto (ex: uma função específica de um
+    // aparelho). Cada tópico tem uma lista de "passos", exibidos em ordem
+    // como cards.
+    //
+    // Campos de cada tópico:
+    //   titulo    -> nome da função/assunto (ex: "Como alterar a temperatura")
+    //   modelo    -> aparelho/marca a que se refere
+    //   resumo    -> UMA frase curta explicando do que se trata (aparece no
+    //                botão/cartão da lista, antes de abrir o tópico).
+    //   categoria -> usada para gerar os botões de filtro no topo da página.
+    //                Tópicos com a MESMA categoria caem debaixo do MESMO botão.
+    //                Ex: "Temperatura", "Alarmes", "Configuração Inicial".
+    //                O botão "Todos" aparece sempre e mostra tudo.
+    //   senha     -> OPCIONAL. Preencha só se essa função exigir digitar um
+    //                código de acesso no aparelho para chegar até ela
+    //                (ex: senha: "123"). Isso mostra um aviso destacado com
+    //                cadeado no cartão da lista e no topo do tópico aberto.
+    //                Deixe sem esse campo se a função não pedir senha.
+    //   grupoCor  -> OPCIONAL. Usado só nos parâmetros F01-F21 que trabalham
+    //                em conjunto com outro(s). Funções do mesmo grupo ganham
+    //                o mesmo ícone colorido, pra reconhecer visualmente quem
+    //                é "parceiro" de quem sem precisar ler o texto todo.
+    //                Valores disponíveis: "setpoint" (F02·F06·F07),
+    //                "faixa" (F04·F05), "tempos" (F08·F09),
+    //                "degelo" (F10·F11·F12·F13), "erro" (F16·F17·F18).
+    //                Deixe sem esse campo pra manter o ícone azul padrão
+    //                (funções que não têm um par direto, como F01, F03,
+    //                F14, F15, F19, F20, F21).
+    //
+    // Campos de cada passo:
+    //   label     -> texto pequeno em destaque acima da descrição
+    //                (ex: "PRIMEIRO TESTE", "ATENÇÃO", "RESULTADO ESPERADO")
+    //   descricao -> o texto explicando o que fazer/observar
+    //   imagem    -> URL da foto (opcional). Deixe "" (vazio) se ainda não
+    //                tiver a foto — vai aparecer um espaço reservado.
+    //
+    // Para criar um novo tópico, copie um bloco inteiro (do "{" ao "},")
+    // e cole antes do fechamento do array TOPICOS, ajustando os textos.
+    // Se usar uma categoria nova, o botão dela aparece sozinho no filtro.
+    // =====================================================================
+
+    const TOPICOS = [
+        {
+            titulo: "Ajustar o Setpoint (temperatura desejada)",
+            modelo: "MT512E 2HP",
+            resumo: "Como ver e alterar a temperatura configurada, direto pela tecla SET.",
+            categoria: "Temperatura",
+            passos: [
+                {
+                    label: "Acessar o ajuste",
+                    descricao: "Segure a tecla SET por 2 segundos até aparecer a mensagem \"Set\". Ao soltar, o display mostra a temperatura atualmente configurada.",
+                    imagem: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEijOB_cjsDO6JcuetpL8wAngSlRCH8hA5esHBzPLHH2L5CWQb66SyileOOBcHEHcplCw1Wt9d2f1WGQrjfWaveaaGxyVxX-rJ3sTqBomKgjvdTLyZoA3OG22KLhUFFVEb5L4YaTScn8wMddC84EoB6G1rn0oAQJTmfffFWX222E-VtlijO5kBZiM41rnOc/w394-h425/set.png"
+                },
+                {
+                    label: "Alterar o valor",
+                    descricao: "Use as setas para aumentar ou diminuir o valor e pressione SET para gravar a nova temperatura desejada.",
+                    imagem: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIKazxHfvHxo6jwqQINf7xKNnPRiyxKdbbFUaJG9jBUv_sSS46djVA74tqd8tQpVmBY1Wiv6A3qyE_rZL6JrpPJGNA1a4LPnxA1-M0nnIfrbJXMxNtT4ci5lGW77ctW2Fnl4gXWRVBxGelLHbgu6fsFIaSGSdj4UxEt9aTeEOdx0eY_R1-ZaYnHaB5k54/w381-h408/+-.png"
+                },
+                {
+                    label: "Caminho alternativo",
+                    descricao: "Também é possível chegar até esse ajuste pelo menu (tecla Flatec 'Tecla da SETA' ), pressione ela ate aparecer SET na tela e clique na tecla SET para confirmar ou  ir diretamente pela função F02, dentro do menu de parâmetros avançados.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhP4mTSlUes7jFAKw1kWqZcWvjBAaOXk7opWg03dNSViY3-PSGCphALMmt8fg_TVkBSCQc8njfQFn4hnEnsuGv30YqHJcHQEEIjQMef_YsiHDwhI5iReFdoZc1GitOqLuWfQsbJ8L2WeELUEDmQzb_wvjLOWtjfVXfzejdb4Rpr4QHICUt4-Wu7lJ3pCP0=w348-h373"
+                }
+            ]
+        },
+        {
+            titulo: "Ativar ou desativar o degelo manual",
+            modelo: "MT512E 2HP",
+            resumo: "Como forçar o degelo pelo menu ou usando o atalho da seta para baixo.",
+            categoria: "Degelo",
+            passos: [
+                {
+                    label: "Ativar pelo menu",
+                    descricao: "Pressione a tecla Flatec até o \"dEFr\".",
+                    imagem: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg98dDGwtSiSweLxKnwqWCDI63zXnuPWa6oBOB2GMQvM25sHkBMSpOc-DqXcmlUFP8l-72c_PVLayO3zkZegpAJEHQhZOk9IZCtwMlY1SvQxsFHHq5kBofCeiiBxAaL-YIJDR3ja-GAKj8CXxv-Ai9HI9GSUP7iztUm3htM1nuPzqTTqR15YsyNabx7vFk/w441-h472/degelo.jpg"
+                },
+                {
+                    label: "Ativando",
+                    descricao: "Em seguida, toque rápido em SET para confirmar — aparecerá \"On\" e o degelo começa.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhgXuqM2-68GxjPbTYXFrpf2ZssM2LYHUspovnfCCL1not4GemJigVHbV7jxuLP13rTCLDqrh94cY3PA7ytsBKCmdcME-HtMEnmIbA_TYgSZ3h6jrHvOtLS3hsj2D3fNdz4KnTwugGaYDUlH4bEpLw4i9DSoTNah8nvhchsjKnZ0jRSeqF0Ekj7DMUDsRU=w333-h357"
+                },
+                {
+                    label: "Desativar pelo menu",
+                    descricao: "Repita o mesmo caminho (Flatec até \"dEFr\", depois SET) — dessa vez o display mostrará \"Off\", encerrando o degelo manual.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiAHOolgEAkM-tGtdgVcfw2QP5FH5oDB48eURpn8cbO1tLSdV1OuH3gs-8gM3nDwyGwXNqpDbguxmfsogTXVTCCSS23IydZm4ZDW4EDM2XKVu9A_SZa2D3UdoHwQAuWcBUjQlo9XD27C1MrOx4ZSnET1ECOd6crHnEdZfyXsbbOUlYTfPPdIXVMRw01zoY=w345-h370"
+                },
+                {
+                    label: "Atalho rápido",
+                    descricao: "Segure a seta para baixo por 4 segundos para ligar/desligar o degelo manual diretamente, sem entrar no menu. Dessa forma, não é preciso navegar até a opção \"dEFr\". ",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhgnAEy3WrRzCtJK_GYerZ8SE0r9CRWcy5uwSkciFylx1t-F_5glW7ddZhs-XaV2kupSEMG8W6ldSIssH2aq6sBS5UbFalmazV8F4EA0-WoH6o52gVAX1bAC-5FLItPvD-ldYLNXiGng0a_7FcBd5xHY2pz0tQoyiqTPm1-MzDNY5T3LIw6_5eBtXugoDA=w366-h392"
+                }
+            ]
+        },
+        {
+
+            titulo: "Bloquear/desbloquear as funções",
+            modelo: "MT512E 2HP",
+            resumo: "Protege os parâmetros contra alteração acidental — e como liberar de novo.",
+            categoria: "Bloqueio",
+            passos: [
+                {
+                    label: "Antes de tudo",
+                    descricao: "O bloqueio só funciona se o parâmetro F20 (tempo para bloqueio) estiver ajustado acima de 14. Se estiver menor, o display mostra \"No\" e não deixa bloquear. Defina o valor e confirme com a tecla \"SET\"",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgDHTeyowLzAerAqgin6DnFw3zwjxbQMgI52t-M8Vx0VPYg2dJP5z6kFhWYCUU-A5_3BAH84tscfebl7gB92KPlphGIX2XuvI6O_SFc0F7p3u8rtUKBQ72tp1g5cPZqLwwlf5D31nt0p7pBQy_DC0n1EP3tFlKaoZT8hvJ5XNQ1GYigrPXYpq_JgK8sDRk=w337-h361"
+                },
+                {
+                    label: "Ativar o bloqueio",
+                    descricao: "Toque na tecla Flatec, até aparecer o \"LOC\", pressione o \"SET\", irá aparecer \"no\" no display, segure para baixo até aparecer \"LOC, On\". Dessa forma parâmetros ficam protegidos contra alteração (mas ainda podem ser visualizados).",
+                        
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEjNADv4BdyX67MmZrnwkWLCrN-UsMRlhwOjxJURsTXeZMnigT9GM0udUSEHyD33M0G0FhHV4p47667XpKHXq6HFUS3Eb4YESg5X0WSB4OmXQDW8JWdEOHftcdWlazIv-w07JcaIg3MLcdGF1Rr_UzVyGHKzB57vIODEVx6KGMtoarOZfpidIkLI7g6nGiw=w316-h338"
+                },
+                {
+                    label: "Desbloquear",
+                    descricao: "Para desbloquear as funções, reinicie o controlador mantendo pressionada a tecla ▼ (para baixo), até aparecer \"LOC\", \"OFF\", liberando os ajustes.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhu5gCXG1BNOh6uGPXrqNOL79DUD3P4CxrYPlJuf8M61qBZxBSwkwNZmn88bFx7fisisaXNPEI0bLxtOrl829tQKxbod1ZdhrVf207if-qK22k2Utpv6X39YhM2X9UUB6KS1WJ5g_NhV7JvERQpRAW8Qt_x93svb147B8uHRedafpCem_OVxDFXect3vsA=w328-h351"
+                }
+            ]
+        },
+        {
+ 
+            titulo: "Desligar/religar as funções de controle",
+            modelo: "MT512E 2HP",
+            resumo: "Transforma o aparelho em só um termômetro, sem acionar compressor/resistência.",
+            categoria: "Funções de Controle",
+            passos: [
+                {
+                    label: "O que isso faz",
+                    descricao: "Desligando as funções de controle, o aparelho passa a funcionar só como indicador de temperatura — o relé de saída fica desligado sem precisar ficar acionando o compressor/resistência.",
+                    imagem: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiwMf0Yr0Ha9l9psr4UyVNKBH75UEIMrDNLjk96COxSQqk5toWnz0VaaNwNyupSLI_A_6I9EiZYHtofeRVDBvRMAZZZ5I-yc4OqzCldzr8259jwl_MJT1vkhgXK2bQYW0Bjlj4rVEo1jl3bum1MD-n81xYXU5t8lm-alERlNCvx3ytTT3ZSP4nNZuvgzM8/w410-h439/ctrl.jpg"
+              
+                
+                 },
+                {
+                    label: "Ajustar a função F21",
+                    descricao: "Para funcionar é necessario ajustar a função \"F21\" conforme as especificações do manual do usuário.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgQKXj7c-R3zRDwZHDrVAsXHkI7oLp3ewyekHx1rTGYkhrP__bv1z3Krz70FPvY8_SNb2hSDieXqh6EyJ6u_ANlm330IHPFRj72HYRvdoZdAFZXNG2LqxPlN4F7UjIIaFMd-cDrRTSZp09gSbdLhXLkFsVabv3QDq5BBxpcoPAoZ0khF4BYQcWDLGr-66A=w292-h313"
+                         
+        
+                },
+                {
+                
+                    label: "Desligar/religar pelo menu",
+                    descricao: "Selecione a opção \"Ctrl\" e confirme com um toque rápido em SET. O display alterna mostrando \"Ctrl, Off\" (ou \"Ctrl, On\" ao religar).",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEg0HDjd_9XQIph-927DmCFOHXRequo5Qs4Qxd0U3U0sIPtogxgzR9qOiVS-IovgJ6w6ymPVIfvbPK0-hPflR8Qj-QaPNG6qvCNuoKUu0Mulz7zhooCBzk8Tboud8GO5F_TAO75Gc4Cju9A3t1Ge0q4Iank39E8QVOf9ssm9MKqNlO1sQN1IeDLAeyIzFFg=w315-h337"
+                }
+            ]
+        },
+        {
+
+
+            titulo: "Ver o processo atual (o que o aparelho está fazendo)",
+            modelo: "MT512E 2HP",
+            resumo: "Descobrir se está refrigerando, aquecendo, em degelo ou parado, direto no display.",
+            categoria: "Processos",
+            passos: [
+                {
+                    label: "Como ver",
+                    descricao: "Toque na tecla Flatec até aparecer \"Proc\", confirme com SET. ",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEjRiTXr7qyOIK3ALkfGwYQRUe2xr-PUdl1cusoZLXr26x2StQ0BSjaagmNu15svVoXfPtcgvpNquS0tMXqqm-iWY4E1BLo8Z6XtT9WreS2RIpw_2bKKnpzJxhsJ4_zoryOiX-sJSe6DH9UowAPHLKssKXR6OOlD7_trEYBSTyzy-yXjm0rB5PuaOiFN4Kw=w328-h351"
+                  },
+                {  
+                     label: "Método simples",
+                    descricao: "Aperte a tecla para baixo uma vez.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiuEVI3Wnzg3qtlhk077DWPoXDlKd6MxhydQ6t_dGNx0MG6-t0L-l2KB5xvHzhTR40IBETE7Mhsb88i7U3LquFxCuhpB4vN6hV__WW3flUawSkD7uSzDK3nIm1sd4L8abKElkDM9kzOmzutwh4nJCuus1nlSwMaxDVADcIm0p4gAURKNtK4WlXhGzDTYZo=w328-h350"
+               
+                 },
+                {  
+                     label: "Desativando as funções de controle",
+                    descricao: "Toque na tecla Flatec até aparecer \"Proc\", confirme com \"SET\". A mensagem \"OFF\" irá aparecer 2 vezes indicando que foi desativado",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiDVeKXqFtu6K5F21hgY0whd60oRn2hNVBCv4sVemrWYMS985OsbdfVMc-UUgS5kpjbpd8JXjPw9AbZgTRmD9YfyGrhk-s9Mrleb_FRkJEKzUoHA5SnfWWzJhFUOOGALPKbTcMoQ9i3BEhKPLFyVKuCzFKetBc4Z4fzuu14zo9NsR3yWY9Iy3VtfWtVz1A=w299-h320"
+               
+                },
+                {
+
+
+                    
+                    label: "O que cada mensagem significa",
+                    descricao: "REFR = refrigerando · HOT = aquecendo · DEFR = em degelo · DEL = atraso inicial (delay) · ---- = controle desligado.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgX7W8FDx864ZEjT6okUzDyPfftSB0DC3eQnYvfPq-soTmkMRflokkUyrBumBnrvv5PT4eoHtK23tSHmrzX7tbw7BHw1km0PVM51VxIKaJDJSgTFnIBwCs1r7x3wGY5Qxr0Rt6P5H_gbibjOHspgxYLXQl3jMWMXIg4vZZ3xZicwC_NgZ44Mq6gT4H6pLM=w309-h331"
+                }
+            ]
+        },
+        {
+
+
+            titulo: "Consultar e apagar temperaturas mín/máx registradas",
+            modelo: "MT512E 2HP",
+            resumo: "Ver o histórico de temperatura mínima e máxima e zerar os registros.",
+            categoria: "Registros",
+            passos: [
+                {
+                    label: "Ver o registro",
+                    descricao: "Toque na tecla Flatec até aparecer \"rE9\" e confirme com SET para ver os valores mínimo e máximo guardados.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEjG7zlAL4y0M5XofJSDJ8es4AV3DPON87_cmN2tS9kKDdKiVDxybdnR0BBk3P84_3OlHjApVjUE_xB1rmaIn6Cz1U1zBZ-EynzcVb4CMxIalA3MSAyEoTuX8EQqANbrzxqv0GASKNn28jNpxer0z6dvxazThRtDubxcM146yAHzNpzDocpmPvF1sHp20BQ=w307-h329"
+                },
+                {  
+                     label: "Método simples",
+                    descricao: "Aperte a tecla para cima uma vez e espere aparecer os valores mínimo e máximo guardados.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhrj_QPddu6msG39B3F7km9wZkJ6N_KjElmT2ozavJC8RBsDDKYl5yK3LKKVKAXiUFygXK1MWRk28jn15xNpZg4qpMHzfxquypqZKSYzS3bcVy1YfMeLsQIVjxHxdEznVS4WlSZVizOnuIfoF-knshiVDEz4RA_-_H3jL7fzUqzRJr0EAaxRmx7L1CtC88=w314-h336"
+               
+                },
+                {
+                   
+                    label: "Limpar o registro salvo do Min/Max",
+                    descricao: "Toque na tecla Flatec até aparecer \"CrE9\" e confirme com SET.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEhNE9U5wmTObvEgM-2UP3pnDQZ1ECipRg1GDLbd3Hijirs-Guago3lIUBrL0r_ZfCQl_LBGrGkVi3fjviZ2Q2_5zsacueLTfpAjxKSKga17DHjHLSNdGK0n9MWbgYXKGIpEm40VzNk2Ysi_yIhE4nw6BBbfjj4fAlAM50d8XymU13iVOW_YNVioOVb6JbM=w323-h346"
+                }
+            ]
+        },
+        {
+
+
+
+            titulo: "Trocar a unidade de medida (°C ou °F)",
+            modelo: "MT512E 2HP",
+            resumo: "Alternar entre Celsius e Fahrenheit pela função F01, com código de acesso.",
+            categoria: "Configuração",
+            senha: "231",
+            passos: [
+                {
+                    label: "Acessar a função",
+                    descricao: "Entre na função  \"Func\", aperte  \"SET\" irá aparecer  \"F01\" aperte  \"SET\" novamente e coloque o código de acesso, digite  \"231\" (código específico para trocar a unidade). Irá aparecer  \"Uni t\" e aparecerá se esta em °C e °F.",
+                    imagem: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjMmE26D_d6-3z-OQBk2BH9ydKO0jK8alEgAwOgO62qfjJSYeemZby3x8TewaDqxmTr43bC5Qv4rSkV904W6iiE_asbD-QNkTEp_nI01uZWfyODMu1huiKIbhG7COYe6A4T4cPYwZcl84mYS1Dt_IgAHs7Ao37DfqZs7KLm3-ObfWrgNsjWogivCT-mX1U/s320/1.gif"
+                },
+                {
+                    label: "Escolher a unidade",
+                    descricao: "Use as setas para alternar entre °C e °F e pressione SET para confirmar a escolha. Irá aparecer  \"FAC\" e em seguida a temperatura.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEjVmf5sUy67AZfA6jd8-sd4sKGbcXLLahOs-ImfyQUbm10OcGJYZ32Z76XHsvjUmIvK275XhUkRNWiP87mA3lXf3ygnssjB3LUWHsNqNRJQZVh-AiI3b26hxppGwXA5xZWZ-4gkiWjPRz6qHXuCUyfaJjzd-j4KTVqkXbXvK05uwhXPK5UVRCk-ogUcZ9Q=w274-h294"
+                },
+                {
+                    label: "Atenção",
+                    descricao: "Toda vez que a unidade é trocada, os parâmetros voltam para os valores padrão de fábrica — é preciso reconfigurá-los depois.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgdiK_B0G_Tx7-nchVC60tmMp6e5bYWoGUtKPOm3o7Wk7zaExIfvtiNV2GbBZ5xDxkxb_M34z705twd2xybYIuVyIuf8LdTb036o-G42vQ0qXdnQ0497HZHvZZh4yCVzgPO9y8uymW67MB9irGAONSG1tsQn0mxIDomJf_5eOblNgmO1PKIlEmtSQR9TEY"
+                }
+            ]
+        },
+        {
+
+
+            
+            titulo: "Entrar no menu de parâmetros avançados (F01 a F21)",
+            modelo: "MT512E 2HP",
+            resumo: "Como acessar o menu técnico completo, com código de acesso e navegação entre funções.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                {
+                    label: "Acessar o menu",
+                    descricao: "Pressione as duas setas (esquerda e direita) ao mesmo tempo, até aparecer \"F01\".",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiiZ11k-bMd8gGGZjX6g08rSYF7sQmd263VvoL5EPYB_3ZJyyaP0fsxQE2wlUVs_CH4LeU90WqOWXQTZN4IOqLXXuDw88NHkGauMuBifVDPXjdUkl06cub4IxhUyVuxpusF7nIt5out97Vk3CC0w6u9RJiRHqXNStGfsHVeGKYHb0asNNVZWPGwJb7fK_Y=w262-h281"
+                },
+                {
+                    label: "Código de acesso",
+                    descricao: "Toque em SET, digite o código 123 usando as setas e confirme com SET novamente para liberar os parâmetros.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiW0IT__P4ngeVJAr29w03eSqf8XMDeNc5ktdH0UV2JvKd7Nau83LGxHLGxsk6HBpkpLtyVaetsG_anvt36c9GLgJ1Br7-vBE0q_Q70g5dEHP8Krabb1Cp5cvFK3opCQGNUXq3aAQ0hPng1_f_M3wsP7cloBbHGyT5G7fwoSxV8zVgKmjwc83b15Oht5RE"
+                },
+                {
+                   
+                     label: "Navegar e alterar",
+                    descricao: "Use as setas para escolher a função desejada (F02, F03...), toque em SET para ver o valor, altere com as setas e toque em SET de novo para gravar.",
+                    imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEjAK4HuSJ65AP-F4HEmgfmv-TrKcqb1u4GSgg6ggMm5w9T06ia_Hy6qPY_1ozuvaP33cJ4suH3pggJySkn8Y2yjOVA0ky-_YBohSNQInd5UNQxInu80e3PTOno-5aaPpyshw94vwmPJyONrovjXlElbSb6YGgKtphUs8a5CwJGL4itLZAz39px7HIsfd5o=w272-h291"
+             
+                }
+            ]
+        },
+        {
+            titulo: "O que cada mensagem no display significa",
+            modelo: "MT512E 2HP",
+            resumo: "Consulta rápida: Er1, OFF, LOC, defr e outras siglas que aparecem no visor.",
+            categoria: "Alarmes",
+            passos: [
+                { label: "Er1", descricao: "Erro no sensor de temperatura — ele está desconectado ou danificado. Confira o fio e o conector do sensor.", imagem: "" },
+                { label: "OFF (piscando com a temperatura)", descricao: "As funções de controle estão desligadas — o aparelho está operando só como termômetro, sem acionar o relé.", imagem: "" },
+                { label: "Defr / On", descricao: "O degelo manual foi ativado.", imagem: "" },
+                { label: "defr / Off", descricao: "O degelo manual foi desativado.", imagem: "" },
+                { label: "LOC / On", descricao: "O bloqueio de funções está ativo — os parâmetros só podem ser visualizados, não alterados.", imagem: "" },
+                { label: "LOC / OFF", descricao: "O bloqueio de funções foi desativado — os parâmetros podem ser alterados normalmente.", imagem: "" },
+                { label: "pppp", descricao: "Os parâmetros foram reconfigurados para os valores de fábrica. Costuma acontecer depois de trocar a unidade de medida (°C/°F) — é preciso revisar os ajustes.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F02 — Temperatura desejada (Setpoint)",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "A temperatura que você quer manter — é onde o compressor desliga.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "setpoint",
+            passos: [
+                { label: "Em termos simples", descricao: "É a temperatura que você quer manter no ambiente — o valor que a pessoa ajusta no dia a dia (ex: -18°C num freezer, 4°C numa geladeira). Quando o ambiente chega nessa temperatura, o compressor desliga.", imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEi9MftyW9EBkUVFX3PuUSVC3f7vVZtsHHGGrbOEQQNGLom8eQlDDZSkOk5lsBEkwTKOcwYE0QWzSpH9zq08xpScmgChu0u6AlzgiEoYEBbJ9FlQZol7erFoVJAEqx87MZQcgB-LqOVvxkRJ6QLUdPSkqFg7ZguM36aKymKxJH0zAWv44976gXcvjpVon14=w323-h346" },
+                { label: "Funciona junto com o F06", descricao: "O F02 sozinho não diz quando o compressor volta a ligar — quem faz isso é o F06. Pense assim: F02 é onde ele desliga, F06 é o quanto o ambiente pode esquentar de novo até ele religar.", imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgr5pBCGBEwZ8aUdS6Hxmz0cOsd7WnmLkpoHlcLPdRvDXZoLvRTsSDkN8wPkuF2JYbD0mOuTtZuu8UUPslaWB32xg1TX95qFaNTpwjVdjWdl-IRGvJZikp9BXn4_3AMQPlKmVIx40Z12MCkU2EJpvp0owRK7ZgOsSEuy8Bt0sFDDS9IMZ7er7BydOpG04A=w347-h372" }
+            ]
+        },
+        {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+            titulo: "F03 — Deslocamento de indicação (Offset)",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Corrige a leitura do display quando ela está errada por causa do sensor.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Use quando o display mostra uma temperatura que você sabe que está errada (por exemplo, comparando com outro termômetro confiável colocado no mesmo ponto). O F03 soma ou subtrai um valor fixo pra corrigir essa diferença — geralmente causada por trocar o sensor por outro de fabricação diferente, aumentar o comprimento do cabo dele, ou posicionar o sensor num ponto do ambiente que não representa bem a temperatura real do produto.", imagem: "" },
+                { label: "Exemplo prático", descricao: "Se o termômetro de referência marca 4,0°C no mesmo ponto onde o sensor do MT-512 está, mas o display do aparelho mostra 5,5°C, configure F03 = -1,5 pra corrigir a diferença. Se o display estivesse mostrando 2,0°C (abaixo do real), o ajuste seria F03 = +2,0.", imagem: "" },
+                { label: "Atenção", descricao: "O F03 corrige a leitura do display, mas o F02 continua sendo comparado com a leitura JÁ corrigida — ou seja, depois de ajustar o F03, confira se o F02 ainda está no valor que você quer, porque o comportamento real de liga/desliga do compressor muda junto.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F04 — Setpoint mínimo permitido",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Trava de segurança: o valor mais baixo que dá pra configurar no F02.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "faixa",
+            passos: [
+                { label: "Em termos simples", descricao: "Não é uma temperatura de trabalho — é uma trava. Impede que alguém, sem querer, digite uma temperatura desejada absurdamente baixa lá no F02.", imagem: "" },
+                { label: "Funciona junto com o F02 e o F05", descricao: "F04 = o piso. F05 = o teto. Juntos, eles limitam a faixa de valores que o F02 aceita.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F05 — Setpoint máximo permitido",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Trava de segurança: o valor mais alto que dá pra configurar no F02.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "faixa",
+            passos: [
+                { label: "Em termos simples", descricao: "Mesma ideia do F04, só que travando o lado de cima — impede configurar uma temperatura desejada exageradamente alta no F02.", imagem: "" },
+                { label: "Funciona junto com o F02 e o F04", descricao: "F04 = o piso. F05 = o teto. Juntos, eles limitam a faixa de valores que o F02 aceita.", imagem: "" },
+                { label: "Quando usar isso na prática", descricao: "Útil pra evitar erro de digitação de quem for mexer no aparelho no dia a dia: se o freezer só pode operar entre -25°C e -15°C, configure F04 = -25 e F05 = -15. Se alguém tentar colocar -5°C no F02 depois disso, o aparelho não deixa passar do teto configurado aqui.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F06 — Diferencial de controle (histerese)",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Não é uma segunda temperatura — é o quanto o ambiente pode esquentar até o compressor religar.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "setpoint",
+            passos: [
+                { label: "Em termos simples", descricao: "Pense no F06 como uma distância, não como uma temperatura separada. O F02 diz onde o compressor DESLIGA. O F06 diz quantos graus o ambiente precisa esquentar (a partir do F02) pra ele LIGAR de novo.", imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEiAlnZkV6tQi1ds2mIc1fMOTJUcl4BwoN4AAHOYbvB_qiA0BUVi65daE0YBCehoWLwWOaGc1CNT4GVclKTFkrmQHGKC_SZ6cB0RVWi0cF0RF_e2KYuRxN7VkC6VBHdq7gEDL9-3O0eWwoeakVbb02o4M3D_5e0XsjhQgcx7w63XggLJSMcRSIO9nKc3aoU" },
+                { label: "Exemplo prático (refrigeração)", descricao: "F02 = 4,0°C e F06 = 1,0°C: o compressor desliga quando chega em 4,0°C, e só liga de novo quando o ambiente subir até 5,0°C (4,0 + 1,0).", imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEgr5pBCGBEwZ8aUdS6Hxmz0cOsd7WnmLkpoHlcLPdRvDXZoLvRTsSDkN8wPkuF2JYbD0mOuTtZuu8UUPslaWB32xg1TX95qFaNTpwjVdjWdl-IRGvJZikp9BXn4_3AMQPlKmVIx40Z12MCkU2EJpvp0owRK7ZgOsSEuy8Bt0sFDDS9IMZ7er7BydOpG04A=w347-h372" },
+                { label: "Se estiver em aquecimento (F07)", descricao: "A conta se inverte: com F02 = 30,0°C e F06 = 5,0°C, a resistência desliga em 30,0°C e só religa quando esfriar até 25,0°C (30,0 − 5,0).", imagem: "https://blogger.googleusercontent.com/img/a/AVvXsEi7WSx2GWrndZSORwiLAOxhmBMq6wji294H7SkaREt42oSEvrwxspKDC3lR00WhVq8-birSIhq1xaK1F5NtUGdr8p6rCtk46AnfN9S3n4QGU7rzICBplX9198D3d30hBMZoXCARNNXVCExtd1A-d3tECAmFLlEmvx4y2cAsabpSTIwDussSgcR9SsFEO6Y=w365-h391" },
+                { label: "IMPORTANTE", descricao: "Para funcionar em modo de aquecimento é necessario ajustar a \"F07\" para aquecimento. Defina o codigo para \"1\" que corresponde ao aquecimento.", imagem: "" },
+                { label: "Cuidado ao ajustar", descricao: "F06 muito baixo (tipo 0,5°C) faz o compressor ligar e desligar toda hora, o que desgasta ele rápido. F06 muito alto deixa a temperatura variar demais entre uma partida e outra.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F07 — Modo de operação",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Define se o aparelho está controlando frio ou calor.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "setpoint",
+            passos: [
+                { label: "Em termos simples", descricao: "0 = Refrigeração (controla frio, tipo geladeira/freezer/câmara). 1 = Aquecimento (controla calor, tipo estufa/pista aquecida). Esse ajuste normalmente é feito uma única vez, na instalação do aparelho, de acordo com o tipo de equipamento que ele vai controlar.", imagem: "" },
+                { label: "Funciona junto com o F06", descricao: "Esse ajuste muda a direção do F06: em refrigeração, o compressor religa quando ESQUENTA a partir do F02. Em aquecimento, a resistência religa quando ESFRIA a partir do F02.", imagem: "" },
+                { label: "Como identificar se está errado", descricao: "Se o aparelho deveria refrigerar mas a resistência/aquecedor é que fica ligando, ou o compressor nunca desliga mesmo já tendo atingido a temperatura, o F07 provavelmente está no modo trocado. Confira aqui antes de desconfiar de outro parâmetro.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F08 — Tempo mínimo de saída ligada",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Tempo mínimo que o compressor precisa ficar ligado antes de poder desligar de novo.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "tempos",
+            passos: [
+                { label: "Em termos simples", descricao: "Depois que o compressor liga, ele é obrigado a ficar ligado pelo menos esse tempo, mesmo que a temperatura já tenha batido no F02 e peça pra desligar.", imagem: "" },
+                { label: "Exemplo prático", descricao: "Com F08 = 3 minutos: se o compressor ligar e a temperatura atingir o setpoint depois de só 40 segundos, ele NÃO desliga ainda — continua rodando até completar os 3 minutos, e só aí desliga.", imagem: "" },
+                { label: "Funciona junto com o F09", descricao: "F08 protege o tempo mínimo LIGADO. F09 protege o tempo mínimo DESLIGADO. Os dois juntos evitam que o compressor sofra ligando/desligando rápido demais (chamado de \"curto-ciclo\"), o que reduz muito a vida útil dele.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F09 — Tempo mínimo de saída desligada",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Tempo mínimo que o compressor precisa ficar desligado antes de poder religar.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "tempos",
+            passos: [
+                { label: "Em termos simples", descricao: "Depois que o compressor desliga, ele fica travado nesse tempo mínimo antes de poder ligar de novo, mesmo que a temperatura já peça pra religar. Isso dá tempo da pressão dentro do sistema de refrigeração se equalizar, o que evita o compressor tentar partir contra alta pressão — o que reduz a vida útil dele e pode até desarmar a proteção térmica.", imagem: "" },
+                { label: "Exemplo prático", descricao: "Com F09 = 5 minutos: se o compressor desligar e a temperatura subir rápido pedindo pra religar depois de só 1 minuto, ele fica esperando — só liga de fato quando completar os 5 minutos desligado.", imagem: "" },
+                { label: "Funciona junto com o F08 e o F14", descricao: "F09 é o par do F08 (tempo mínimo desligado x tempo mínimo ligado). Também é usado logo depois que o F14 (retardo inicial) termina, na primeira vez que o aparelho é energizado.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F10 — Tempo de refrigeração (intervalo entre degelos)",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "De quanto em quanto tempo o aparelho para sozinho pra descongelar.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "degelo",
+            passos: [
+                { label: "Em termos simples", descricao: "É o relógio do degelo automático. Exemplo: se você configurar 6 horas, a cada 6 horas de refrigeração o aparelho para sozinho e entra em degelo, mesmo sem ninguém mexer em nada.", imagem: "" },
+                { label: "Funciona junto com o F11", descricao: "O F10 decide QUANDO o degelo começa. O F11 decide QUANTO TEMPO esse degelo dura.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F11 — Tempo de degelo",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Quanto tempo dura o degelo automático — o compressor fica desligado nesse período.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "degelo",
+            passos: [
+                { label: "Em termos simples", descricao: "Assim que o degelo começa (veja F10), esse é o tempo que ele dura. O compressor fica desligado o tempo todo aqui dentro. Quando esse tempo acaba, volta tudo pra refrigeração normal, mesmo que ainda tenha um pouco de gelo sobrando.", imagem: "" },
+                { label: "Como ajustar na prática", descricao: "Se o degelo estiver terminando e ainda sobrar gelo visível no evaporador, aumente o F11. Se o produto estiver esquentando demais durante o degelo (tempo maior do que o necessário), diminua.", imagem: "" },
+                { label: "Funciona junto com o F10, F12 e F13", descricao: "F10 decide quando o degelo começa. F12 decide se o primeiro degelo acontece assim que liga o aparelho. F13 decide se o display trava a temperatura enquanto isso tudo acontece.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F12 — Estado inicial ao energizar o instrumento",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Decide se, ao ligar na tomada, ele já refrigera ou degela primeiro.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "degelo",
+            passos: [
+                { label: "Em termos simples", descricao: "0 = ao ligar na tomada, começa refrigerando direto. 1 = ao ligar na tomada, faz um degelo primeiro (com a duração do F11) e só depois começa a refrigerar.", imagem: "" },
+                { label: "Quando usar cada opção", descricao: "Use 0 (padrão da maioria das instalações) quando o produto não pode ficar sem refrigeração nem por alguns minutos. Use 1 em casos onde, depois de uma falta de energia prolongada, é comum já ter acumulado gelo no evaporador — assim o aparelho já começa limpando antes de voltar a refrigerar.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F13 — Travar indicação durante o degelo",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Impede que o display mostre a temperatura subindo durante o degelo.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "degelo",
+            passos: [
+                { label: "Em termos simples", descricao: "Durante o degelo (F11), a temperatura real sobe bastante — e isso pode assustar quem olha o display achando que o produto esquentou. Ativando esse parâmetro (yes), o display trava mostrando a última temperatura antes do degelo começar, em vez de mostrar a subida.", imagem: "" },
+                { label: "Quando ele destrava", descricao: "Só volta a mostrar a temperatura real de novo quando ela voltar a bater no valor travado (já refrigerando de novo) ou depois de 15 minutos refrigerando — o que vier primeiro.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F14 — Retardo na energização (delay inicial)",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Segura o compressor por um tempo depois que a energia volta.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Quando falta luz e volta, se todos os equipamentos ligarem juntos na mesma hora (geladeira, freezer, câmara, etc.), pode sobrecarregar a instalação elétrica do local — cada compressor puxa uma corrente de partida bem maior que a corrente normal de funcionamento, e vários partindo ao mesmo tempo somam essa corrente toda de uma vez. Esse parâmetro segura o compressor desse aparelho por um tempo antes de deixar ele ligar, evitando esse pico.", imagem: "" },
+                { label: "Dica prática", descricao: "Se você tem vários aparelhos na mesma instalação, vale configurar um F14 diferente em cada um (por exemplo, 0 min, 2 min, 4 min...), pra eles não ligarem todos no mesmo segundo depois que a energia volta." , imagem: "" },
+                { label: "Quando ele age", descricao: "O F14 só entra em ação na energização do aparelho (ligar na tomada ou voltar de uma falta de energia). Depois que o compressor liga a primeira vez, quem controla os tempos de liga/desliga passa a ser o F08 e o F09.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F15 — Tempo adicional no primeiro ciclo",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Deixa o primeiro ciclo depois de ligar durar mais, pra puxar a temperatura mais rápido.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Só no primeiro ciclo de refrigeração depois que o aparelho é ligado, ele deixa o compressor trabalhar um tempo a mais além do normal. Útil quando o produto ou o ambiente está subindo de temperatura e precisa 'puxar' mais rápido logo de cara — por exemplo, depois de uma manutenção, de uma falta de energia longa, ou de um produto carregado quente no equipamento.", imagem: "" },
+                { label: "Quando aumentar esse valor", descricao: "Se, depois de ligar o aparelho, ele demora muito pra atingir o setpoint pela primeira vez mesmo funcionando corretamente, aumentar o F15 dá mais fôlego só nesse primeiro ciclo, sem mexer no funcionamento normal do dia a dia (que continua regido pelo F02 e pelo F06)." , imagem: "" }
+            ]
+        },
+        {
+            titulo: "F16 — Comportamento com sensor com defeito",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "O que o compressor faz se o sensor quebrar, soltar ou der curto.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "erro",
+            passos: [
+                { label: "Em termos simples", descricao: "Se o sensor de temperatura parar de funcionar (der curto, soltar do lugar ou sair da faixa de leitura), esse parâmetro decide o que o compressor faz sem ter mais informação de temperatura confiável.", imagem: "" },
+                { label: "As três opções", descricao: "0 = desliga o compressor e espera o conserto. 1 = deixa o compressor ligado direto (útil quando não pode deixar o produto esquentar de jeito nenhum). 2 = fica ligando e desligando em ciclos automáticos, usando os tempos configurados no F17 e no F18 — evita tanto congelar demais quanto ficar sem gelo nenhum.", imagem: "" },
+                { label: "Funciona junto com o F17 e o F18", descricao: "Se você escolher a opção 2 aqui, precisa configurar também o F17 (tempo ligado) e o F18 (tempo desligado) desse ciclo de emergência.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F17 — Tempo de compressor ligado com erro",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Só é usado se o F16 estiver em 2 — quanto tempo o compressor fica ligado no ciclo de emergência.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "erro",
+            passos: [
+                { label: "Em termos simples", descricao: "Esse parâmetro só faz alguma coisa se o F16 estiver configurado como 2 (ciclando). Ele define quanto tempo o compressor fica ligado em cada ciclo, enquanto o sensor está com problema e o aparelho não tem mais leitura confiável de temperatura.", imagem: "" },
+                { label: "Exemplo prático", descricao: "Com F17 = 20 min e F18 = 10 min: enquanto o sensor estiver com defeito, o compressor liga por 20 minutos, desliga por 10, e repete esse ciclo sem parar — mesmo sem saber a temperatura real — até o sensor ser trocado ou consertado.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F18 — Tempo de compressor desligado com erro",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Só é usado se o F16 estiver em 2 — quanto tempo o compressor fica desligado no ciclo de emergência.",
+            categoria: "Parâmetros",
+            senha: "123",
+            grupoCor: "erro",
+            passos: [
+                { label: "Em termos simples", descricao: "É o par do F17: só faz alguma coisa se o F16 estiver em 2. Define quanto tempo o compressor fica desligado em cada ciclo, enquanto o sensor está com problema.", imagem: "" },
+                { label: "Como ajustar na prática", descricao: "Pense na proporção entre F17 e F18 como se fosse um degelo simulado às cegas: mais tempo ligado (F17) puxa mais frio, mais tempo desligado (F18) dá mais folga pro degelo natural. Ajuste os dois pensando no que costuma funcionar bem nesse tipo de produto quando o controle está normal.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F19 — Intensidade do filtro digital",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Deixa o sensor mais 'devagar' de propósito, pra suavizar oscilações bobas de temperatura.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Faz o sensor reagir mais devagar às mudanças de temperatura — como se ele tivesse mais massa. Isso suaviza picos rápidos (tipo alguém abrindo e fechando a porta rapidinho), mas também torna a resposta do aparelho mais lenta no geral.", imagem: "" },
+                { label: "Como ajustar", descricao: "Quanto maior o valor, mais devagar o sensor reage. Se o display estiver oscilando demais sem motivo aparente, aumentar esse valor costuma resolver. Se o aparelho estiver reagindo devagar demais a mudanças reais, é melhor diminuir.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F20 — Tempo para bloqueio das funções",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Precisa estar acima de 14 pra permitir ativar o bloqueio de segurança do aparelho.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Esse número precisa estar acima de 14 pra o aparelho aceitar ativar o bloqueio de funções. Se estiver 14 ou menos, ele recusa o bloqueio e mostra a mensagem \"No\" na tela.", imagem: "" },
+                { label: "Funciona junto com", descricao: "Esse parâmetro é só o \"liberador\" — quem realmente ativa e desativa o bloqueio no dia a dia é o tópico \"Bloquear/desbloquear as funções\" (categoria Bloqueio).", imagem: "" }
+            ]
+        },
+        {
+            titulo: "F21 — Desligamento das funções de controle",
+            modelo: "MT512E 2HP — Parâmetro avançado",
+            resumo: "Define se e como dá pra desligar manualmente o aparelho, deixando ele só como termômetro.",
+            categoria: "Parâmetros",
+            senha: "123",
+            passos: [
+                { label: "Em termos simples", descricao: "Esse parâmetro é o \"liberador\" de uma outra função (a de desligar/religar manualmente o controle — que transforma o aparelho num simples termômetro). Ele não faz o desligamento sozinho, só decide se essa opção pode ser usada e de que jeito.", imagem: "" },
+                { label: "As opções", descricao: "0 = não deixa usar essa função de jeito nenhum. 1 = deixa usar, mas só se o bloqueio de funções estiver desativado. 2 = deixa usar mesmo com o bloqueio ativado. 3 e 4 = mesma lógica do 1 e 2, mas além de desligar o controle, também apaga o display (que só acende de novo por 5 segundos se tocar alguma tecla).", imagem: "" },
+                { label: "Funciona junto com", descricao: "Quem realmente ativa/desativa no dia a dia é o tópico \"Desligar/religar as funções de controle\" (categoria Funções de Controle). Esse F21 só precisa estar ajustado certo pra aquilo funcionar do jeito que você quer.", imagem: "" }
+            ]
+        },
+        {
+            titulo: "Especificações técnicas explicadas",
+            modelo: "MT512E 2HP",
+            resumo: "O que cada número da ficha técnica realmente significa, em termos simples.",
+            categoria: "Especificações",
+            passos: [
+                {
+                    label: "Faixa de temperatura de controle: -50 a 105°C",
+                    descricao: "É até onde o aparelho consegue medir e controlar com o sensor padrão de fábrica. Com o cabo sensor de silicone especial (SB59, vendido separado), essa faixa sobe até 200°C.",
+                    imagem: ""
+                },
+                {
+                    label: "Resolução: 0,1°C (entre -10 e 100°C) / 1°C fora dessa faixa",
+                    descricao: "É a precisão da leitura no display. Dentro da faixa mais comum (-10 a 100°C) mostra casa decimal (ex: 4,3°C); fora dela, só número inteiro.",
+                    imagem: ""
+                },
+                {
+                    label: "Alimentação: 115 ou 230 Vac ±10%",
+                    descricao: "É a tensão da rede elétrica que alimenta o próprio aparelho — não confundir com a tensão da carga que ele controla. O ±10% é a tolerância de variação que ele aguenta sem problema.",
+                    imagem: ""
+                },
+                {
+                    label: "Corrente máxima da carga: 16A (resistiva) / 12A (indutiva)",
+                    descricao: "O que o relé interno aguenta acionar diretamente. Resistiva = aquecedores/resistências. Indutiva = motores/compressores, que puxam mais corrente na partida (por isso o limite é menor). Se a carga passar disso, use uma contatora: o MT512E aciona a contatora, e ela aciona a carga pesada.",
+                    imagem: ""
+                },
+                {
+                    label: "Potência máxima: 2HP",
+                    descricao: "É o resumo prático do limite de corrente acima — a maior potência de compressor/motor que ele aguenta ligar sem precisar de contatora.",
+                    imagem: ""
+                },
+                {
+                    label: "Temperatura de operação: 0 a 50°C",
+                    descricao: "Não é a temperatura que ele controla — é a temperatura do ambiente onde o próprio controlador fica instalado (o painel, a parede). Se o local de instalação passar disso, pode dar problema no aparelho.",
+                    imagem: ""
+                },
+                {
+                    label: "Umidade de operação: 10 a 90% UR, sem condensação",
+                    descricao: "Mesma lógica da temperatura de operação — é a umidade do ambiente onde o aparelho está instalado, não do que ele está controlando. \"Sem condensação\" significa que não pode formar gotas de água em cima do circuito.",
+                    imagem: ""
+                },
+                {
+                    label: "Grau de proteção: IP65 (frontal)",
+                    descricao: "Código de resistência a poeira/água. O 65 indica totalmente protegido contra poeira e resistente a jatos de água — mas só na parte frontal (por isso ele vem com um vinil protetor pra colar por cima em locais com respingo, como balcão frigorífico).",
+                    imagem: ""
+                },
+                {
+                    label: "Dimensões: 76 x 34 x 77mm / recorte no painel: 71 x 29mm",
+                    descricao: "O tamanho físico do aparelho e o tamanho exato que precisa ser cortado no painel/gabinete para ele encaixar.",
+                    imagem: ""
+                }
+            ]
+        }
+        // ,{ titulo: "Novo assunto aqui", modelo: "MT512E 2HP", resumo: "Uma frase curta explicando do que se trata", categoria: "Alarmes", passos: [ ... ] }
+    ];
+
+    // =====================================================================
+    // Renderização (não precisa mexer daqui pra baixo)
+    // =====================================================================
+    const listaEl     = document.getElementById('listaTopicos');
+    const filtrosEl   = document.getElementById('filtrosCategoria');
+    const filtrosWrap = document.getElementById('filtrosWrap');
+    const searchWrap  = document.getElementById('searchWrap');
+    const buscaInput  = document.getElementById('buscaInput');
+    const limparBusca = document.getElementById('limparBusca');
+    let categoriaAtual = 'todos';
+    let termoBusca = '';
+
+    function normalizar(txt) {
+        return (txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function topicoBateComBusca(t) {
+        if (!termoBusca) return true;
+        const alvo = normalizar(
+            t.titulo + ' ' + (t.resumo || '') + ' ' + (t.categoria || '') + ' ' + t.modelo + ' ' +
+            t.passos.map(p => p.label + ' ' + p.descricao).join(' ')
+        );
+        return alvo.includes(termoBusca);
+    }
+
+    function atualizarSombras() {
+        const max = filtrosEl.scrollWidth - filtrosEl.clientWidth;
+        filtrosWrap.classList.toggle('tem-overflow-esq', filtrosEl.scrollLeft > 4);
+        filtrosWrap.classList.toggle('tem-overflow-dir', filtrosEl.scrollLeft < max - 4);
+    }
+
+    let topicoAberto = null; // índice do tópico aberto em TOPICOS, ou null = mostrando a lista
+
+    // =====================================================================
+    // NAVEGAÇÃO POR HISTÓRICO (pra gesto de "voltar" do celular funcionar)
+    // Cada vez que abrimos um tópico, empurramos um estado no histórico do
+    // navegador. Assim, arrastar o dedo pra voltar (ou o botão físico/gesto
+    // de voltar do Android) dispara "popstate", e a gente só fecha o tópico
+    // em vez de sair da página inteira.
+    // =====================================================================
+    function abrirTopico(idx) {
+        topicoAberto = idx;
+        history.pushState({ topico: idx }, '');
+        renderTopicos();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function fecharTopico() {
+        // Se o estado atual do histórico corresponde a um tópico aberto,
+        // usamos history.back() pra manter a pilha de navegação consistente
+        // (senão o próximo gesto de "voltar" ainda tentaria fechar de novo).
+        if (history.state && history.state.topico != null) {
+            history.back();
+        } else {
+            topicoAberto = null;
+            renderTopicos();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+    }
+
+    window.addEventListener('popstate', (e) => {
+        topicoAberto = (e.state && e.state.topico != null) ? e.state.topico : null;
+        renderTopicos();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+
+    function renderFiltros() {
+        const categorias = ['todos', ...new Set(TOPICOS.map(t => t.categoria || 'Geral'))];
+
+        filtrosEl.innerHTML = categorias.map(cat => `
+            <button class="filtro-btn ${cat === categoriaAtual ? 'active' : ''}" data-cat="${cat}">
+                ${cat === 'todos' ? 'Todos' : cat}
+            </button>
+        `).join('');
+
+        filtrosEl.querySelectorAll('.filtro-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoriaAtual = btn.dataset.cat;
+                topicoAberto = null; // volta pra lista ao trocar de categoria
+                renderFiltros();
+                renderTopicos();
+            });
+        });
+
+        // Recalcula as sombras de "tem mais conteúdo" após recriar os botões
+        requestAnimationFrame(atualizarSombras);
+    }
+
+    // =====================================================================
+    // ÍCONES POR TEMA
+    // Escolhe um ícone (Font Awesome) que combina com o assunto do tópico,
+    // olhando palavras-chave no título e na categoria. A primeira regra que
+    // bater na lista abaixo é usada — a ordem importa. Se nenhuma bater,
+    // cai no ícone padrão (fa-file-lines).
+    // Pra ajustar/adicionar um ícone novo, é só acrescentar uma linha no
+    // array ICONES_POR_TEMA: { teste: /palavra-chave/i, icone: "fa-nome-do-icone" }
+    // =====================================================================
+    // A ordem importa: regras mais específicas primeiro, regras genéricas
+    // (que pegariam vários tópicos parecidos, tipo "degelo") por último.
+    const ICONES_POR_TEMA = [
+        { teste: /travar indicação/i,                              icone: "fa-lock" },              // F13
+        { teste: /setpoint (mínimo|máximo) permitido/i,            icone: "fa-ruler-combined" },     // F04 · F05
+        { teste: /setpoint|temperatura desejada/i,                 icone: "fa-temperature-half" },   // ajuste geral · F02
+        { teste: /bloquear\/desbloquear|bloqueio das funções/i,    icone: "fa-lock" },                // bloqueio · F20
+        { teste: /desligar\/religar|desligamento das funções/i,    icone: "fa-power-off" },           // liga/desliga · F21
+        { teste: /processo atual/i,                                icone: "fa-gears" },
+        { teste: /mín\/máx|registradas/i,                          icone: "fa-clock-rotate-left" },
+        { teste: /unidade de medida|°c ou °f/i,                    icone: "fa-arrows-rotate" },
+        { teste: /menu de parâmetros avançados/i,                  icone: "fa-sliders" },
+        { teste: /mensagem no display/i,                           icone: "fa-display" },
+        { teste: /código de acesso/i,                              icone: "fa-key" },
+        { teste: /deslocamento de indicação|offset/i,              icone: "fa-ruler" },
+        { teste: /diferencial de controle|histerese/i,             icone: "fa-arrows-up-down" },
+        { teste: /modo de operação/i,                              icone: "fa-toggle-on" },
+        { teste: /tempo mínimo de saída/i,                         icone: "fa-stopwatch" },           // F08 · F09
+        { teste: /energizar o instrumento/i,                       icone: "fa-plug" },                // F12
+        { teste: /retardo na energização|delay inicial/i,          icone: "fa-hourglass-half" },      // F14
+        { teste: /tempo adicional no primeiro ciclo/i,             icone: "fa-hourglass-half" },      // F15
+        { teste: /sensor com defeito|compressor (ligado|desligado) com erro/i, icone: "fa-triangle-exclamation" }, // F16-F18
+        { teste: /filtro digital/i,                                icone: "fa-filter" },
+        { teste: /especificaç(ões|ão) técnicas/i,                  icone: "fa-clipboard-list" },
+        { teste: /degelo/i,                                        icone: "fa-snowflake" },           // pega o resto dos temas de degelo
+        { teste: /alarme/i,                                        icone: "fa-bell" },
+    ];
+
+    function iconeDoTopico(t) {
+        const alvo = (t.titulo || '') + ' ' + (t.categoria || '');
+        const regra = ICONES_POR_TEMA.find(r => r.teste.test(alvo));
+        return regra ? regra.icone : "fa-file-lines";
+    }
+
+    function renderTopicos() {
+        // Enquanto um tópico está aberto, escondemos os filtros/busca
+        // (não fazem sentido na tela de detalhe) e mostramos só o botão voltar.
+        const mostrarControles = topicoAberto === null;
+        filtrosWrap.style.display = mostrarControles ? '' : 'none';
+        searchWrap.style.display  = mostrarControles ? '' : 'none';
+
+        if (topicoAberto !== null) {
+            renderDetalheTopico(topicoAberto);
+            return;
+        }
+
+        const filtrados = TOPICOS
+            .map((t, i) => ({ ...t, _idx: i }))
+            .filter(t => (categoriaAtual === 'todos' || (t.categoria || 'Geral') === categoriaAtual) && topicoBateComBusca(t));
+
+        if (filtrados.length === 0) {
+            listaEl.innerHTML = `
+                <div class="sem-resultado">
+                    <i class="fa-solid fa-folder-open"></i>
+                    ${termoBusca ? 'Nada encontrado para essa busca.' : 'Nenhum guia nesta categoria ainda.'}
+                </div>`;
+            return;
+        }
+
+        listaEl.innerHTML = `
+            <div class="lista-topicos">
+                ${filtrados.map(t => `
+                    <button class="topico-card" data-idx="${t._idx}">
+                        <div class="topico-card-icon ${t.grupoCor ? 'grupo-' + t.grupoCor : ''}"><i class="fa-solid ${iconeDoTopico(t)}"></i></div>
+                        <div class="topico-card-text">
+                            <strong>${t.titulo}</strong>
+                            <span>${t.resumo || (t.passos[0] ? t.passos[0].descricao : '')}</span>
+                            ${t.categoria ? `<div class="topico-card-cat">${t.categoria}</div>` : ''}
+                            ${t.senha ? `<span class="topico-card-senha"><i class="fa-solid fa-lock"></i> Senha: ${t.senha}</span>` : ''}
+                        </div>
+                        <i class="fa-solid fa-chevron-right topico-card-arrow"></i>
+                    </button>
+                `).join('')}
+            </div>`;
+
+        listaEl.querySelectorAll('.topico-card').forEach(btn => {
+            btn.addEventListener('click', () => {
+                abrirTopico(parseInt(btn.dataset.idx, 10));
+            });
+        });
+    }
+
+    buscaInput.addEventListener('input', () => {
+        termoBusca = normalizar(buscaInput.value.trim());
+        limparBusca.classList.toggle('show', buscaInput.value.length > 0);
+        renderTopicos();
+    });
+
+    limparBusca.addEventListener('click', () => {
+        buscaInput.value = '';
+        termoBusca = '';
+        limparBusca.classList.remove('show');
+        renderTopicos();
+        buscaInput.focus();
+    });
+
+    let toastTimeout = null;
+    function mostrarToast(mensagem, icone = 'fa-check') {
+        let toast = document.querySelector('.toast-feedback');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'toast-feedback';
+            document.body.appendChild(toast);
+        }
+        toast.innerHTML = `<i class="fa-solid ${icone}"></i> ${mensagem}`;
+        toast.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // Tópicos "parceiros": mesmo grupoCor, exceto o próprio tópico aberto.
+    function topicosRelacionados(t, idxAtual) {
+        if (!t.grupoCor) return [];
+        return TOPICOS
+            .map((outro, i) => ({ ...outro, _idx: i }))
+            .filter(outro => outro.grupoCor === t.grupoCor && outro._idx !== idxAtual);
+    }
+
+    // =====================================================================
+    // EXPORTAR TÓPICO COMO HTML AVULSO
+    // Gera um arquivo .html independente do site — sem login, sem os
+    // outros tópicos — só aquele passo a passo, com os GIFs funcionando
+    // (referenciam o link público do Blogger, então precisa de internet
+    // pra carregar as imagens, mas anima normal).
+    // =====================================================================
+    function slugify(str) {
+        return (str || 'topico')
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+            .slice(0, 60) || 'topico';
+    }
+
+    function gerarHtmlAvulso(t) {
+        const passosHtml = t.passos.map((p, i) => `
+            <div class="passo-card">
+                <div class="passo-numero">
+                    <div class="badge">${i + 1}</div>
+                    <div class="passo-label">${p.label}</div>
+                </div>
+                <div class="passo-desc">${p.descricao}</div>
+                ${p.imagem ? `<div class="passo-imagem"><img src="${p.imagem}" alt="${p.label}" loading="lazy"></div>` : ''}
+            </div>
+        `).join('');
+
+        return `<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${t.titulo} | ${NOME_EMPRESA}</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root { --bg:#0d1117; --text:#ffffff; --sub:rgba(255,255,255,0.38); --glass:rgba(255,255,255,0.03); --border:rgba(255,255,255,0.08); --input-bg:rgba(255,255,255,0.05); }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:24px 16px 48px; -webkit-font-smoothing:antialiased; }
+    .page { max-width:460px; margin:0 auto; }
+    .cabecalho { display:flex; align-items:center; gap:12px; padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid var(--border); }
+    .cabecalho img { width:42px; height:42px; border-radius:12px; object-fit:cover; flex-shrink:0; }
+    .cabecalho .nome-empresa { font-size:16px; font-weight:800; line-height:1.2; }
+    .cabecalho .selo-sub { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--sub); margin-top:2px; }
+    .topico-titulo { font-size:19px; font-weight:800; line-height:1.3; margin-bottom:4px; }
+    .topico-modelo { font-size:11px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:18px; }
+    .aviso-senha { display:flex; align-items:center; gap:12px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:14px; padding:12px 14px; margin-bottom:18px; }
+    .aviso-icone { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#92400e,#f59e0b); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+    .aviso-texto { font-size:13.5px; line-height:1.5; }
+    .aviso-texto strong { color:#f59e0b; }
+    .passos { display:flex; flex-direction:column; gap:14px; }
+    .passo-card { background:var(--glass); border:1px solid var(--border); border-radius:20px; padding:16px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+    .passo-numero { display:flex; align-items:center; gap:8px; align-self:flex-start; }
+    .badge { width:22px; height:22px; border-radius:7px; background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .passo-label { font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; color:#3b82f6; }
+    .passo-desc { font-size:15px; line-height:1.6; text-align:center; padding:0 4px; }
+    .passo-imagem { width:100%; max-width:260px; border-radius:16px; overflow:hidden; background:var(--input-bg); }
+    .passo-imagem img { width:100%; display:block; }
+    .rodape { margin-top:26px; text-align:center; font-size:11px; color:var(--sub); }
+    .rodape strong { color:var(--text); }
+</style>
+</head>
+<body>
+<div class="page">
+    <div class="cabecalho">
+        <img src="${LOGO_EMPRESA}" alt="${NOME_EMPRESA}">
+        <div>
+            <div class="nome-empresa">${NOME_EMPRESA}</div>
+            <div class="selo-sub">Guia técnico exportado</div>
+        </div>
+    </div>
+    <div class="topico-titulo">${t.titulo}</div>
+    <div class="topico-modelo">${t.modelo}</div>
+    ${t.senha ? `
+    <div class="aviso-senha">
+        <div class="aviso-icone"><i class="fa-solid fa-lock"></i></div>
+        <div class="aviso-texto">Para acessar essa função no aparelho, primeiro entre no menu de parâmetros (setas esquerda + direita ao mesmo tempo) até aparecer <strong>F01</strong> na tela — é ali, no F01, que você digita o código de acesso <strong>${t.senha}</strong> e confirma com SET. Só depois disso o aparelho libera a navegação até essa função.</div>
+    </div>` : ''}
+    <div class="passos">${passosHtml}</div>
+    <div class="rodape">Exportado do <strong>${NOME_EMPRESA}</strong><br>As imagens precisam de internet pra carregar.</div>
+</div>
+</body>
+</html>`;
+    }
+
+    async function exportarTopico(t) {
+        const html = gerarHtmlAvulso(t);
+        const nomeArquivo = slugify(t.titulo) + '.html';
+        const blob = new Blob([html], { type: 'text/html' });
+
+        // No celular (Android/iOS com suporte), tenta abrir direto o menu
+        // de enviar (WhatsApp, e-mail, etc.) já com o arquivo anexado.
+        try {
+            const arquivo = new File([blob], nomeArquivo, { type: 'text/html' });
+            if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+                await navigator.share({
+                    files: [arquivo],
+                    title: t.titulo,
+                    text: `${NOME_EMPRESA} — ${t.titulo}`
+                });
+                return;
+            }
+        } catch (e) {
+            // usuário cancelou o menu de enviar — não faz nada
+            if (e && e.name === 'AbortError') return;
+        }
+
+        // Fallback (computador ou navegador sem suporte a compartilhar
+        // arquivo): baixa o arquivo normalmente pro dispositivo.
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nomeArquivo;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 3000);
+        mostrarToast('Arquivo exportado! Agora é só anexar no WhatsApp.', 'fa-check');
+    }
+
+    function renderDetalheTopico(idx) {
+        const topico = TOPICOS[idx];
+        const relacionados = topicosRelacionados(topico, idx);
+
+        listaEl.innerHTML = `
+            <div class="topico-acoes">
+                <button class="btn-voltar-topico" id="btnVoltarTopico">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar
+                </button>
+                <button class="btn-exportar-topico" id="btnExportarTopico">
+                    <i class="fa-solid fa-file-export"></i> Exportar
+                </button>
+            </div>
+            <section class="topico">
+                <div class="topico-header">
+                    <div class="topico-titulo">${topico.titulo}</div>
+                    <div class="topico-modelo">${topico.modelo}</div>
+                </div>
+                ${topico.senha ? `
+                <div class="aviso-senha">
+                    <div class="aviso-icone"><i class="fa-solid fa-lock"></i></div>
+                    <div class="aviso-texto">Para acessar essa função no aparelho, primeiro entre no menu de parâmetros (setas esquerda + direita ao mesmo tempo) até aparecer <strong>F01</strong> na tela — é ali, no F01, que você digita o código de acesso <strong>${topico.senha}</strong> e confirma com SET. Só depois disso o aparelho libera a navegação até essa função.</div>
+                </div>` : ''}
+                <div class="passos">
+                    ${topico.passos.map((p, i) => `
+                        <div class="passo-card">
+                            <div class="passo-numero">
+                                <div class="badge">${i + 1}</div>
+                                <div class="passo-label">${p.label}</div>
+                            </div>
+                            <div class="passo-desc">${p.descricao}</div>
+                            ${p.imagem
+                                ? `<div class="passo-imagem"><img src="${p.imagem}" alt="${p.label}"></div>`
+                                : `<div class="passo-imagem vazio"><i class="fa-solid fa-image"></i><span>Sem foto ainda</span></div>`
+                            }
+                        </div>
+                    `).join('')}
+                </div>
+                ${relacionados.length > 0 ? `
+                <div class="relacionados">
+                    <div class="relacionados-titulo"><i class="fa-solid fa-link"></i> Tópicos relacionados</div>
+                    <div class="relacionados-lista">
+                        ${relacionados.map(r => `
+                            <button class="relacionado-item" data-idx="${r._idx}">
+                                <div class="topico-card-icon grupo-${r.grupoCor}"><i class="fa-solid ${iconeDoTopico(r)}"></i></div>
+                                <span>${r.titulo}</span>
+                                <i class="fa-solid fa-chevron-right chevron"></i>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>` : ''}
+            </section>
+        `;
+
+        document.getElementById('btnVoltarTopico').addEventListener('click', () => {
+            fecharTopico();
+        });
+
+        document.getElementById('btnExportarTopico').addEventListener('click', () => {
+            exportarTopico(topico);
+        });
+
+        listaEl.querySelectorAll('.relacionado-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                abrirTopico(parseInt(btn.dataset.idx, 10));
+            });
+        });
+    }
+
+    renderFiltros();
+    renderTopicos();
+    habilitarArrastoFiltros();
+
+    // ── Carrossel arrastável (mouse, touch e caneta via Pointer Events) ──
+    function habilitarArrastoFiltros() {
+        let isDown = false;
+        let arrastou = false;
+        let startX = 0;
+        let scrollStart = 0;
+
+        filtrosEl.addEventListener('pointerdown', e => {
+            isDown = true;
+            arrastou = false;
+            startX = e.clientX;
+            scrollStart = filtrosEl.scrollLeft;
+            // Sem setPointerCapture: capturar o ponteiro no contêiner faz o
+            // navegador "roubar" o clique do botão (o clique passa a contar
+            // como se tivesse acontecido no contêiner, não no botão), e o
+            // filtro nunca troca no mouse — por isso ouvimos o resto do
+            // arrasto direto na window em vez de capturar o ponteiro aqui.
+        });
+
+        window.addEventListener('pointermove', e => {
+            if (!isDown) return;
+            const delta = e.clientX - startX;
+            if (Math.abs(delta) > 5) {
+                arrastou = true;
+                filtrosEl.classList.add('arrastando');
+                filtrosEl.scrollLeft = scrollStart - delta;
+            }
+        });
+
+        function soltar() {
+            isDown = false;
+            filtrosEl.classList.remove('arrastando');
+        }
+        window.addEventListener('pointerup', soltar);
+        window.addEventListener('pointercancel', soltar);
+
+        // Se o usuário estava arrastando, cancela o clique no botão
+        // (evita trocar de filtro sem querer ao soltar o arrasto)
+        filtrosEl.addEventListener('click', e => {
+            if (arrastou) { e.stopPropagation(); e.preventDefault(); }
+        }, true);
+
+        filtrosEl.addEventListener('scroll', atualizarSombras);
+        window.addEventListener('resize', atualizarSombras);
+    }
+
+    // ── Registro do Service Worker (mesmo padrão do restante do app) ──
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (
+            (e.ctrlKey && ['c','u','s','p'].includes(e.key)) ||
+            (e.ctrlKey && e.shiftKey && ['I','i','J','j'].includes(e.key)) ||
+            e.keyCode === 123
+        ) { e.preventDefault(); alert('Ação protegida pelo sistema.'); }
+    });
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const light = document.body.classList.contains('light-mode');
+        document.getElementById('theme-icon').className = light ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        localStorage.setItem('theme', light ? 'light' : 'dark');
+    }
+
+    window.onload = () => {
+        if (localStorage.getItem('theme') === 'light') toggleTheme();
+    };
+</script>
+</body>
+</html>

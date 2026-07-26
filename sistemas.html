@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Sistemas | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { -webkit-user-select: none; user-select: none; }
+        input, select, textarea { -webkit-user-select: text !important; user-select: text !important; }
+        img { pointer-events: none !important; -webkit-user-drag: none !important; }
+
+        :root {
+            --bg: #0d1117;
+            --text: #ffffff;
+            --sub: rgba(255,255,255,0.38);
+            --glass: rgba(255,255,255,0.03);
+            --border: rgba(255,255,255,0.08);
+            --input-bg: rgba(255,255,255,0.05);
+        }
+        body.light-mode {
+            --bg: #f0f2f5;
+            --text: #1a1f26;
+            --sub: rgba(0,0,0,0.45);
+            --glass: rgba(255,255,255,0.82);
+            --border: rgba(0,0,0,0.09);
+            --input-bg: rgba(0,0,0,0.04);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px 16px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient glow */
+        .glow { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(90px); z-index: 0; }
+        .glow-a { width: 500px; height: 500px; top: -180px; right: -140px; background: rgba(30,64,175,0.08); }
+        .glow-b { width: 380px; height: 380px; bottom: -120px; left: -120px; background: rgba(16,185,129,0.05); }
+
+        /* ── Wrapper ── */
+        .page {
+            width: 100%;
+            max-width: 460px;
+            height: 100%;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            flex-shrink: 0;
+            margin-bottom: 16px;
+        }
+        .brand-title {
+            font-size: 22px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            line-height: 1;
+        }
+        .brand-title span { color: #1e40af; }
+        .brand-sub {
+            font-size: 9px;
+            font-weight: 800;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-top: 4px;
+        }
+        .header-actions { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 38px; height: 38px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .icon-btn:hover { background: rgba(30,64,175,0.12); }
+
+        /* ── Content (área centralizada abaixo do header) ── */
+        .content {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--sub);
+            margin-bottom: 10px;
+            margin-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ── Menu buttons ── */
+        .menu { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 16px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            text-decoration: none;
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: inherit;
+        }
+        .menu-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .menu-btn:active { transform: scale(0.98); }
+
+        /* Color variants — paleta consolidada: navy é a cor principal de
+           identidade (usada na maioria dos itens), slate para itens
+           secundários e âmbar reservado só para o item financeiro. */
+        .menu-btn.blue  { border-color: rgba(30,64,175,0.2); }
+        .menu-btn.blue:hover  { background: rgba(30,64,175,0.08); border-color: rgba(30,64,175,0.4); }
+        .menu-btn.green { border-color: rgba(30,64,175,0.2); }
+        .menu-btn.green:hover { background: rgba(30,64,175,0.08); border-color: rgba(30,64,175,0.4); }
+        .menu-btn.amber { border-color: rgba(184,134,11,0.25); }
+        .menu-btn.amber:hover { background: rgba(184,134,11,0.08); border-color: rgba(184,134,11,0.45); }
+        .menu-btn.purple{ border-color: rgba(30,64,175,0.2); }
+        .menu-btn.purple:hover{ background: rgba(30,64,175,0.08); border-color: rgba(30,64,175,0.4); }
+        .menu-btn.cyan  { border-color: rgba(30,64,175,0.2); }
+        .menu-btn.cyan:hover  { background: rgba(30,64,175,0.08); border-color: rgba(30,64,175,0.4); }
+        .menu-btn.slate { border-color: rgba(100,116,139,0.2); }
+        .menu-btn.slate:hover { background: rgba(100,116,139,0.08); border-color: rgba(100,116,139,0.4); }
+
+        .btn-icon {
+            width: 40px; height: 40px;
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            color: white;
+        }
+        .ic-blue   { background: linear-gradient(135deg,#1e3a8a,#1e40af); }
+        .ic-green  { background: linear-gradient(135deg,#1e3a8a,#1e40af); }
+        .ic-amber  { background: linear-gradient(135deg,#8a6d10,#b8860b); }
+        .ic-purple { background: linear-gradient(135deg,#1e3a8a,#1e40af); }
+        .ic-cyan   { background: linear-gradient(135deg,#1e3a8a,#1e40af); }
+        .ic-slate  { background: linear-gradient(135deg,#334155,#64748b); }
+
+        .btn-text strong { display: block; font-size: 15px; font-weight: 700; line-height: 1.2; }
+        .btn-text span   { font-size: 11px; color: var(--sub); font-weight: 500; margin-top: 2px; display: block; }
+
+        .btn-arrow {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--sub);
+            flex-shrink: 0;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .menu-btn:hover .btn-arrow { transform: translateX(3px); color: var(--text); }
+
+        /* ── Selo de notificação (novas manutenções preventivas disponíveis) ── */
+        .notif-badge {
+            display: none;
+            margin-left: auto;
+            min-width: 26px;
+            height: 26px;
+            padding: 0 6px;
+            border-radius: 50px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 900;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(239,68,68,0.35);
+            animation: pulseBadge 1.6s infinite;
+        }
+        @keyframes pulseBadge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* ── Footer ── */
+        .footer {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn-logout {
+            background: rgba(239,68,68,0.07);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #ef4444;
+            padding: 11px 28px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: background 0.2s, transform 0.2s;
+            display: flex; align-items: center; gap: 7px;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.15); transform: scale(1.02); }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--sub);
+            opacity: 0.6;
+        }
+
+        /* ── Fade-in ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .page { animation: fadeUp 0.5s ease-out both; }
+        .menu-btn:nth-child(1) { animation: fadeUp 0.4s 0.05s ease-out both; }
+        .menu-btn:nth-child(2) { animation: fadeUp 0.4s 0.10s ease-out both; }
+        .menu-btn:nth-child(3) { animation: fadeUp 0.4s 0.15s ease-out both; }
+        .menu-btn:nth-child(4) { animation: fadeUp 0.4s 0.20s ease-out both; }
+        .menu-btn:nth-child(5) { animation: fadeUp 0.4s 0.25s ease-out both; }
+        .menu-btn:nth-child(6) { animation: fadeUp 0.4s 0.30s ease-out both; }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body>
+
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+
+<div class="page">
+
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div>
+            <div class="brand-title">Refrigeração <span>Eliezer</span></div>
+            <div class="brand-sub">Painel de Sistemas</div>
+        </div>
+        <div class="header-actions">
+            <button onclick="toggleTheme()" class="icon-btn" title="Tema">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="content">
+
+    <!-- Grupo: Operacional -->
+    <p class="section-label"><i class="fa-solid fa-bolt" style="font-size:8px;"></i> Operacional</p>
+    <div class="menu">
+        <a href="criar-orcamento.html" class="menu-btn blue">
+            <div class="btn-icon ic-blue"><i class="fa-solid fa-briefcase"></i></div>
+            <div class="btn-text">
+                <strong>Gerar Orçamento / O.S.</strong>
+                <span>Criar orçamentos e ordens de serviço</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+
+        <a href="agenda.html" class="menu-btn purple">
+            <div class="btn-icon ic-purple"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="btn-text">
+                <strong>Agenda de Serviços</strong>
+                <span>Acompanhar compromissos e visitas</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+
+        <a href="garantias.html" class="menu-btn green">
+            <div class="btn-icon ic-green"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="btn-text">
+                <strong>Histórico de Serviços</strong>
+                <span>Consultar garantias e prazos</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+
+        <a href="manutencoes.html" class="menu-btn cyan">
+            <div class="btn-icon ic-cyan"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="btn-text">
+                <strong>Manutenções Preventivas</strong>
+                <span>Clientes com manutenção vencida ou próxima</span>
+            </div>
+            <span id="badge-manut" class="notif-badge">0</span>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+    </div>
+
+    <!-- Grupo: Financeiro -->
+    <p class="section-label" style="margin-top:12px;"><i class="fa-solid fa-coins" style="font-size:8px;"></i> Financeiro</p>
+    <div class="menu">
+        <a href="receber.html" class="menu-btn amber">
+            <div class="btn-icon ic-amber"><i class="fa-solid fa-comment-dollar"></i></div>
+            <div class="btn-text">
+                <strong>Contas a Receber</strong>
+                <span>Cobranças e inadimplência</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+    </div>
+
+    <!-- Grupo: Recursos -->
+    <p class="section-label" style="margin-top:12px;"><i class="fa-solid fa-layer-group" style="font-size:8px;"></i> Recursos</p>
+    <div class="menu">
+        <a href="acervo.html" class="menu-btn cyan">
+            <div class="btn-icon ic-cyan"><i class="fa-solid fa-book-bookmark"></i></div>
+            <div class="btn-text">
+                <strong>Acervo Técnico</strong>
+                <span>Manuais e materiais de referência</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+
+        <a href="configuracoes.html" class="menu-btn slate">
+            <div class="btn-icon ic-slate"><i class="fa-solid fa-gear"></i></div>
+            <div class="btn-text">
+                <strong>Configurações</strong>
+                <span>Ajustes do sistema e perfil</span>
+            </div>
+            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+        </a>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="footer">
+        <button class="btn-logout" onclick="logout()">
+            <i class="fa-solid fa-power-off"></i> Encerrar Sessão
+        </button>
+        <div class="security-badge">
+            <i class="fa-solid fa-lock" style="font-size:8px;"></i> Acesso restrito e criptografado
+        </div>
+    </div>
+
+    </div>
+
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', e => {
+        if (
+            (e.ctrlKey && ['c','u','s','p'].includes(e.key)) ||
+            (e.ctrlKey && e.shiftKey && ['I','i','J','j'].includes(e.key)) ||
+            e.keyCode === 123
+        ) { e.preventDefault(); alert('Ação protegida pelo sistema.'); }
+    });
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const light = document.body.classList.contains('light-mode');
+        document.getElementById('theme-icon').className = light ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        localStorage.setItem('theme', light ? 'light' : 'dark');
+    }
+
+    // ── Selo de "novas manutenções preventivas para conferir" ──────────────
+    // Reaplica (de forma resumida) a mesma lógica de janelas de 6/12 meses
+    // usada em manutencoes.html só para contar itens ativos agora. Compara
+    // com a lista de itens que já foram "vistos" (gravada por manutencoes.html
+    // toda vez que aquela página é aberta) e mostra no selo somente a
+    // quantidade de itens que ainda não foram conferidos.
+    const URL_OS = (typeof apiURL === 'function') ? apiURL('os') : null;
+    const JANELA_DIAS_BADGE = 30;
+
+    function campoOSBadge(obj, ...nomes) {
+        for (const n of nomes) {
+            if (obj[n] !== undefined && obj[n] !== null && obj[n] !== '') return obj[n];
+        }
+        const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/gi, '').toUpperCase();
+        const mapa = {};
+        for (const k in obj) mapa[norm(k)] = obj[k];
+        for (const n of nomes) {
+            const v = mapa[norm(n)];
+            if (v !== undefined && v !== null && v !== '') return v;
+        }
+        return undefined;
+    }
+
+    function parseDataFlexivelBadge(raw) {
+        if (!raw) return null;
+        const s = raw.toString().split('T')[0].trim();
+        const partes = s.includes('/') ? s.split('/') : s.split('-');
+        if (partes.length !== 3) return null;
+        let dia, mes, ano;
+        if (partes[0].length === 4) { ano = +partes[0]; mes = +partes[1]; dia = +partes[2]; }
+        else { dia = +partes[0]; mes = +partes[1]; ano = +partes[2]; }
+        const d = new Date(ano, mes - 1, dia);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function somarMesesBadge(data, meses) {
+        const d = new Date(data);
+        d.setMonth(d.getMonth() + meses);
+        return d;
+    }
+    function somarDiasBadge(data, dias) {
+        const d = new Date(data);
+        d.setDate(d.getDate() + dias);
+        return d;
+    }
+
+    function parseFlagsPreventivaBadge(raw) {
+        return new Set(String(raw || '').split(',').map(s => s.trim()).filter(Boolean));
+    }
+
+    function calcularIdsAtivos(listaOS) {
+        const hoje = new Date();
+        const ids = [];
+        listaOS.forEach(os => {
+            const clienteRaw = campoOSBadge(os, "CLIENTE", "NOME", "CLIENTE_NOME");
+            if (!clienteRaw) return;
+            if (/^\s*Or[çc]amento\s*\|\s*/i.test(String(clienteRaw))) return;
+
+            const dataServico = parseDataFlexivelBadge(campoOSBadge(os, "DATA_DO_SERVICO"));
+            if (!dataServico) return;
+
+            const idOS = String(campoOSBadge(os, "ID_OS", "ID", "OS", "NUMERO") || "").replace(/^'/, "").trim();
+            const flags = parseFlagsPreventivaBadge(campoOSBadge(os, "STATUS_PREVENTIVA"));
+            const feito6 = flags.has('6');
+
+            const chk6Inicio  = somarMesesBadge(dataServico, 6);
+            const chk6Fim     = somarDiasBadge(chk6Inicio, JANELA_DIAS_BADGE);
+            const chk12Inicio = somarMesesBadge(dataServico, 12);
+            const chk12Fim    = somarDiasBadge(chk12Inicio, JANELA_DIAS_BADGE);
+
+            let checkpoint = null;
+            if (!feito6 && !flags.has('6R') && hoje >= chk6Inicio && hoje <= chk6Fim) {
+                checkpoint = '6';
+            } else if (!feito6 && !flags.has('12') && !flags.has('12R') && hoje >= chk12Inicio && hoje <= chk12Fim) {
+                checkpoint = '12';
+            }
+            if (!checkpoint) return;
+
+            ids.push(idOS + '_' + checkpoint);
+        });
+        return ids;
+    }
+
+    async function atualizarSeloManutencao() {
+        const badge = document.getElementById('badge-manut');
+        if (!badge || !URL_OS) return;
+        try {
+            const res = await fetch(URL_OS + '&t=' + Date.now(), { redirect: 'follow' });
+            const dadosOS = await res.json();
+            const listaOS = Array.isArray(dadosOS) ? dadosOS : (dadosOS.data || dadosOS.registros || dadosOS.result || dadosOS.historico || dadosOS.dados || []);
+
+            const idsAtivos = calcularIdsAtivos(listaOS);
+            let vistos = [];
+            try { vistos = JSON.parse(localStorage.getItem('manut_vistos_ids') || '[]'); } catch (e) { vistos = []; }
+
+            const novos = idsAtivos.filter(id => !vistos.includes(id));
+            if (novos.length > 0) {
+                badge.textContent = novos.length > 99 ? '99+' : String(novos.length);
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch (err) {
+            console.error('Erro ao checar manutenções preventivas', err);
+        }
+    }
+
+    window.onload = () => {
+        if (localStorage.getItem('theme') === 'light') toggleTheme();
+        atualizarSeloManutencao();
+    };
+
+    function logout() {
+        localStorage.removeItem('inforos_logado');
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>

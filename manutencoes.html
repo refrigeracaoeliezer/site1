@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Manutenções Preventivas | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+    body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+    input, select, textarea { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }
+    img { pointer-events: none !important; -webkit-user-drag: none !important; }
+
+        :root {
+            --bg-body: #0d1117;
+            --text-main: white;
+            --text-sub: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-sub: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --text-main: #1a1f26;
+            --text-sub: #4b5563;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --card-sub: rgba(0, 0, 0, 0.04);
+            --input-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; }
+        .search-input { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); outline: none; }
+        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; }
+        .modal-content { background: var(--bg-body); border: 1px solid var(--glass-border); color: var(--text-main); }
+
+        .sticky-header { position: sticky; top: 0; z-index: 30; background: var(--bg-body); padding-top: 12px; padding-bottom: 14px; transition: background 0.3s; }
+
+        .filtro-chip { flex-shrink: 0; padding: 8px 14px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-sub); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .filtro-chip:hover { color: var(--text-main); }
+        .filtro-chip.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+
+        .stat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 18px; padding: 12px; }
+        .stat-num { font-size: 22px; font-weight: 900; line-height: 1; }
+        .stat-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.6; margin-top: 4px; }
+
+        .chk-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 50px; font-size: 9px; font-weight: 900; letter-spacing: 0.04em; text-transform: uppercase; }
+        .chk-6  { background: rgba(59, 130, 246, 0.18);  color: #60a5fa; border: 1px solid rgba(59,130,246,0.4); }
+        .chk-12 { background: rgba(239, 68, 68, 0.18);  color: #f87171; border: 1px solid rgba(239,68,68,0.5); }
+
+        .cliente-card { transition: box-shadow 0.2s; cursor: pointer; }
+        .cliente-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+        .chevron { transition: transform 0.25s; }
+        .chevron.open { transform: rotate(180deg); }
+
+        .painel-itens { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .painel-itens.open { max-height: 2000px; }
+
+        .item-linha { border-top: 1px dashed var(--glass-border); padding: 12px 0; }
+
+        .btn-acao { padding: 10px; border-radius: 14px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-whats { background: rgba(37, 211, 102, 0.12); color: #25d366; border: 1px solid rgba(37, 211, 102, 0.35); }
+        .btn-whats:hover { background: rgba(37, 211, 102, 0.22); }
+        .btn-whats.disabled { opacity: 0.35; pointer-events: none; }
+        .btn-agendar { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35); }
+        .btn-agendar:hover { background: rgba(59, 130, 246, 0.22); }
+        .btn-realizada { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); }
+        .btn-realizada:hover { background: rgba(16, 185, 129, 0.22); }
+        .btn-realizada:disabled { opacity: 0.5; pointer-events: none; }
+        .btn-recusou { background: rgba(148, 163, 184, 0.12); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.35); }
+        .btn-recusou:hover { background: rgba(148, 163, 184, 0.22); }
+        .btn-recusou:disabled { opacity: 0.5; pointer-events: none; }
+        .item-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+        .expira-tag { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: #d4af37; }
+        .expira-tag.urgente { color: #d4af37; }
+
+        /* ── TOAST (mesmo padrão da Agenda) ── */
+        #toast-minimal {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #22c55e; color: white;
+            padding: 11px 22px; border-radius: 50px;
+            font-weight: 700; display: none; z-index: 10000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            white-space: nowrap; align-items: center; justify-content: center;
+            font-size: 13px;
+        }
+
+        /* ── POPUP DE CONFIRMAÇÃO (mesmo padrão da Agenda) ── */
+        #popupConfirmacao {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72); z-index: 200;
+            align-items: center; justify-content: center;
+        }
+        #popupConfirmacao.show { display: flex; }
+        .notif-card {
+            background: var(--bg-body);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 28px;
+            max-width: 340px; width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .notif-icon-wrap {
+            width: 64px; height: 64px;
+            background: rgba(37,99,235,0.15);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+            border: 1px solid rgba(37,99,235,0.3);
+        }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body class="p-4 pb-10">
+
+    <!-- Toast de sucesso (mesmo padrão da Agenda) -->
+    <div id="toast-minimal"><i class="fa-solid fa-check mr-2"></i> SALVO COM SUCESSO!</div>
+
+    <!-- Pop-up de confirmação (mesmo padrão da Agenda) -->
+    <div id="popupConfirmacao">
+        <div class="notif-card">
+            <div class="notif-icon-wrap" id="confirmIconWrap">
+                <i id="confirmIcon" class="fa-solid fa-check text-2xl"></i>
+            </div>
+            <h2 id="confirmTitulo" class="font-black text-lg uppercase mb-2">Confirmar</h2>
+            <p id="confirmMensagem" class="text-sm opacity-60 mb-5 leading-relaxed">
+                Deseja confirmar esta ação?
+            </p>
+            <div class="flex gap-3">
+                <button onclick="fecharConfirmacao()" class="flex-1 py-3 rounded-xl font-bold text-xs opacity-40 border border-white/10">
+                    Cancelar
+                </button>
+                <button id="confirmBotaoAcao" onclick="executarConfirmacao()" class="flex-1 py-3 rounded-xl font-black uppercase text-sm text-white">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: agendar visita -->
+    <div id="modal-agendar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl">
+            <div class="w-16 h-16 bg-blue-500/15 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-blue-500/35">
+                <i class="fa-solid fa-calendar-plus"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-1 text-center">Agendar Visita</h3>
+            <p class="text-xs font-medium opacity-60 mb-6 text-center px-2" id="modal-agendar-cliente">Cliente</p>
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Data</label>
+                    <input type="date" id="agendar-data" class="w-full p-3 rounded-xl search-input font-semibold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Hora</label>
+                    <input type="time" id="agendar-hora" class="w-full p-3 rounded-xl search-input font-semibold">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="fecharModalAgendar()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
+                <button id="btn-confirmar-agendar" class="flex-1 py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-agendar-sucesso" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
+            <div class="w-16 h-16 bg-green-500/15 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-green-500/35">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-2">Visita Agendada!</h3>
+            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-agendar-sucesso-msg">Adicionada à agenda com sucesso.</p>
+            <button onclick="fecharModalAgendarSucesso()" class="w-full py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Ok, entendi</button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="sticky-header">
+            <header class="flex justify-between items-center mb-5">
+                <div>
+                    <h1 class="text-xl font-black uppercase tracking-tighter">Manutenções <span class="text-blue-500">Preventivas</span></h1>
+                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Refrigeração Eliezer</span>
+                </div>
+                <div class="flex gap-2">
+                    <a href="sistemas.html" class="theme-toggle" title="Início">
+                        <i class="fa-solid fa-house text-sm"></i>
+                    </a>
+                    <button onclick="toggleTheme()" class="theme-toggle">
+                        <i id="theme-icon" class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <div class="stat-card" style="color:#60a5fa">
+                    <div class="stat-num" id="num-6" style="color:#60a5fa">0</div>
+                    <div class="stat-label">Checkpoint de 6 meses</div>
+                </div>
+                <div class="stat-card" style="color:#f87171">
+                    <div class="stat-num" id="num-12" style="color:#f87171">0</div>
+                    <div class="stat-label">Checkpoint de 12 meses</div>
+                </div>
+            </div>
+
+            <div class="relative mb-3">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-20"></i>
+                <input type="text" id="inputBusca" onkeyup="renderizar()" placeholder="Buscar cliente" class="w-full p-4 pl-12 rounded-2xl search-input font-semibold">
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
+                <button class="filtro-chip active" data-filtro="todos" onclick="setFiltro('todos')">Todos</button>
+                <button class="filtro-chip" data-filtro="6" onclick="setFiltro('6')">🔵 6 meses</button>
+                <button class="filtro-chip" data-filtro="12" onclick="setFiltro('12')">🔴 12 meses</button>
+            </div>
+        </div>
+
+        <div id="container-lista" class="space-y-3 mt-3">
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Calculando manutenções</p>
+            </div>
+        </div>
+
+        <div id="sem-resultados" class="hidden flex-col items-center justify-center py-16 text-center">
+            <i class="fa-solid fa-mug-hot text-3xl opacity-20 mb-4"></i>
+            <p class="text-sm font-black uppercase tracking-widest opacity-50">Nenhum alerta no momento</p>
+            <p class="text-[11px] opacity-30 mt-1">Nenhum cliente atingiu 6 ou 12 meses desde o último serviço nos últimos 30 dias</p>
+        </div>
+    </div>
+
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('keydown', function(e) {
+        if (
+            (e.ctrlKey && ['c','u','s','p'].includes(e.key)) ||
+            (e.ctrlKey && e.shiftKey && ['I','i','J','j'].includes(e.key)) ||
+            (e.keyCode === 123)
+        ) { e.preventDefault(); mostrarToast('Ação protegida pelo sistema'); }
+    });
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const light = document.body.classList.contains('light-mode');
+        document.getElementById('theme-icon').className = light ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        localStorage.setItem('theme', light ? 'light' : 'dark');
+    }
+
+    const URL_OS      = apiURL('os');
+    const URL_CONFIG  = apiURL('config');
+    const URL_AGENDA  = apiURL('agenda');
+
+    const JANELA_DIAS = 30; // cada checkpoint fica visível por até 30 dias
+
+    let clientesGrupo = {};   // chave normalizada -> { nome, endereco, telefone, itens: [...] }
+    let filtroAtivo = 'todos';
+    let expandido = {};       // chave normalizada -> true/false (accordion aberto)
+
+    // ── utilitários ──────────────────────────────────────────────────────
+    function normalizar(s) {
+        return String(s || '')
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+
+    function campoOS(obj, ...nomes) {
+        for (const n of nomes) {
+            if (obj[n] !== undefined && obj[n] !== null && obj[n] !== '') return obj[n];
+        }
+        const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/gi, '').toUpperCase();
+        const mapa = {};
+        for (const k in obj) mapa[norm(k)] = obj[k];
+        for (const n of nomes) {
+            const v = mapa[norm(n)];
+            if (v !== undefined && v !== null && v !== '') return v;
+        }
+        return undefined;
+    }
+
+    function parseDataFlexivel(raw) {
+        if (!raw) return null;
+        const s = raw.toString().split('T')[0].trim();
+        const partes = s.includes('/') ? s.split('/') : s.split('-');
+        if (partes.length !== 3) return null;
+        let dia, mes, ano;
+        if (partes[0].length === 4) { ano = +partes[0]; mes = +partes[1]; dia = +partes[2]; }
+        else { dia = +partes[0]; mes = +partes[1]; ano = +partes[2]; }
+        const d = new Date(ano, mes - 1, dia);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatarDataBR(d) { return d ? d.toLocaleDateString('pt-BR') : '---'; }
+
+    function somarMeses(data, meses) {
+        const d = new Date(data);
+        d.setMonth(d.getMonth() + meses);
+        return d;
+    }
+    function somarDias(data, dias) {
+        const d = new Date(data);
+        d.setDate(d.getDate() + dias);
+        return d;
+    }
+    function diffDias(a, b) {
+        const MS_DIA = 24 * 60 * 60 * 1000;
+        const x = new Date(a); x.setHours(0,0,0,0);
+        const y = new Date(b); y.setHours(0,0,0,0);
+        return Math.round((x - y) / MS_DIA);
+    }
+
+    function parseFlagsPreventiva(raw) {
+        return new Set(String(raw || '').split(',').map(s => s.trim()).filter(Boolean));
+    }
+
+    function limparTelefone(tel) {
+        let digitos = String(tel || '').replace(/\D/g, '');
+        if (!digitos) return '';
+        if (digitos.length <= 11) digitos = '55' + digitos;
+        return digitos;
+    }
+
+    // ── Pop-up de confirmação + toast (mesmo padrão da Agenda) ──────────────
+    // Substitui window.confirm()/window.alert() nativos do navegador por um
+    // modal e um toast no mesmo estilo visual do resto do sistema.
+    let confirmacaoPendente = null;
+
+    function hexToRgba(hex, alpha) {
+        const h = hex.replace('#', '');
+        const r = parseInt(h.substring(0, 2), 16);
+        const g = parseInt(h.substring(2, 4), 16);
+        const b = parseInt(h.substring(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function abrirConfirmacao({ titulo, mensagem, textoBotao, cor, icone, acao }) {
+        document.getElementById('confirmTitulo').innerText = titulo;
+        document.getElementById('confirmMensagem').innerText = mensagem;
+
+        const botao = document.getElementById('confirmBotaoAcao');
+        botao.innerText = textoBotao;
+        botao.style.background = cor;
+
+        const icon = document.getElementById('confirmIcon');
+        icon.className = `fa-solid ${icone} text-2xl`;
+        icon.style.color = cor;
+
+        const iconWrap = document.getElementById('confirmIconWrap');
+        iconWrap.style.background = hexToRgba(cor, 0.15);
+        iconWrap.style.borderColor = hexToRgba(cor, 0.35);
+
+        confirmacaoPendente = acao;
+        document.getElementById('popupConfirmacao').classList.add('show');
+    }
+
+    window.fecharConfirmacao = function () {
+        document.getElementById('popupConfirmacao').classList.remove('show');
+        confirmacaoPendente = null;
+    };
+
+    window.executarConfirmacao = function () {
+        if (confirmacaoPendente) confirmacaoPendente();
+        window.fecharConfirmacao();
+    };
+
+    window.mostrarToast = function (msg) {
+        const toast = document.getElementById('toast-minimal');
+        toast.innerHTML = `<i class="fa-solid fa-check mr-2"></i> ${msg.toUpperCase()}`;
+        toast.style.display = 'flex';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    };
+
+    // ── carregamento ─────────────────────────────────────────────────────
+    async function carregarDados() {
+        try {
+            const [resOS, resConfig] = await Promise.all([
+                fetch(URL_OS + '&t=' + Date.now(), { redirect: 'follow' }),
+                fetch(URL_CONFIG + '&t=' + Date.now(), { redirect: 'follow' })
+            ]);
+            const dadosOS = await resOS.json();
+            const dadosConfigRaw = await resConfig.json();
+
+            const listaOS = Array.isArray(dadosOS) ? dadosOS : (dadosOS.data || dadosOS.registros || dadosOS.result || dadosOS.historico || dadosOS.dados || []);
+            const dadosConfig = Array.isArray(dadosConfigRaw) ? dadosConfigRaw : (dadosConfigRaw.clientes || []);
+            const clientesCache = dadosConfig.filter(c => c && c.cli_nome && !String(c.cli_nome).includes('ATENÇÃO'));
+
+            processarGrupos(listaOS, clientesCache);
+        } catch (e) {
+            console.error(e);
+            document.getElementById('container-lista').innerHTML = `
+                <div class="text-center py-10">
+                    <p class="opacity-50 font-bold text-sm uppercase mb-4">Erro ao carregar os dados</p>
+                    <button onclick="carregarDados()" class="px-5 py-2.5 bg-red-600 rounded-xl font-black uppercase text-[11px] tracking-widest">
+                        <i class="fa-solid fa-rotate-right mr-2"></i>Tentar novamente
+                    </button>
+                </div>`;
+        }
+    }
+
+    function processarGrupos(listaOS, clientesCache) {
+        const hoje = new Date();
+        const grupos = {};
+
+        listaOS.forEach(os => {
+            const clienteRaw = campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME");
+            if (!clienteRaw) return;
+
+            const ehOrcamento = /^\s*Or[çc]amento\s*\|\s*/i.test(String(clienteRaw));
+            if (ehOrcamento) return; // orçamento ainda não é um serviço realizado
+
+            const nomeLimpo = String(clienteRaw).replace(/^\s*Or[çc]amento\s*\|\s*/i, '').trim();
+            if (!nomeLimpo) return;
+
+            const dataRaw = campoOS(os, "DATA_DO_SERVICO");
+            const dataServico = parseDataFlexivel(dataRaw);
+            if (!dataServico) return;
+
+            const idOS = String(campoOS(os, "ID_OS", "ID", "OS", "NUMERO") || "").replace(/^'/, "").trim();
+            const flags = parseFlagsPreventiva(campoOS(os, "STATUS_PREVENTIVA"));
+            // "6" confirmado (feito) encerra o ciclo inteiro — nunca mais aparece,
+            // nem o de 12 meses. Já "6R" (cliente recusou aos 6 meses) só suprime
+            // o alerta de 6 meses; o de 12 meses continua aparecendo normalmente.
+            const feito6      = flags.has('6');
+            const cicloEncerrado = feito6; // feito aos 6 meses = nunca mais precisa avisar
+
+            const chk6Inicio  = somarMeses(dataServico, 6);
+            const chk6Fim     = somarDias(chk6Inicio, JANELA_DIAS);
+            const chk12Inicio = somarMeses(dataServico, 12);
+            const chk12Fim    = somarDias(chk12Inicio, JANELA_DIAS);
+
+            let checkpoint = null;
+            let janelaFim = null;
+
+            if (!feito6 && !flags.has('6R') && hoje >= chk6Inicio && hoje <= chk6Fim) {
+                checkpoint = '6';
+                janelaFim = chk6Fim;
+            } else if (!cicloEncerrado && !flags.has('12') && !flags.has('12R') && hoje >= chk12Inicio && hoje <= chk12Fim) {
+                checkpoint = '12';
+                janelaFim = chk12Fim;
+            }
+
+            if (!checkpoint) return; // fora de qualquer janela — não aparece
+
+            const chave = normalizar(nomeLimpo);
+            const endereco = campoOS(os, "ENDERECO", "ENDEREÇO") || '';
+            const servico = campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || '';
+
+            if (!grupos[chave]) grupos[chave] = { chave, nome: nomeLimpo, endereco, telefone: '', itens: [] };
+            if (!grupos[chave].endereco) grupos[chave].endereco = endereco;
+
+            grupos[chave].itens.push({
+                idOS, checkpoint, dataServico, janelaFim,
+                diasParaExpirar: diffDias(janelaFim, hoje),
+                servico
+            });
+        });
+
+        clientesCache.forEach(c => {
+            const chave = normalizar(c.cli_nome);
+            if (grupos[chave]) {
+                grupos[chave].telefone = c.cli_tel || '';
+                if (!grupos[chave].endereco) grupos[chave].endereco = c.cli_end || '';
+            }
+        });
+
+        // ordena os itens de cada cliente pelo mais urgente (expira primeiro)
+        Object.values(grupos).forEach(g => g.itens.sort((a, b) => a.diasParaExpirar - b.diasParaExpirar));
+
+        clientesGrupo = grupos;
+        marcarTudoComoVisto();
+        renderizar();
+    }
+
+    // ── marca como "vistos" todos os itens atualmente ativos ──
+    // Usado pelo selo de notificação em sistemas.html: sempre que essa
+    // página é aberta, tudo que está visível agora deixa de contar como
+    // "novo". O selo só volta a aparecer quando surgir um item que não
+    // estava nesta lista da última vez que a página foi carregada.
+    function marcarTudoComoVisto() {
+        const ids = [];
+        Object.values(clientesGrupo).forEach(g => {
+            g.itens.forEach(i => ids.push(i.idOS + '_' + i.checkpoint));
+        });
+        try { localStorage.setItem('manut_vistos_ids', JSON.stringify(ids)); } catch (e) { /* ignora */ }
+    }
+
+    function setFiltro(filtro) {
+        filtroAtivo = filtro;
+        document.querySelectorAll('.filtro-chip').forEach(b => b.classList.toggle('active', b.dataset.filtro === filtro));
+        renderizar();
+    }
+
+    function renderizar() {
+        const termo = normalizar(document.getElementById('inputBusca').value);
+        const todosGrupos = Object.values(clientesGrupo);
+
+        document.getElementById('num-6').innerText  = todosGrupos.reduce((n, g) => n + g.itens.filter(i => i.checkpoint === '6').length, 0);
+        document.getElementById('num-12').innerText = todosGrupos.reduce((n, g) => n + g.itens.filter(i => i.checkpoint === '12').length, 0);
+
+        let lista = todosGrupos
+            .map(g => {
+                const itensFiltrados = filtroAtivo === 'todos' ? g.itens : g.itens.filter(i => i.checkpoint === filtroAtivo);
+                return { ...g, itensFiltrados };
+            })
+            .filter(g => g.itensFiltrados.length > 0 && normalizar(g.nome).includes(termo))
+            .sort((a, b) => a.itensFiltrados[0].diasParaExpirar - b.itensFiltrados[0].diasParaExpirar);
+
+        const container = document.getElementById('container-lista');
+        const semResultados = document.getElementById('sem-resultados');
+
+        if (lista.length === 0) {
+            container.classList.add('hidden');
+            semResultados.classList.remove('hidden');
+            semResultados.classList.add('flex');
+            return;
+        }
+        container.classList.remove('hidden');
+        semResultados.classList.add('hidden');
+        semResultados.classList.remove('flex');
+
+        container.innerHTML = lista.map(g => {
+            const aberto = !!expandido[g.chave];
+            const telLimpo = limparTelefone(g.telefone);
+            const msgWhats = encodeURIComponent(`Olá, ${g.nome}! Aqui é da Refrigeração Eliezer. Está na hora da manutenção preventiva do seu equipamento — podemos combinar um dia pra passar aí?`);
+            const btnWhats = telLimpo
+                ? `<a href="https://wa.me/${telLimpo}?text=${msgWhats}" target="_blank" onclick="event.stopPropagation()" class="btn-acao btn-whats"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>`
+                : `<button onclick="event.stopPropagation()" class="btn-acao btn-whats disabled" title="Sem telefone cadastrado"><i class="fa-brands fa-whatsapp"></i> Sem telefone</button>`;
+
+            const badgesResumo = [...new Set(g.itensFiltrados.map(i => i.checkpoint))]
+                .map(c => `<span class="chk-badge chk-${c}">${c === '6' ? '🔵 6 meses' : '🔴 12 meses'}</span>`).join(' ');
+
+            const itensHtml = g.itensFiltrados.map(item => {
+                const previa = String(item.servico).split('|').map(s => s.trim()).filter(Boolean).join(' • ');
+                const previaCurta = previa.length > 90 ? previa.slice(0, 90).trim() + '…' : previa;
+                const urgente = item.diasParaExpirar <= 7;
+                const textoExpira = item.diasParaExpirar <= 0 ? 'Expira hoje' : `Expira em ${item.diasParaExpirar} dia${item.diasParaExpirar === 1 ? '' : 's'}`;
+
+                return `
+                    <div class="item-linha">
+                        <div class="flex justify-between items-start gap-3 mb-2">
+                            <span class="chk-badge chk-${item.checkpoint}">${item.checkpoint === '6' ? '🔵 6 meses' : '🔴 12 meses'}</span>
+                            <span class="expira-tag ${urgente ? 'urgente' : ''}"><i class="fa-regular fa-clock"></i> ${textoExpira}</span>
+                        </div>
+                        <p class="text-[13px] font-semibold italic leading-relaxed mb-1" style="color: var(--text-sub)">${previaCurta || 'Sem descrição'}</p>
+                        <p class="text-[10px] font-bold uppercase opacity-40 mb-3">O.S. #${item.idOS || '---'} • serviço em ${formatarDataBR(item.dataServico)}</p>
+                        <div class="item-acoes">
+                            <button onclick="event.stopPropagation(); marcarRealizada('${item.idOS}', '${item.checkpoint}', 'feito', this)" class="btn-acao btn-realizada">
+                                <i class="fa-solid fa-check"></i> Feita
+                            </button>
+                            <button onclick="event.stopPropagation(); marcarRealizada('${item.idOS}', '${item.checkpoint}', 'recusado', this)" class="btn-acao btn-recusou">
+                                <i class="fa-solid fa-ban"></i> Cliente recusou
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="glass-card p-5 cliente-card" onclick="toggleExpandir('${g.chave}')">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="min-w-0">
+                            <h2 class="text-lg font-bold leading-tight truncate">${g.nome}</h2>
+                            <p class="text-[10px] uppercase font-bold mt-1 mb-2 flex items-center gap-1.5" style="color: var(--text-sub)">
+                                <i class="fa-solid fa-location-dot" style="font-size:9px;"></i> ${g.endereco || '---'}
+                            </p>
+                            <div class="flex flex-wrap gap-1.5 items-center">
+                                <span class="text-[13px] font-black uppercase opacity-70">${g.itensFiltrados.length} equipamento${g.itensFiltrados.length > 1 ? 's' : ''}</span>
+                                ${badgesResumo}
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down chevron ${aberto ? 'open' : ''}" id="chevron-${g.chave}"></i>
+                    </div>
+
+                    <div class="painel-itens ${aberto ? 'open' : ''}" id="painel-${g.chave}">
+                        <div class="mt-3">${itensHtml}</div>
+                        <div class="grid grid-cols-2 gap-2 mt-3" onclick="event.stopPropagation()">
+                            ${btnWhats}
+                            <button class="btn-acao btn-agendar" onclick="abrirModalAgendar('${g.chave}')"><i class="fa-solid fa-calendar-plus"></i> Agendar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleExpandir(chave) {
+        expandido[chave] = !expandido[chave];
+        const painel = document.getElementById('painel-' + chave);
+        const chevron = document.getElementById('chevron-' + chave);
+        if (painel) painel.classList.toggle('open', expandido[chave]);
+        if (chevron) chevron.classList.toggle('open', expandido[chave]);
+    }
+
+    // ── marcar checkpoint como realizado ou recusado (grava na coluna M via backend) ──
+    // status: 'feito' (manutenção realizada) ou 'recusado' (cliente não quis fazer agora).
+    // Regra: "feito" no checkpoint de 6 meses encerra o ciclo inteiro (some o de 12
+    // também). "recusado" só esconde o alerta atual — se for o de 6 meses, o de 12
+    // continua aparecendo normalmente quando chegar a hora.
+    function marcarRealizada(idOS, checkpoint, status, btnEl) {
+        if (!idOS) { mostrarToast('Essa O.S. não tem um número identificável'); return; }
+
+        if (status === 'feito') {
+            abrirConfirmacao({
+                titulo: 'Manutenção Realizada',
+                mensagem: 'Confirmar que a manutenção preventiva desse equipamento foi realizada?',
+                textoBotao: '✓ Confirmar',
+                cor: '#10b981',
+                icone: 'fa-check',
+                acao: () => executarMarcarRealizada(idOS, checkpoint, status, btnEl)
+            });
+        } else {
+            abrirConfirmacao({
+                titulo: 'Cliente Recusou',
+                mensagem: 'Confirmar que o cliente recusou a manutenção preventiva agora? ' +
+                    (checkpoint === '6' ? 'Você será avisado de novo quando completar 12 meses.' : 'Esse alerta será encerrado.'),
+                textoBotao: 'Confirmar Recusa',
+                cor: '#94a3b8',
+                icone: 'fa-ban',
+                acao: () => executarMarcarRealizada(idOS, checkpoint, status, btnEl)
+            });
+        }
+    }
+
+    async function executarMarcarRealizada(idOS, checkpoint, status, btnEl) {
+        const marcador = checkpoint + (status === 'recusado' ? 'R' : '');
+        const textoOriginalBtn = btnEl.innerHTML;
+
+        btnEl.disabled = true;
+        btnEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+        try {
+            await fetch(URL_OS, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams({
+                    action: 'marcar_preventiva',
+                    ID_OS: idOS,
+                    CHECKPOINT: marcador
+                })
+            });
+
+            // Atualiza localmente sem precisar recarregar tudo.
+            Object.values(clientesGrupo).forEach(g => {
+                g.itens = g.itens.filter(i => {
+                    if (i.idOS !== idOS) return true;
+                    // "feito" aos 6 meses encerra o ciclo: remove 6 e qualquer 12 pendente.
+                    if (status === 'feito' && checkpoint === '6') return false;
+                    // qualquer outro caso ("feito" aos 12, ou "recusado" em qualquer
+                    // checkpoint) só remove o item específico marcado agora.
+                    return i.checkpoint !== checkpoint;
+                });
+            });
+            // remove clientes que ficaram sem nenhum item
+            Object.keys(clientesGrupo).forEach(chave => {
+                if (clientesGrupo[chave].itens.length === 0) delete clientesGrupo[chave];
+            });
+
+            renderizar();
+            mostrarToast(status === 'feito' ? 'Manutenção marcada como feita!' : 'Recusa registrada com sucesso!');
+        } catch (err) {
+            console.error(err);
+            mostrarToast('Erro ao salvar. Tente novamente.');
+            btnEl.disabled = false;
+            btnEl.innerHTML = textoOriginalBtn;
+        }
+    }
+
+    // ── Modal: agendar visita ───────────────────────────────────────────
+    let chaveAgendarPendente = null;
+
+    function abrirModalAgendar(chave) {
+        chaveAgendarPendente = chave;
+        const g = clientesGrupo[chave];
+        document.getElementById('modal-agendar-cliente').innerText = g ? g.nome : '';
+        document.getElementById('agendar-data').value = '';
+        document.getElementById('agendar-hora').value = '';
+        document.getElementById('modal-agendar').classList.remove('hidden');
+    }
+
+    function fecharModalAgendar() {
+        document.getElementById('modal-agendar').classList.add('hidden');
+        chaveAgendarPendente = null;
+    }
+
+    document.getElementById('btn-confirmar-agendar').onclick = async function () {
+        if (!chaveAgendarPendente) return;
+        const g = clientesGrupo[chaveAgendarPendente];
+        if (!g) return;
+
+        const dataInput = document.getElementById('agendar-data').value;
+        const horaInput = document.getElementById('agendar-hora').value;
+        if (!dataInput || !horaInput) { mostrarToast('Informe o dia e a hora da visita'); return; }
+
+        const payload = {
+            action: 'cadastrar',
+            cliente: g.nome,
+            endereco: g.endereco || '',
+            descricao: `[Serviço] Manutenção preventiva`,
+            valor: '',
+            data_servico: dataInput.split('-').reverse().join('/'),
+            hora: horaInput
+        };
+
+        const btn = this;
+        btn.disabled = true;
+        btn.innerText = 'Agendando...';
+        try {
+            await fetch(URL_AGENDA, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            fecharModalAgendar();
+            const dataBR = dataInput.split('-').reverse().join('/');
+            document.getElementById('modal-agendar-sucesso-msg').innerText = `${g.nome} — ${dataBR} às ${horaInput}. Acompanhe em Agenda de Serviços.`;
+            document.getElementById('modal-agendar-sucesso').classList.remove('hidden');
+        } catch (err) {
+            console.error(err);
+            mostrarToast('Erro ao agendar. Tente novamente.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Confirmar';
+        }
+    };
+
+    function fecharModalAgendarSucesso() {
+        document.getElementById('modal-agendar-sucesso').classList.add('hidden');
+    }
+
+    window.onload = () => {
+        if (localStorage.getItem('theme') === 'light') toggleTheme();
+        carregarDados();
+    };
+    </script>
+</body>
+</html>

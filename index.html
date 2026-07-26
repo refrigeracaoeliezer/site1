@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w192-h192">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://site-1vi.pages.dev/">
+    <meta property="og:title" content="Refrigeração Eliezer | Gestão">
+    <meta property="og:description" content="Sistema profissional de orçamentos e ordens de serviço.">
+    <meta property="og:image" content="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w512-h512">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta name="description" content="Acesse o sistema de orçamentos e ordens de serviço da Refrigeração Eliezer.">
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e40af">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Refrigeração">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- jQuery atualizado (a versão antiga 1.10.2 tinha CVEs conhecidas) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Supabase Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="config.js"></script>
+    <script src="supabase-client.js"></script>
+
+    <style>
+        body {
+            -webkit-user-select: none; -moz-user-select: none;
+            -ms-user-select: none; user-select: none;
+        }
+        input, select, textarea {
+            -webkit-user-select: text !important; -moz-user-select: text !important;
+            -ms-user-select: text !important; user-select: text !important;
+        }
+        img { pointer-events: none !important; -webkit-user-drag: none !important; }
+
+        :root {
+            --bg-body: #0d1117; --text-main: white;
+            --glass-bg: rgba(255, 255, 255, 0.02); --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.04); --input-text: white;
+            --subtitle-color: rgba(255, 255, 255, 0.45);
+        }
+        body.light-mode {
+            --bg-body: #f0f2f5; --text-main: #1a1f26;
+            --glass-bg: rgba(255, 255, 255, 0.8); --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.05); --input-text: #1a1f26;
+            --subtitle-color: rgba(0, 0, 0, 0.6);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-body); position: relative; overflow-x: hidden; padding: 20px; transition: background 0.3s, color 0.3s; }
+
+        .theme-toggle { position: fixed; top: 20px; right: 20px; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; }
+
+        .install-btn-container { position: fixed; top: 20px; left: 20px; z-index: 100; display: none; }
+        .btn-download { background: var(--input-bg); border: 1px solid var(--glass-border); color: #27a9e3; padding: 10px 15px; border-radius: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; font-weight: 600; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+        #ios-prompt { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 380px; background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; padding: 20px; z-index: 1000; display: none; color: var(--text-main); text-align: center; border-top: 3px solid #1e40af; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+        .corner-ball { position: fixed; background: rgba(30, 64, 175, 0.05); border-radius: 50%; z-index: 1; pointer-events: none; filter: blur(80px); }
+        .ball-top-right { width: 550px; height: 550px; top: -200px; right: -150px; }
+        .ball-bottom-left { width: 450px; height: 450px; bottom: -150px; left: -150px; }
+
+        .hidden { display: none !important; }
+
+        .login-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-top: 4px solid #1e40af; border-radius: 40px; padding: 40px 30px; width: 100%; max-width: 410px; position: relative; z-index: 10; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); transition: all 0.3s ease; }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; border-color: #ff4b4b !important; }
+
+        .logo-container img { width: 100%; max-width: 220px; margin-bottom: 20px; }
+        h2 { color: var(--text-main); margin-bottom: 10px; font-size: 22px; }
+        p.subtitle { color: var(--subtitle-color); font-size: 13px; margin-bottom: 25px; }
+
+        input, select { width: 100%; background: var(--input-bg) !important; border: 1px solid var(--glass-border) !important; border-radius: 12px; padding: 14px; color: var(--input-text) !important; font-size: 14px; margin-bottom: 15px; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: #1e40af !important; }
+
+        .btn-main { width: 100%; padding: 16px; background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
+        .btn-main:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        #toast-minimal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #27a9e3; color: white; padding: 15px 30px; border-radius: 50px; font-weight: 600; font-size: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 10000; }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -60%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -40%); }
+        }
+        .animate-toast { display: block !important; animation: fadeInOut 2.5s ease forwards; }
+
+        .auth-footer { margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .link-auth { color: #27a9e3; cursor: pointer; font-size: 13px; text-decoration: none; }
+        .link-rec { color: #ff4b4b; }
+        .divider { width: 1px; height: 14px; background-color: var(--glass-border); display: inline-block; }
+
+        .status-msg { font-size: 12px; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: none; }
+        .error-msg { background: rgba(255, 75, 75, 0.1); color: #ff4b4b; border: 1px solid rgba(255, 75, 75, 0.2); }
+        .ok-msg { background: rgba(39, 169, 227, 0.1); color: #27a9e3; border: 1px solid rgba(39, 169, 227, 0.2); }
+
+        .footer-info { width: 100%; text-align: center; color: var(--subtitle-color); font-size: 10px; z-index: 10; margin-top: 25px; }
+        .badge-teste { display: inline-block; padding: 5px 15px; background: rgba(30, 64, 175, 0.1); border: 1px solid #1e40af; border-radius: 30px; color: #27a9e3; font-weight: 700; margin-bottom: 10px; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <button onclick="toggleTheme()" class="theme-toggle">
+        <i id="theme-icon" class="fa-solid fa-sun"></i>
+    </button>
+
+    <div class="install-btn-container" id="install-container">
+        <button class="btn-download" onclick="triggerInstall()">
+            <i class="fa-solid fa-circle-down"></i> Baixar App
+        </button>
+    </div>
+
+    <div id="ios-prompt">
+        <i class="fa-solid fa-mobile-screen-button" style="font-size: 30px; color: #27a9e3; margin-bottom: 15px;"></i>
+        <h3 style="margin-bottom: 10px;">Instalar no iPhone</h3>
+        <p style="font-size: 13px; color: var(--subtitle-color);">Toque no ícone de <strong>Compartilhar</strong> <i class="fa-solid fa-arrow-up-from-bracket"></i> na barra inferior e selecione <strong>"Tela de Início"</strong> <i class="fa-solid fa-plus-square"></i>.</p>
+        <button class="btn-main" onclick="closeIosPrompt()" style="margin-top: 15px; padding: 10px;">Entendi</button>
+    </div>
+
+    <div class="corner-ball ball-top-right"></div>
+    <div class="corner-ball ball-bottom-left"></div>
+
+    <div id="toast-minimal">Salvo com sucesso!</div>
+
+    <!-- ── CARD: LOGIN ─────────────────────────────────────────────── -->
+    <div class="login-card" id="card-login">
+        <div class="logo-container">
+            <img id="logo-img" src="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w192-h192">
+        </div>
+        <h2>Acessar Gestor</h2>
+        <p class="subtitle">Insira seus dados de acesso</p>
+        <div id="login-status" class="status-msg error-msg"></div>
+        <input type="email" id="l_email" placeholder="E-mail" autocomplete="username">
+        <input type="password" id="l_pass" placeholder="Senha" autocomplete="current-password">
+        <button class="btn-main" onclick="realizarLogin()" id="btn-l">Autenticar</button>
+
+        <div class="auth-footer">
+            <span class="link-auth link-rec" onclick="alternar('recuperar')">Esqueci minha senha</span>
+        </div>
+    </div>
+
+    <!-- ── CARD: RECUPERAR SENHA ───────────────────────────────────── -->
+    <div class="login-card hidden" id="card-recuperar">
+        <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: #27a9e3; margin-bottom: 20px;"></i>
+        <h2>Recuperar Acesso</h2>
+        <p class="subtitle">Enviaremos um link de redefinição para o seu e-mail</p>
+        <div id="rec-status" class="status-msg error-msg"></div>
+        <div id="rec-ok" class="status-msg ok-msg"></div>
+        <input type="email" id="rec_email" placeholder="Seu e-mail cadastrado">
+        <button class="btn-main" onclick="recuperar()" id="btn-rec">Enviar link de redefinição</button>
+        <span class="link-auth" onclick="alternar('login')" style="margin-top:20px; display:block;">Voltar ao Login</span>
+    </div>
+
+    <div class="footer-info">
+        <div class="badge-teste">Refrigeração Eliezer</div>
+        <p>&copy; <span id="anoAtual"></span> - Sistema de Gestão</p>
+    </div>
+
+<script>
+    // ─── SERVICE WORKER ────────────────────────────────────────────────────
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(reg => {
+                    reg.update();
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                if (confirm("Nova atualização disponível! Deseja carregar a nova versão agora?")) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(err => console.error('[SW] Falha no registro:', err));
+        });
+    }
+
+    // ─── INSTALAÇÃO PWA ────────────────────────────────────────────────────
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('install-container').style.display = 'block';
+    });
+
+    const isIos = () => /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+    function triggerInstall() {
+        if (isIos()) {
+            document.getElementById('ios-prompt').style.display = 'block';
+        } else if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    document.getElementById('install-container').style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        }
+    }
+
+    function closeIosPrompt() {
+        document.getElementById('ios-prompt').style.display = 'none';
+    }
+
+    // ─── BLOQUEIOS DE COPIA (proteção estética, não é segurança real) ─────
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('keydown', function (e) {
+        if (
+            (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) ||
+            (e.keyCode === 123)
+        ) {
+            e.preventDefault();
+            alert('Ação protegida pelo sistema.');
+            return false;
+        }
+    });
+
+    // ─── TEMA ───────────────────────────────────────────────────────────────
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        if (body.classList.contains('light-mode')) {
+            icon.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    document.getElementById("anoAtual").textContent = new Date().getFullYear();
+
+    window.onload = async () => {
+        if (localStorage.getItem('theme') === 'light') toggleTheme();
+        if (isIos() && !isInStandaloneMode()) {
+            document.getElementById('install-container').style.display = 'block';
+        }
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            document.getElementById('install-container').style.display = 'none';
+        }
+
+        // Se já existe uma sessão Supabase válida, pula direto pro sistema.
+        const { data } = await supabaseClient.auth.getSession();
+        if (data && data.session) {
+            window.location.replace('sistemas.html');
+        }
+    };
+
+    // ─── NAVEGAÇÃO ENTRE CARDS ──────────────────────────────────────────────
+    function alternar(tela) {
+        $('.login-card').addClass('hidden').removeClass('shake');
+        $('#card-' + tela).removeClass('hidden');
+        $('.status-msg').hide().text('');
+    }
+
+    function aplicarShake(idCard) {
+        const card = $(`#${idCard}`);
+        card.addClass('shake');
+        setTimeout(() => card.removeClass('shake'), 500);
+    }
+
+    function showToast(msg) {
+        const toast = $('#toast-minimal');
+        if (msg) toast.text(msg);
+        toast.addClass('animate-toast');
+        setTimeout(() => toast.removeClass('animate-toast'), 2500);
+    }
+
+    // ─── LOGIN (Supabase Auth) ──────────────────────────────────────────────
+    async function realizarLogin() {
+        const email = $('#l_email').val().trim();
+        const senha = $('#l_pass').val();
+        const btn = $('#btn-l');
+        const status = $('#login-status');
+
+        if (!email || !senha) {
+            status.text("Preencha todos os campos!").show();
+            aplicarShake('card-login');
+            return;
+        }
+
+        btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin"></i> Entrando...');
+        status.hide();
+
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+
+        if (error) {
+            status.show().text("E-mail ou senha incorretos.");
+            aplicarShake('card-login');
+            btn.prop('disabled', false).text("Autenticar");
+            return;
+        }
+
+        window.location.href = "sistemas.html";
+    }
+
+    // ─── RECUPERAR SENHA (Supabase Auth — e-mail de redefinição embutido) ──
+    async function recuperar() {
+        const email = $('#rec_email').val().trim();
+        const btn = $('#btn-rec');
+        const status = $('#rec-status');
+        const ok = $('#rec-ok');
+
+        if (!email) {
+            status.text("Informe seu e-mail!").show();
+            aplicarShake('card-recuperar');
+            return;
+        }
+
+        btn.prop('disabled', true).text("Enviando...");
+        status.hide();
+        ok.hide();
+
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/resetar-senha.html'
+        });
+
+        if (error) {
+            status.show().text("Não foi possível enviar o e-mail. Tente novamente.");
+            aplicarShake('card-recuperar');
+        } else {
+            // Por segurança, o Supabase não revela se o e-mail existe ou não —
+            // a mensagem é sempre a mesma.
+            ok.show().text("Se este e-mail estiver cadastrado, você receberá um link para redefinir sua senha.");
+            showToast("Verifique seu e-mail");
+        }
+
+        btn.prop('disabled', false).text("Enviar link de redefinição");
+    }
+</script>
+</body>
+</html>

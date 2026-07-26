@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="pt-br">    
+<head>
+     <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Garantias | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"> 
+    
+    <style>
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    input, select, textarea {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+    }
+    img {
+        pointer-events: none !important;
+        -webkit-user-drag: none !important;
+    }
+        
+        :root {
+            --bg-body: #0d1117;
+            --text-main: white;
+            --text-sub: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-sub: rgba(255, 255, 255, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --text-main: #1a1f26;
+            --text-sub: #4b5563;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --card-sub: rgba(0, 0, 0, 0.04);
+            --input-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; }
+        
+        .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        .em-garantia { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+        .fora-garantia { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+        .congelada-garantia { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+
+        .btn-acionar-garantia { margin-top: 12px; width: 100%; padding: 12px; border-radius: 14px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-acionar-garantia.tipo-acionar { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); }
+        .btn-acionar-garantia.tipo-acionar:hover { background: rgba(16, 185, 129, 0.22); }
+        .btn-acionar-garantia.tipo-reativar { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+        .btn-acionar-garantia.tipo-reativar:hover { background: rgba(56, 189, 248, 0.22); }
+        .aviso-congelada { background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 8px 12px; font-size: 10px; color: #38bdf8; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+        
+        .search-input { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); outline: none; }
+        .item-servico { border-bottom: 1px dashed var(--glass-border); padding: 6px 0; color: var(--text-sub); display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .item-servico:last-child { border-bottom: none; }
+        .item-servico-desc { flex: 1; font-size: 11px; font-style: italic; }
+        .item-servico-valor { font-size: 11px; font-weight: 900; color: #60a5fa; white-space: nowrap; flex-shrink: 0; }
+
+        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+
+        /* Grupo de ações (editar/excluir) agrupado numa única pílula */
+        .action-group { display: flex; align-items: center; background: var(--card-sub); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; }
+        .action-group button { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
+        .action-group .edit-btn { color: #60a5fa; }
+        .action-group .edit-btn:hover { background: rgba(59, 130, 246, 0.15); }
+        .action-group .delete-btn { color: #f87171; border-left: 1px solid var(--glass-border); }
+        .action-group .delete-btn:hover { background: rgba(239, 68, 68, 0.15); }
+
+        #modal-excluir { transition: all 0.3s ease; }
+        .modal-content { background: var(--bg-body); border: 1px solid var(--glass-border); color: var(--text-main); }
+
+        /* Linha separadora de subtotal por item */
+        .subtotal-linha {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 10px; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 0.05em; opacity: 0.35;
+            padding: 2px 0 0;
+        }
+
+        /* ── Redesign: cabeçalho fixo, tags e cards mais profissionais ── */
+        .sticky-header { position: sticky; top: 0; z-index: 30; background: var(--bg-body); padding-top: 12px; padding-bottom: 14px; transition: background 0.3s; }
+
+        .os-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 50px; background: var(--card-sub); border: 1px solid var(--glass-border); font-size: 9px; font-weight: 900; letter-spacing: 0.08em; color: #60a5fa; text-transform: uppercase; }
+
+        .tag-orcamento { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); }
+        .tag-servico { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(45, 212, 191, 0.15); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.35); }
+
+        .card-item { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-item:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+
+        .item-servico-icon { color: #3b82f6; font-size: 9px; margin-top: 3px; flex-shrink: 0; }
+
+        .footer-divider { border-top: 1px solid var(--glass-border); padding-top: 14px; margin-top: 4px; }
+
+        /* Chips de filtro rápido */
+        .filtro-chip {
+            flex-shrink: 0;
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-sub);
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .filtro-chip:hover { color: var(--text-main); }
+        .filtro-chip.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body class="p-4 pb-10">
+
+    <div id="modal-excluir" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
+            <div class="w-16 h-16 bg-red-500/15 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-red-500/35">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-2">Excluir Serviço?</h3>
+            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-msg-id">Esta ação não poderá ser desfeita na sua planilha de controle.</p>
+            <div class="flex gap-3">
+                <button onclick="fecharModal()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
+                <button id="btn-confirmar-exclusao" class="flex-1 py-4 rounded-2xl bg-red-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-red-500/20 hover:bg-red-600 transition">Sim, Apagar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-garantia" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
+            <div id="modal-garantia-icone" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 id="modal-garantia-titulo" class="text-xl font-black uppercase mb-2">Acionar Garantia?</h3>
+            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-garantia-msg">A garantia será congelada.</p>
+            <div class="flex gap-3">
+                <button onclick="fecharModalGarantia()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
+                <button id="btn-confirmar-garantia" class="flex-1 py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-agendar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl">
+            <div class="w-16 h-16 bg-blue-500/15 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-blue-500/35">
+                <i class="fa-solid fa-calendar-plus"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-1 text-center">Agendar Serviço</h3>
+            <p class="text-xs font-medium opacity-60 mb-6 text-center px-2" id="modal-agendar-cliente">Orçamento</p>
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Data</label>
+                    <input type="date" id="agendar-data" class="w-full p-3 rounded-xl search-input font-semibold">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Hora</label>
+                    <input type="time" id="agendar-hora" class="w-full p-3 rounded-xl search-input font-semibold">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="fecharModalAgendar()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
+                <button id="btn-confirmar-agendar" class="flex-1 py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-agendar-sucesso" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
+            <div class="w-16 h-16 bg-green-500/15 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-green-500/35">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <h3 class="text-xl font-black uppercase mb-2">Serviço Agendado!</h3>
+            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-agendar-sucesso-msg">O serviço foi adicionado à agenda com sucesso.</p>
+            <button onclick="fecharModalAgendarSucesso()" class="w-full py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Ok, entendi</button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+        <div class="sticky-header">
+            <header class="flex justify-between items-center mb-5">
+                <div>
+                    <h1 class="text-xl font-black uppercase tracking-tighter">Histórico de <span class="text-blue-500">Serviços</span></h1>
+                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Refrigeração Eliezer</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="history.back()" class="theme-toggle" title="Voltar">
+                        <i class="fa-solid fa-arrow-left text-sm"></i>
+                    </button>
+                    <a href="sistemas.html" class="theme-toggle" title="Início" style="text-decoration:none;">
+                        <i class="fa-solid fa-house text-sm"></i>
+                    </a>
+                    <button onclick="toggleTheme()" class="theme-toggle">
+                        <i id="theme-icon" class="fa-solid fa-sun"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-20"></i>
+                <input type="text" id="inputBusca" onkeyup="filtrarHistorico()" placeholder="Buscar pelo Nome ou nº O.S" class="w-full p-4 pl-12 rounded-2xl search-input font-semibold">
+            </div>
+
+            <div class="flex gap-2 mt-3 overflow-x-auto pb-1" id="filtros-container" style="scrollbar-width: none;">
+                <button class="filtro-chip active" data-filtro="todos" onclick="setFiltro('todos')">Todos</button>
+                <button class="filtro-chip" data-filtro="garantia" onclick="setFiltro('garantia')">🟢 Em Garantia</button>
+                <button class="filtro-chip" data-filtro="fora" onclick="setFiltro('fora')">🔴 Fora da Garantia</button>
+                <button class="filtro-chip" data-filtro="orcamento" onclick="setFiltro('orcamento')">Orçamento</button>
+                <button class="filtro-chip" data-filtro="servico" onclick="setFiltro('servico')">Serviço</button>
+            </div>
+        </div>
+
+        <div id="area-swipe">
+            <div id="container-historico" class="space-y-5 mt-2">
+                <div class="flex flex-col items-center justify-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Carregando histórico</p>
+                </div>
+            </div>
+
+            <div id="sem-resultados" class="hidden flex-col items-center justify-center py-16 text-center">
+                <i class="fa-solid fa-magnifying-glass text-3xl opacity-20 mb-4"></i>
+                <p class="text-sm font-black uppercase tracking-widest opacity-50">Nenhum resultado encontrado</p>
+                <p class="text-[11px] opacity-30 mt-1">Tente buscar por outro nome, nº de O.S ou ajuste o filtro</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registrado!', reg))
+      .catch(err => console.log('Erro ao registrar Service Worker', err));
+  }
+
+  document.addEventListener('contextmenu', event => event.preventDefault());
+  document.addEventListener('keydown', function(e) {
+    if (
+        (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || 
+        (e.keyCode === 123)
+    ) {
+        e.preventDefault();
+        return false;
+    }
+  });
+        
+    const URL_DATABASE = apiURL('os');
+    const URL_SALVAR = apiURL('os');
+    const URL_AGENDA = apiURL('agenda');
+    let idParaExcluirGlobal = null;
+
+    // Guarda a linha completa (todos os campos originais da planilha) de cada OS
+    // renderizada, para poder regravar sem perder nenhum dado ao acionar/reativar garantia.
+    let cacheOS = {};
+
+    // idOS (string) -> true se já existe um agendamento NÃO concluído na agenda
+    // pra essa O.S. (marca "(OS #idOS)" na DESCRICAO). Usado só pra decidir se
+    // o botão "Agendar Serviço" aparece ou não em cada card de orçamento.
+    let agendaPendentesPorOS = {};
+
+    async function carregarAgendaPendentes() {
+        try {
+            const res = await fetch(URL_AGENDA + '&t=' + Date.now());
+            const lista = await res.json();
+            const mapa = {};
+            (Array.isArray(lista) ? lista : []).forEach(item => {
+                const desc = (item.DESCRICAO || "").toString();
+                const status = (item.STATUS || "").toString().toLowerCase().trim();
+                const m = desc.match(/\(OS\s*#\s*([^)]+)\)/i);
+                if (m && status !== "concluido") {
+                    mapa[m[1].trim()] = true;
+                }
+            });
+            agendaPendentesPorOS = mapa;
+        } catch (error) {
+            console.error("Erro ao carregar status da agenda:", error);
+            // Falha silenciosa: se não conseguir carregar, os botões continuam
+            // aparecendo normalmente (comportamento anterior), sem travar a tela.
+        }
+    }
+
+    // ── Estados visuais do histórico ───────────────────────────────────
+    function mostrarSpinner(texto) {
+        document.getElementById('container-historico').innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">${texto || 'Carregando histórico'}</p>
+            </div>`;
+    }
+
+    function mostrarMensagem(titulo, sub, comBotao) {
+        document.getElementById('container-historico').innerHTML = `
+            <div class="flex flex-col items-center justify-center py-16 text-center">
+                <i class="fa-solid fa-cloud-arrow-down text-3xl opacity-20 mb-4"></i>
+                <p class="text-sm font-black uppercase tracking-widest opacity-50">${titulo}</p>
+                ${sub ? `<p class="text-[11px] opacity-30 mt-1">${sub}</p>` : ''}
+                ${comBotao ? `<button onclick="carregarDados()" class="mt-5 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black uppercase text-[11px] tracking-widest"><i class="fa-solid fa-rotate-right mr-2"></i>Tentar novamente</button>` : ''}
+            </div>`;
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+        icon.className = body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
+
+    async function carregarDados() {
+        mostrarSpinner('Carregando histórico');
+        // Timeout de segurança: impede carregamento infinito se a planilha não responder
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        try {
+            const [response] = await Promise.all([
+                fetch(URL_DATABASE + '&t=' + Date.now(), { redirect: "follow", signal: controller.signal }),
+                carregarAgendaPendentes()
+            ]);
+            clearTimeout(timeoutId);
+
+            // Lê como texto primeiro para conseguir diagnosticar respostas que não são JSON
+            const texto = await response.text();
+            let dados;
+            try {
+                dados = JSON.parse(texto);
+            } catch (e) {
+                // Geralmente significa que o Apps Script devolveu uma página de login/erro (HTML)
+                console.error("Resposta não-JSON da planilha:", texto.slice(0, 300));
+                mostrarMensagem('Acesso à planilha negado', 'Publique o Apps Script como “Qualquer pessoa” e tente de novo.', true);
+                return;
+            }
+
+            // Aceita array puro OU objeto que embrulha a lista (data / registros / result / historico / dados)
+            if (!Array.isArray(dados)) {
+                dados = dados.data || dados.registros || dados.result || dados.historico || dados.dados || [];
+            }
+
+            if (!Array.isArray(dados) || dados.length === 0) {
+                mostrarMensagem('Nenhum serviço no histórico', 'As ordens de serviço aparecerão aqui assim que forem geradas.', false);
+                return;
+            }
+
+            const historicoCompleto = dados.slice().reverse();
+            renderizarCards(historicoCompleto);
+            filtrarHistorico();
+        } catch (error) {
+            clearTimeout(timeoutId);
+            console.error("Erro na requisição:", error);
+            if (error.name === 'AbortError') {
+                mostrarMensagem('Conexão demorou demais', 'Verifique sua internet e toque para tentar de novo.', true);
+            } else {
+                mostrarMensagem('Erro ao conectar', 'Não foi possível acessar a planilha do histórico.', true);
+            }
+        }
+    }
+
+    function abrirModalExcluir(id) {
+        idParaExcluirGlobal = id;
+        document.getElementById('modal-msg-id').innerText = `Tem certeza que deseja excluir a OS #${id}?`;
+        document.getElementById('modal-excluir').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-excluir').classList.add('hidden');
+        idParaExcluirGlobal = null;
+    }
+
+    document.getElementById('btn-confirmar-exclusao').onclick = async function() {
+        if (!idParaExcluirGlobal) return;
+        const btn = this;
+        btn.innerText = "Excluindo...";
+        btn.disabled = true;
+        try {
+            const response = await fetch(`${URL_DATABASE}&deleteID=${idParaExcluirGlobal}`, { redirect: "follow" });
+            const res = await response.json();
+            if (res.status === "success") {
+                fecharModal();
+                carregarDados();
+            } else { alert("Erro ao excluir na planilha."); }
+        } catch (error) { alert("Erro de conexão ao tentar excluir."); }
+        finally {
+            btn.innerText = "Sim, Apagar";
+            btn.disabled = false;
+        }
+    };
+
+    function verificarGarantia(dataFimGarantia) {
+        if (!dataFimGarantia || dataFimGarantia === "---") return false;
+        const hoje = new Date();
+        const partes = dataFimGarantia.toString().split('/');
+        if (partes.length !== 3) return false;
+        const dataFim = new Date(partes[2], partes[1] - 1, partes[0]);
+        return hoje <= dataFim;
+    }
+
+    // ── Congelamento de garantia (Decreto 2.181/97, art. 21 c/c CDC) ────────
+    // Enquanto o aparelho está em reparo dentro da garantia, o prazo fica
+    // suspenso. Guardamos isso na própria coluna DATA_FIM_GARANTIA, sem criar
+    // coluna nova na planilha, usando um separador (mesmo padrão do ##PG##
+    // já usado na coluna VALOR_TOTAL): "DD/MM/AAAA##CONGELADA##DD/MM/AAAA"
+    // (data original de fim da garantia + data em que foi acionada).
+
+    function parseDataBR(str) {
+        if (!str) return null;
+        const partes = str.toString().trim().split('/');
+        if (partes.length !== 3) return null;
+        const d = new Date(partes[2], partes[1] - 1, partes[0]);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatarDataParaBR(date) {
+        const dd = String(date.getDate()).padStart(2, '0');
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const yyyy = date.getFullYear();
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+    function somarDiasData(str, dias) {
+        const d = parseDataBR(str);
+        if (!d) return str;
+        d.setDate(d.getDate() + dias);
+        return formatarDataParaBR(d);
+    }
+
+    // O marcador de congelamento agora é gravado como timestamp ISO completo
+    // (com hora), para calcular corretamente quantos dias inteiros se passaram.
+    // Registros antigos (gravados só com DD/MM/AAAA, sem hora) continuam
+    // funcionando, só que com a precisão de dia que já tinham antes.
+    function parseDataCongelamento(str) {
+        if (!str) return null;
+        const iso = new Date(str);
+        if (!isNaN(iso.getTime()) && str.toString().includes('T')) return iso;
+        return parseDataBR(str);
+    }
+
+    // Lê o valor BRUTO (ainda não formatado) da coluna DATA_FIM_GARANTIA e,
+    // se tiver o marcador, devolve { fimOriginal, dataCongelamento }. Senão, null.
+    function extrairCongelamento(dataFimGarantiaRaw) {
+        if (!dataFimGarantiaRaw) return null;
+        const raw = dataFimGarantiaRaw.toString();
+        if (!raw.includes('##CONGELADA##')) return null;
+        const [fimOriginal, dataCongelamento] = raw.split('##CONGELADA##').map(s => s.trim());
+        return { fimOriginal, dataCongelamento };
+    }
+
+    let acaoGarantiaPendente = null; // { idOS, tipo: 'acionar' | 'reativar' }
+
+    function abrirModalGarantia(idOS, tipo) {
+        acaoGarantiaPendente = { idOS, tipo };
+
+        // Garante que o botão de confirmação sempre abre destravado, mesmo que
+        // uma tentativa anterior tenha ficado presa em "Processando..." por algum motivo.
+        const btnConfirmar = document.getElementById('btn-confirmar-garantia');
+        btnConfirmar.disabled = false;
+        btnConfirmar.innerText = "Confirmar";
+
+        const icone = document.getElementById('modal-garantia-icone');
+        const titulo = document.getElementById('modal-garantia-titulo');
+        const msg = document.getElementById('modal-garantia-msg');
+
+        if (tipo === 'acionar') {
+            icone.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border";
+            icone.style.background = "rgba(16,185,129,0.15)";
+            icone.style.color = "#10b981";
+            icone.style.borderColor = "rgba(16,185,129,0.35)";
+            titulo.innerText = "Acionar Garantia?";
+            msg.innerText = `A garantia da OS #${idOS} será congelada a partir de hoje. O prazo volta a contar normalmente quando você reativar, com os dias parados somados ao final.`;
+        } else {
+            icone.style.background = "rgba(56,189,248,0.15)";
+            icone.style.color = "#38bdf8";
+            icone.style.borderColor = "rgba(56,189,248,0.35)";
+            titulo.innerText = "Reativar Garantia?";
+            msg.innerText = `O reparo da OS #${idOS} foi concluído? Os dias em que a garantia ficou parada serão somados ao prazo final e ela volta a contar normalmente.`;
+        }
+        document.getElementById('modal-garantia').classList.remove('hidden');
+    }
+
+    function fecharModalGarantia() {
+        document.getElementById('modal-garantia').classList.add('hidden');
+        acaoGarantiaPendente = null;
+    }
+
+    document.getElementById('btn-confirmar-garantia').onclick = async function() {
+        if (!acaoGarantiaPendente) return;
+        const { idOS, tipo } = acaoGarantiaPendente;
+        const os = cacheOS[idOS];
+        if (!os) { alert("Não encontrei os dados dessa OS. Recarregue a página e tente de novo."); return; }
+
+        const btn = this;
+        const textoOriginal = btn.innerText;
+        btn.innerText = "Processando...";
+        btn.disabled = true;
+
+        try {
+            const dataFimRaw = campoOS(os, "DATA_FIM_GARANTIA", "FIM_GARANTIA", "GARANTIA_FIM") || "";
+            const idLimpo = idOS.toString().replace(/'/g, '').trim();
+
+            if (tipo === 'acionar') {
+                // Congela direto na planilha (apaga e regrava a linha, só a garantia muda).
+                // Guardamos a hora exata (não só a data) para que "reativar no mesmo dia"
+                // não conte um dia inteiro de congelamento por engano.
+                const hoje = new Date().toISOString();
+                const novaDataFim = `${dataFimRaw}##CONGELADA##${hoje}`;
+
+                await fetch(`${URL_DATABASE}&deleteID=${encodeURIComponent(idLimpo)}`, { redirect: "follow" });
+
+                const formData = new URLSearchParams();
+                formData.append('ID_OS', "'" + idLimpo);
+                formData.append('CLIENTE', campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "");
+                formData.append('ENDERECO', campoOS(os, "ENDERECO", "ENDEREÇO") || "");
+                formData.append('CPF', campoOS(os, "CPF") || "");
+                formData.append('DATA_DO_SERVICO', campoOS(os, "DATA_DO_SERVICO") || "");
+                formData.append('TIPO_DE_SERVICO', campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "");
+                formData.append('TECNICO_RESPONSVEL', campoOS(os, "TECNICO_RESPONSVEL") || "");
+                formData.append('VALOR_TOTAL', campoOS(os, "VALOR_TOTAL", "VALOR", "TOTAL") || "");
+                formData.append('GARANTIA_DIAS', campoOS(os, "GARANTIA_DIAS") || "");
+                formData.append('DATA_FIM_GARANTIA', novaDataFim);
+                formData.append('OSERVACAO', campoOS(os, "OSERVACAO", "OBSERVACAO") || "");
+                formData.append('DIA', campoOS(os, "DIA") || "");
+
+                await fetch(URL_SALVAR, { method: 'POST', mode: 'no-cors', body: formData });
+
+                fecharModalGarantia();
+                carregarDados();
+            } else {
+                // Reativar: não salva aqui. Manda os dados pro criar-orcamento.html
+                // (fluxo normal de edição/O.S.), com a garantia já somada e um aviso
+                // pra trocar a mensagem de finalização pela mensagem de garantia.
+                const info = extrairCongelamento(dataFimRaw);
+                if (!info) { alert("Essa OS não está com a garantia congelada."); btn.innerText = textoOriginal; btn.disabled = false; return; }
+
+                const diasCongelados = Math.max(0, Math.floor((new Date() - parseDataCongelamento(info.dataCongelamento)) / 86400000));
+                const novaDataFim = somarDiasData(info.fimOriginal, diasCongelados);
+                const garantiaDiasOriginal = parseInt(campoOS(os, "GARANTIA_DIAS")) || 0;
+                const novoTotalDias = garantiaDiasOriginal + diasCongelados;
+
+                const osAtualizada = { ...os, DATA_FIM_GARANTIA: novaDataFim, GARANTIA_DIAS: novoTotalDias.toString(), _salvoEm: Date.now() };
+
+                localStorage.setItem('editar_os_dados', JSON.stringify(osAtualizada));
+                localStorage.setItem('reativacao_garantia_info', JSON.stringify({ idOS: idLimpo, diasCongelados, salvoEm: Date.now() }));
+
+                window.location.href = "criar-orcamento.html";
+            }
+        } catch (e) {
+            console.error("Erro ao atualizar garantia:", e);
+            alert("Erro ao atualizar a garantia. Verifique sua conexão e tente novamente.");
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        }
+    };
+
+    function editarServico(dadosString) {
+        const os = JSON.parse(decodeURIComponent(dadosString));
+        const diasDaColunaL = os["DIA"] || 90; 
+        const pacoteCompleto = { ...os, "GARANTIA_DIAS_CALCULADOS": diasDaColunaL, _salvoEm: Date.now() };
+        localStorage.setItem('editar_os_dados', JSON.stringify(pacoteCompleto));
+        window.location.href = "criar-orcamento.html"; 
+    }
+
+    // ── Agendar Serviço (a partir de um Orçamento) ──────────────────────
+    // Reaproveita cliente/endereço/itens já cadastrados na O.S. — só pede
+    // dia e hora. A descrição salva na agenda ganha a marca "(OS #idOS)" no
+    // final, mesmo truque que o receber.html já usa pra reconhecer uma O.S.
+    // dentro de um campo de texto, sem precisar de coluna nova na planilha.
+    let idOSAgendarPendente = null;
+
+    // Gera uma descrição curta e legível a partir do texto de itens salvo em
+    // TIPO_DE_SERVICO (ex.: "2x Limpeza de split | Troca de gás") reaproveitando
+    // o mesmo parser de quantidade ("Nx ...") já usado no restante da página.
+    function descricaoParaAgenda(servicosTexto) {
+        const itens = (servicosTexto || "").toString().split('|').map(s => s.trim()).filter(s => s !== '');
+        if (itens.length === 0) return "";
+        return itens.map(s => {
+            const { quantidade, descricao } = extrairQuantidade(s);
+            return quantidade > 1 ? `${quantidade}x ${descricao}` : descricao;
+        }).join('; ');
+    }
+
+    function abrirModalAgendar(idOS) {
+        idOSAgendarPendente = idOS;
+        const os = cacheOS[idOS];
+        const nomeCliente = os
+            ? String(campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "").replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim()
+            : "";
+        document.getElementById('modal-agendar-cliente').innerText = nomeCliente
+            ? `${nomeCliente} — OS #${idOS}`
+            : `OS #${idOS}`;
+        document.getElementById('agendar-data').value = "";
+        document.getElementById('agendar-hora').value = "";
+
+        const btn = document.getElementById('btn-confirmar-agendar');
+        btn.disabled = false;
+        btn.innerText = "Confirmar";
+
+        document.getElementById('modal-agendar').classList.remove('hidden');
+    }
+
+    function fecharModalAgendar() {
+        document.getElementById('modal-agendar').classList.add('hidden');
+        idOSAgendarPendente = null;
+    }
+
+    document.getElementById('btn-confirmar-agendar').onclick = async function() {
+        if (!idOSAgendarPendente) return;
+        const idOS = idOSAgendarPendente;
+        const os = cacheOS[idOS];
+        if (!os) { alert("Não encontrei os dados dessa OS. Recarregue a página e tente de novo."); return; }
+
+        const dataInput = document.getElementById('agendar-data').value;
+        const horaInput = document.getElementById('agendar-hora').value;
+        if (!dataInput || !horaInput) { alert("Informe o dia e a hora do serviço."); return; }
+
+        const cliente = String(campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "").replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
+        const endereco = campoOS(os, "ENDERECO", "ENDEREÇO") || "";
+        const servicosTexto = campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "";
+        const descItens = descricaoParaAgenda(servicosTexto);
+        const descricaoFinal = `[Serviço] ${descItens} (OS #${idOS})`.trim();
+
+        const payload = {
+            action: "cadastrar",
+            os_id: idOS,
+            cliente: cliente,
+            endereco: endereco,
+            descricao: descricaoFinal,
+            valor: "",
+            data_servico: dataInput.split('-').reverse().join('/'),
+            hora: horaInput
+        };
+
+        const btn = this;
+        btn.disabled = true;
+        btn.innerText = "Agendando...";
+        try {
+            await fetch(URL_AGENDA, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            fecharModalAgendar();
+            await carregarDados();
+            abrirModalAgendarSucesso(cliente, dataInput, horaInput);
+        } catch (error) {
+            console.error("Erro ao agendar serviço:", error);
+            alert("Erro ao agendar. Verifique sua conexão e tente novamente.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Confirmar";
+        }
+    };
+
+    function abrirModalAgendarSucesso(cliente, dataInput, horaInput) {
+        const dataBR = dataInput.split('-').reverse().join('/');
+        const nomeTexto = cliente ? `${cliente} — ` : "";
+        document.getElementById('modal-agendar-sucesso-msg').innerText =
+            `${nomeTexto}${dataBR} às ${horaInput}. Você já pode acompanhar em Agenda de Serviços.`;
+        document.getElementById('modal-agendar-sucesso').classList.remove('hidden');
+    }
+
+    function fecharModalAgendarSucesso() {
+        document.getElementById('modal-agendar-sucesso').classList.add('hidden');
+    }
+
+    function formatarDataBR(dataPlanilha) {
+        if (!dataPlanilha || dataPlanilha === "---") return "---";
+        if (dataPlanilha.toString().includes('T')) {
+            const d = new Date(dataPlanilha);
+            return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+        }
+        return dataPlanilha;
+    }
+
+    // ── extrai quantidade do prefixo "Nx" ou "NX" ──────────────
+    // Ex: "4x Limpeza..." → 4 | "1X Troca..." → 1 | "Instalação..." → 1
+    function extrairQuantidade(textoServico) {
+        const match = textoServico.trim().match(/^(\d+)\s*[xX]\s*/);
+        if (match) {
+            return {
+                quantidade: parseInt(match[1]),
+                descricao: textoServico.trim().slice(match[0].length).trim()
+            };
+        }
+        return { quantidade: 1, descricao: textoServico.trim() };
+    }
+
+    // ── calcula o valor total real com base nos itens e qty, e gera uma prévia curta da descrição ─────
+    // A planilha guarda VALOR_TOTAL como valor unitário do serviço.
+    // Se houver múltiplos itens separados por "|", divide igualmente e multiplica pela qty.
+    // Converte um valor monetário em texto (formato BR "2.100,00" ou "600,00",
+    // ou já numérico "2100.5") para um número JS correto.
+    function parseValorBR(valorTexto) {
+        let str = valorTexto.toString().trim().replace(/[^\d,.\-]/g, '');
+        if (str === '') return 0;
+
+        const temVirgula = str.includes(',');
+        const temPonto = str.includes('.');
+
+        if (temVirgula && temPonto) {
+            // Ex: "2.100,00" -> ponto é separador de milhar, vírgula é decimal
+            str = str.replace(/\./g, '').replace(',', '.');
+        } else if (temVirgula) {
+            // Ex: "600,01" -> vírgula é decimal
+            str = str.replace(',', '.');
+        } else if (temPonto) {
+            // Só ponto: pode ser decimal ("600.01") ou milhar ("2.100").
+            // Se houver exatamente 3 dígitos após o último ponto, trata como milhar.
+            const partes = str.split('.');
+            const ultima = partes[partes.length - 1];
+            if (partes.length > 1 && ultima.length === 3) {
+                str = partes.join('');
+            }
+            // caso contrário mantém o ponto como decimal
+        }
+
+        return parseFloat(str) || 0;
+    }
+
+    function calcularValorRealEHtml(servicosTexto, valorTotalPlanilha) {
+        valorTotalPlanilha = valorTotalPlanilha.toString();
+
+        // Remove o marcador ##TOTAL## (valor final já com desconto, usado
+        // pela página receber.html) antes de qualquer outra coisa — assim
+        // como ##PG## e ##DESC## abaixo, ele não é valor de item nenhum, e
+        // se sobrar aqui seus dígitos entram na soma e distorcem o total
+        // exibido no card.
+        valorTotalPlanilha = valorTotalPlanilha.replace(/##TOTAL##\s*[\d.,]+/i, '').trim();
+
+        // Remove o marcador de "Valor Já Pago" (##PG##) antes de qualquer cálculo
+        valorTotalPlanilha = valorTotalPlanilha.split('##PG##')[0].trim();
+
+        // Remove e guarda o desconto (##DESC##, formato "reais|percentual").
+        // O desconto é aplicado sobre o total agregado da O.S. (não por item),
+        // então precisa sair da string ANTES de somar/dividir os valores dos
+        // serviços — senão os caracteres "##DESC## 10,00|10" acabam entrando
+        // no cálculo do valor e distorcendo o total exibido.
+        let descontoReais = 0;
+        if (valorTotalPlanilha.includes('##DESC##')) {
+            const partesDesc = valorTotalPlanilha.split('##DESC##');
+            valorTotalPlanilha = partesDesc[0].trim();
+            const descPartes = (partesDesc[1] || '').trim().split('|');
+            descontoReais = parseValorBR(descPartes[0] || '0');
+        }
+
+        const itens = servicosTexto
+            .toString()
+            .split('|')
+            .map(s => s.trim())
+            .filter(s => s !== '');
+
+        if (itens.length === 0) {
+            return {
+                html: '<div class="text-[11px] opacity-30 italic">Nenhum serviço registrado</div>',
+                totalReal: Math.max(0, parseValorBR(valorTotalPlanilha) - descontoReais)
+            };
+        }
+
+        // A coluna VALOR_TOTAL pode vir de duas formas:
+        // 1) Um valor único para toda a nota (ex: "2.100,00") -> divide igualmente entre os itens.
+        // 2) Um valor por item, separado por "|" na mesma ordem dos serviços
+        //    (ex: "600,00 | 750,00") -> usa o valor de cada item diretamente, sem dividir.
+        const valoresBrutos = valorTotalPlanilha
+            .split('|')
+            .map(s => s.trim())
+            .filter(s => s !== '');
+
+        let totalReal = 0;
+
+        if (valoresBrutos.length === itens.length && valoresBrutos.length > 1) {
+            // Um valor próprio por item
+            itens.forEach((srv, i) => {
+                const { quantidade } = extrairQuantidade(srv);
+                totalReal += parseValorBR(valoresBrutos[i]) * quantidade;
+            });
+        } else {
+            // Valor único: divide igualmente entre os itens (comportamento antigo)
+            const valorBase = parseValorBR(valorTotalPlanilha);
+            const valorPorItem = valorBase / itens.length;
+            itens.forEach(srv => {
+                const { quantidade } = extrairQuantidade(srv);
+                totalReal += valorPorItem * quantidade;
+            });
+        }
+
+        // Corrige erros de ponto flutuante (ex: 599.9999999999999 ou 600.0000000001)
+        totalReal = Math.round(totalReal * 100) / 100;
+
+        // Aplica o desconto concedido ao cliente (extraído acima) sobre o
+        // total agregado, para que o VALOR TOTAL exibido aqui já saia igual
+        // ao total final cobrado na O.S., não o valor cheio dos serviços.
+        if (descontoReais > 0) {
+            totalReal = Math.max(0, Math.round((totalReal - descontoReais) * 100) / 100);
+        }
+
+        // Gera apenas uma prévia curta do início da descrição (sem valores ao lado)
+        const textoCompleto = itens
+            .map(srv => extrairQuantidade(srv).descricao)
+            .join(' • ');
+
+        const LIMITE = 110;
+        const previa = textoCompleto.length > LIMITE
+            ? textoCompleto.slice(0, LIMITE).trim() + '…'
+            : textoCompleto;
+
+        const html = `<p class="text-[11px] italic leading-relaxed" style="color: var(--text-sub)">${previa}</p>`;
+
+        return { html, totalReal };
+    }
+
+    // Busca um campo aceitando variações de nome (acentos, maiúsculas, espaços, underscores)
+    function campoOS(obj, ...nomes) {
+        for (const n of nomes) {
+            if (obj[n] !== undefined && obj[n] !== null && obj[n] !== '') return obj[n];
+        }
+        const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/gi, '').toUpperCase();
+        const mapa = {};
+        for (const k in obj) mapa[norm(k)] = obj[k];
+        for (const n of nomes) {
+            const v = mapa[norm(n)];
+            if (v !== undefined && v !== null && v !== '') return v;
+        }
+        return undefined;
+    }
+
+    function renderizarCards(lista) {
+        const container = document.getElementById('container-historico');
+        container.innerHTML = "";
+        const cardsAtivos = [];
+        const cardsVencidos = [];
+        lista.forEach(os => {
+            const idOS        = String(campoOS(os, "ID_OS", "ID", "OS", "NUMERO") || "---").replace(/^'/, "");
+            const cliente     = campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "Não identificado";
+            const endereco    = campoOS(os, "ENDERECO", "ENDEREÇO") || "---";
+            const servicosTexto = campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "";
+            const valorPlanilha = campoOS(os, "VALOR_TOTAL", "VALOR", "TOTAL") || "0";
+            const dataFimGarantiaRaw = campoOS(os, "DATA_FIM_GARANTIA", "FIM_GARANTIA", "GARANTIA_FIM");
+            const infoCongelamento = extrairCongelamento(dataFimGarantiaRaw);
+            const estaCongelada = !!infoCongelamento;
+            const dataGarantia = formatarDataBR(estaCongelada ? infoCongelamento.fimOriginal : dataFimGarantiaRaw);
+
+            // Calcula valor real multiplicado pelas quantidades
+            const { html: htmlServicos, totalReal } = calcularValorRealEHtml(servicosTexto, valorPlanilha);
+
+            const totalFormatado = totalReal.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            const estaNaGarantia = estaCongelada ? true : verificarGarantia(dataGarantia);
+            let badgeClass, badgeText;
+            if (estaCongelada) {
+                badgeClass = "congelada-garantia";
+                badgeText = "🧊 Garantia Congelada";
+            } else if (estaNaGarantia) {
+                badgeClass = "em-garantia";
+                badgeText = "🟢 Em Garantia";
+            } else {
+                badgeClass = "fora-garantia";
+                badgeText = "🔴 Fora da Garantia";
+            }
+
+            // Remove o prefixo "Orçamento |" (ou variações) do nome do cliente antes de enviar para edição
+            const clienteLimpo = String(cliente).replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
+            const osParaEdicao = { ...os };
+            for (const k of ["CLIENTE", "NOME", "CLIENTE_NOME"]) {
+                if (osParaEdicao[k] !== undefined) osParaEdicao[k] = clienteLimpo;
+            }
+            const dadosParaEdicao = encodeURIComponent(JSON.stringify(osParaEdicao));
+
+            // Extrai a tag "Orçamento" para exibição separada do nome (mantém visível nesta tela)
+            const ehOrcamento = /^\s*Or[çc]amento\s*\|\s*/i.test(String(cliente));
+            const nomeExibicao = String(cliente).replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
+
+            // Guarda a linha completa para o fluxo de acionar/reativar garantia
+            cacheOS[idOS] = os;
+
+            // Botão de garantia só aparece em Serviço (nunca em Orçamento)
+            let htmlBotaoGarantia = "";
+            if (!ehOrcamento) {
+                if (estaCongelada) {
+                    htmlBotaoGarantia = `<button onclick="abrirModalGarantia('${idOS}', 'reativar')" class="btn-acionar-garantia tipo-reativar"><i class="fa-solid fa-rotate-right"></i> Reativar Garantia</button>`;
+                } else if (estaNaGarantia) {
+                    htmlBotaoGarantia = `<button onclick="abrirModalGarantia('${idOS}', 'acionar')" class="btn-acionar-garantia tipo-acionar"><i class="fa-solid fa-shield-halved"></i> Acionar Garantia</button>`;
+                }
+            }
+            const avisoCongelada = estaCongelada
+                ? `<div class="aviso-congelada"><i class="fa-solid fa-circle-info"></i> Congelada desde ${formatarDataBR(infoCongelamento.dataCongelamento)}</div>`
+                : "";
+
+            // Botão "Agendar Serviço" só aparece em Orçamento — e some assim que
+            // já existe um agendamento pendente pra essa O.S. na agenda (evita
+            // o cliente clicar de novo achando que precisa reagendar à toa).
+            let htmlBotaoAgendar = "";
+            if (ehOrcamento && !agendaPendentesPorOS[idOS]) {
+                htmlBotaoAgendar = `<button onclick="abrirModalAgendar('${idOS}')" class="btn-acionar-garantia" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35);"><i class="fa-solid fa-calendar-plus"></i> Agendar Serviço</button>`;
+            }
+
+            const cardHtml = `
+                <div class="glass-card p-5 card-item" data-garantia="${estaNaGarantia ? 'sim' : 'nao'}" data-tipo="${ehOrcamento ? 'orcamento' : 'servico'}">
+                    <div class="flex justify-between items-start gap-3 mb-4">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2 flex-wrap mb-1.5">
+                                <span class="os-chip"><i class="fa-solid fa-hashtag" style="font-size:8px;"></i> OS ${idOS}</span>
+                                ${ehOrcamento
+                                    ? '<span class="tag-orcamento"><i class="fa-solid fa-file-pen" style="font-size:8px;"></i> Orçamento</span>'
+                                    : '<span class="tag-servico"><i class="fa-solid fa-screwdriver-wrench" style="font-size:8px;"></i> Serviço</span>'}
+                            </div>
+                            <h2 class="text-lg font-bold leading-tight truncate">${nomeExibicao}</h2>
+                            <p class="text-[10px] uppercase font-bold mt-1 flex items-center gap-1.5" style="color: var(--text-sub)">
+                                <i class="fa-solid fa-location-dot" style="font-size:9px;"></i> ${endereco}
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                            <span class="status-badge ${badgeClass}">${badgeText}</span>
+                            <div class="action-group">
+                                <button onclick="editarServico('${dadosParaEdicao}')" class="edit-btn" title="Editar Orçamento">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button onclick="abrirModalExcluir('${idOS}')" class="delete-btn" title="Excluir OS">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-xl p-4 mb-4" style="background: var(--card-sub)">
+                        <span class="text-[9px] font-black uppercase block mb-2 tracking-widest opacity-30">Prévia do Orçamento</span>
+                        ${htmlServicos}
+                    </div>
+                    <div class="footer-divider grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="block mb-1 text-[10px] font-bold uppercase opacity-30">Valor Total</span>
+                            <span class="text-blue-400 text-lg font-black">R$ ${totalFormatado}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="block mb-1 text-[10px] font-bold uppercase opacity-30">Término da Garantia</span>
+                            <span class="${estaNaGarantia ? 'text-green-400' : 'text-red-400'} text-sm font-bold flex items-center justify-end gap-1.5">
+                                <i class="fa-regular fa-calendar" style="font-size:10px;"></i> ${dataGarantia}
+                            </span>
+                        </div>
+                    </div>
+                    ${avisoCongelada}
+                    ${htmlBotaoGarantia}
+                    ${htmlBotaoAgendar}
+                </div>
+            `;
+
+            // Garantias ainda ativas (inclusive congeladas) sempre em cima;
+            // as vencidas sempre embaixo das ativas.
+            if (estaNaGarantia) {
+                cardsAtivos.push(cardHtml);
+            } else {
+                cardsVencidos.push(cardHtml);
+            }
+        });
+
+        container.innerHTML = cardsAtivos.join('') + cardsVencidos.join('');
+    }
+
+    let filtroAtivo = 'todos';
+
+    function setFiltro(filtro) {
+        filtroAtivo = filtro;
+        document.querySelectorAll('.filtro-chip').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filtro === filtro);
+        });
+        filtrarHistorico();
+    }
+
+    function filtrarHistorico() {
+        const termo = document.getElementById('inputBusca').value.toLowerCase();
+        const cards = document.querySelectorAll('.card-item');
+        let visiveis = 0;
+
+        cards.forEach(card => {
+            const matchTexto = card.innerText.toLowerCase().includes(termo);
+
+            let matchFiltro = true;
+            if (filtroAtivo === 'garantia') matchFiltro = card.dataset.garantia === 'sim';
+            else if (filtroAtivo === 'fora') matchFiltro = card.dataset.garantia === 'nao';
+            else if (filtroAtivo === 'orcamento') matchFiltro = card.dataset.tipo === 'orcamento';
+            else if (filtroAtivo === 'servico') matchFiltro = card.dataset.tipo === 'servico';
+
+            const visivel = matchTexto && matchFiltro;
+            card.style.display = visivel ? 'block' : 'none';
+            if (visivel) visiveis++;
+        });
+
+        const semResultados = document.getElementById('sem-resultados');
+        const container = document.getElementById('container-historico');
+        if (cards.length > 0 && visiveis === 0) {
+            semResultados.classList.remove('hidden');
+            semResultados.classList.add('flex');
+            container.classList.add('hidden');
+        } else {
+            semResultados.classList.add('hidden');
+            semResultados.classList.remove('flex');
+            container.classList.remove('hidden');
+        }
+    }
+
+    window.onload = () => {
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
+        carregarDados();
+    };
+
+    // ── Navegação por swipe entre os tópicos (filtros) ──────────────────
+    (function() {
+        const ORDEM_FILTROS = ['todos', 'garantia', 'fora', 'orcamento', 'servico'];
+        const areaSwipe = document.getElementById('area-swipe');
+        let startX = 0, startY = 0;
+
+        areaSwipe.addEventListener('touchstart', (e) => {
+            startX = e.changedTouches[0].screenX;
+            startY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        areaSwipe.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].screenX;
+            const endY = e.changedTouches[0].screenY;
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+
+            const DISTANCIA_MINIMA = 60;
+            // Ignora se o gesto foi curto demais ou predominantemente vertical (scroll da lista)
+            if (Math.abs(deltaX) < DISTANCIA_MINIMA || Math.abs(deltaX) < Math.abs(deltaY) * 1.5) return;
+
+            const indiceAtual = ORDEM_FILTROS.indexOf(filtroAtivo);
+            let novoIndice = indiceAtual;
+
+            if (deltaX < 0) {
+                // Deslizou para a esquerda -> próximo tópico
+                novoIndice = Math.min(indiceAtual + 1, ORDEM_FILTROS.length - 1);
+            } else {
+                // Deslizou para a direita -> tópico anterior
+                novoIndice = Math.max(indiceAtual - 1, 0);
+            }
+
+            if (novoIndice !== indiceAtual) {
+                setFiltro(ORDEM_FILTROS[novoIndice]);
+                const chip = document.querySelector(`.filtro-chip[data-filtro="${ORDEM_FILTROS[novoIndice]}"]`);
+                if (chip) chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+        }, { passive: true });
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-br"> 
+<head>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Agenda de Serviços | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            -webkit-user-select: none; -moz-user-select: none;
+            -ms-user-select: none; user-select: none;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+        input, select, textarea { user-select: text !important; }
+        img { pointer-events: none !important; -webkit-user-drag: none !important; }
+
+        :root {
+            --bg-body: #0d1117;
+            --text-main: white;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --dropdown-bg: #161b22;
+            --card-inner-bg: rgba(0,0,0,0.2);
+        }
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --text-main: #1a1f26;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --dropdown-bg: #ffffff;
+            --card-inner-bg: rgba(0,0,0,0.05);
+        }
+        body { background: var(--bg-body); color: var(--text-main); }
+
+        /* ── CARD COMPACTO ── */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+        .glass-card.concluido {
+            opacity: 0.38;
+            filter: grayscale(1);
+            border-color: var(--glass-border) !important;
+        }
+        .glass-card.concluido .btn-card-acao {
+            filter: grayscale(0) !important;
+            opacity: 1 !important;
+        }
+
+        /* ── POPUP ── */
+        #popupAgendar {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            width: 95%; max-width: 450px;
+            padding: 28px;
+            border-radius: 22px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+        #popupAgendar h2 { margin-bottom: 18px; font-size: 18px; font-weight: 900; text-transform: uppercase; }
+
+        .input-group { margin-bottom: 13px; }
+        .input-group label { display: block; font-size: 10px; opacity: 0.5; text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 11px;
+            padding: 10px 12px;
+            color: inherit;
+            outline: none;
+            font-size: 14px;
+        }
+
+        select option { background-color: #1a1f26; color: white; }
+        body.light-mode select option { background-color: #ffffff; color: #1a1f26; }
+
+        #statusOverlay {
+            display: none; position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88);
+            border-radius: 22px;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 110; text-align: center;
+        }
+        #statusText { white-space: nowrap; }
+
+        /* ── BOTÕES HEADER ── */
+        .theme-toggle, .delete-toggle, .notif-toggle {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .delete-toggle { color: #ef4444; border-color: rgba(239, 68, 68, 0.2); }
+        .notif-toggle { position: relative; }
+        .notif-toggle.ativo { border-color: rgba(37, 99, 235, 0.6); color: #3b82f6; }
+        .notif-toggle .dot {
+            position: absolute; top: 5px; right: 5px;
+            width: 7px; height: 7px;
+            background: #22c55e; border-radius: 50%; display: none;
+        }
+        .notif-toggle.ativo .dot { display: block; }
+
+        /* ── FAB ── */
+        .btn-flutuante {
+            position: fixed; bottom: 26px; right: 22px;
+            width: 54px; height: 54px;
+            background: #2563eb; color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+            cursor: pointer; z-index: 90; transition: 0.3s;
+        }
+        .btn-flutuante:hover { transform: scale(1.1); }
+
+        /* ── FILTROS ── */
+        .filter-btn {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            opacity: 0.6; transition: 0.3s;
+            white-space: nowrap;
+        }
+        .filter-btn.active { background: #2563eb; color: white; opacity: 1; border-color: #2563eb; }
+
+        /* ── BADGES ── */
+        .badge {
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 9px; font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .badge-servico  { background: rgba(34, 197, 94, 0.18); color: #22c55e;  border: 1px solid rgba(34,197,94,0.5); }
+        .badge-orcamento{ background: rgba(37, 99, 235, 0.18); color: #3b82f6;  border: 1px solid rgba(37,99,235,0.5); }
+        .badge-atencao  { background: rgba(234,179, 8, 0.18); color: #eab308;  border: 1px solid rgba(234,179,8,0.5); }
+
+        /* ── BORDAS COLORIDAS POR TIPO ── */
+        .border-servico  { border: 2px solid #22c55e !important; }
+        .border-orcamento{ border: 2px solid #3b82f6 !important; }
+        .border-atencao  { border: 2px solid #eab308 !important; }
+
+        /* ── BADGE VALOR ── */
+        .badge-valor {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 14px; font-weight: 900;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* ── TOAST ── */
+        #toast-minimal {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #22c55e; color: white;
+            padding: 11px 22px; border-radius: 50px;
+            font-weight: 700; display: none; z-index: 10000;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            white-space: nowrap; align-items: center; justify-content: center;
+            font-size: 13px;
+        }
+
+        /* ── POPUP NOTIFICAÇÃO ── */
+        #popupNotificacao {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72); z-index: 200;
+            align-items: center; justify-content: center;
+        }
+        #popupNotificacao.show { display: flex; }
+        .notif-card {
+            background: var(--bg-body);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 28px;
+            max-width: 340px; width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .notif-icon-wrap {
+            width: 64px; height: 64px;
+            background: rgba(37,99,235,0.15);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+            border: 1px solid rgba(37,99,235,0.3);
+        }
+
+        /* ── POPUP CONFIRMAÇÃO (excluir / concluir / limpar) ── */
+        #popupConfirmacao {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72); z-index: 200;
+            align-items: center; justify-content: center;
+        }
+        #popupConfirmacao.show { display: flex; }
+
+        /* ── DROPDOWN CLIENTES ── */
+        .custom-dropdown { position: relative; }
+        .dropdown-list {
+            position: absolute; left: 0; right: 0; top: 110%;
+            background: var(--dropdown-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 13px; z-index: 50;
+            max-height: 190px; overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .dropdown-item {
+            padding: 11px 15px; font-size: 13px;
+            border-bottom: 1px solid var(--glass-border);
+            transition: 0.2s; cursor: pointer;
+        }
+        .dropdown-item:hover { background: #2563eb; color: white; }
+
+        /* ── SCROLLBAR OCULTA (filtros) ── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── INPUT VALOR COM PREFIXO R$ ── */
+        .valor-wrapper {
+            position: relative;
+        }
+        .valor-wrapper span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px;
+            opacity: 0.5;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        .valor-wrapper input {
+            padding-left: 32px !important;
+        }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body class="p-3 pb-24">
+
+    <div id="toast-minimal"><i class="fa-solid fa-check mr-2"></i> SALVO COM SUCESSO!</div>
+
+    <!-- Pop-up de permissão de notificações -->
+    <div id="popupNotificacao">
+        <div class="notif-card">
+            <div class="notif-icon-wrap">
+                <i class="fa-solid fa-bell text-blue-500 text-2xl"></i>
+            </div>
+            <h2 class="font-black text-lg uppercase mb-2">Ativar Notificações</h2>
+            <p class="text-sm opacity-60 mb-5 leading-relaxed">
+                Receba lembretes automáticos dos seus serviços:<br><br>
+                <span class="opacity-80">🕖 <strong>7h da manhã</strong> — resumo do dia</span><br>
+                <span class="opacity-80">⏰ <strong>2h antes</strong> — lembrete do próximo serviço</span>
+            </p>
+            <div class="flex flex-col gap-3">
+                <button onclick="solicitarPermissao()" class="w-full py-3 bg-blue-600 rounded-xl font-black uppercase text-sm">
+                    <i class="fa-solid fa-bell mr-2"></i> Ativar Agora
+                </button>
+                <button onclick="dispensarPopupNotif()" class="w-full py-3 rounded-xl font-bold text-xs opacity-40">
+                    Agora não
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up de confirmação (excluir / concluir / limpar) -->
+    <div id="popupConfirmacao">
+        <div class="notif-card">
+            <div class="notif-icon-wrap" id="confirmIconWrap">
+                <i id="confirmIcon" class="fa-solid fa-trash text-2xl"></i>
+            </div>
+            <h2 id="confirmTitulo" class="font-black text-lg uppercase mb-2">Excluir Visita</h2>
+            <p id="confirmMensagem" class="text-sm opacity-60 mb-5 leading-relaxed">
+                Deseja excluir permanentemente esta visita?
+            </p>
+            <div class="flex gap-3">
+                <button onclick="fecharConfirmacao()" class="flex-1 py-3 rounded-xl font-bold text-xs opacity-40 border border-white/10">
+                    Cancelar
+                </button>
+                <button id="confirmBotaoAcao" onclick="executarConfirmacao()" class="flex-1 py-3 rounded-xl font-black uppercase text-sm text-white">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div onclick="abrirPopup()" class="btn-flutuante">
+        <i class="fa-solid fa-plus text-xl"></i>
+    </div>
+
+    <!-- Modal Agendamento -->
+    <div id="popupAgendar">
+        <span class="absolute top-5 right-5 cursor-pointer text-xl opacity-50" onclick="fecharPopup()">&times;</span>
+        <h2 id="modalTitle">Nova Visita</h2>
+
+        <div id="statusOverlay">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mb-4"></div>
+            <div id="statusText" class="font-black text-blue-500 uppercase tracking-widest">Salvando...</div>
+        </div>
+
+        <form id="formAgenda">
+            <!-- ID interno do registro (usado para edição) -->
+            <input type="hidden" id="edit_id">
+
+            <div class="input-group">
+                <label>Cliente</label>
+                <div class="custom-dropdown" id="dropdown-cliente">
+                    <div class="w-full bg-white/5 border border-white/10 rounded-xl p-[10px_12px] flex justify-between items-center cursor-pointer">
+                        <input type="text" id="cliente" placeholder="Nome do Cliente"
+                            class="bg-transparent border-none outline-none w-full p-0 text-inherit focus:ring-0"
+                            autocomplete="off"
+                            onfocus="toggleDropdown(this.parentElement)"
+                            oninput="filtrarClientesDropdown(this.value)"
+                            style="border:none !important;background:none !important;box-shadow:none !important;height:22px;"
+                            required>
+                        <i class="fa-solid fa-chevron-down opacity-30 text-[10px] ml-2" onclick="toggleDropdown(this.parentElement)"></i>
+                    </div>
+                    <ul id="lista_clientes_custom" class="dropdown-list"></ul>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Tipo</label>
+                <select id="tipo">
+                    <option value="Serviço">Serviço</option>
+                    <option value="Orçamento">Orçamento</option>
+                    <option value="Atenção">Atenção</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Endereço</label>
+                <input type="text" id="endereco" required>
+            </div>
+            <div class="input-group">
+                <label>Descrição do Problema</label>
+                <textarea id="descricao" rows="2" style="resize:none;"></textarea>
+            </div>
+
+            <!-- CAMPOS VALOR -->
+            <div class="flex gap-3">
+                <div class="input-group flex-1">
+                    <label>Valor do Serviço</label>
+                    <div class="valor-wrapper">
+                        <span>R$</span>
+                        <input type="number" id="valor" placeholder="0,00" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="input-group flex-1">
+                    <label>Valor da Entrada</label>
+                    <div class="valor-wrapper">
+                        <span>R$</span>
+                        <input type="number" id="entrada" placeholder="0,00" min="0" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <div class="input-group flex-1">
+                    <label>Data</label>
+                    <input type="date" id="data_visita" required>
+                </div>
+                <div class="input-group flex-1">
+                    <label>Hora</label>
+                    <input type="time" id="hora_visita" required>
+                </div>
+            </div>
+            <button type="submit" id="btnAgendar"
+                class="w-full py-3 bg-blue-600 rounded-xl font-black uppercase text-sm mt-1">
+                Confirmar Agendamento
+            </button>
+        </form>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center mb-5">
+            <div>
+                <h1 class="text-xl font-black uppercase tracking-tighter">
+                    Agenda de <span class="text-blue-500">Serviços</span>
+                </h1>
+                <span class="text-[10px] opacity-40 font-bold uppercase tracking-widest">Refrigeração Eliezer</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="history.back()" class="theme-toggle" title="Voltar">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </button>
+                <a href="sistemas.html" class="theme-toggle" title="Início" style="text-decoration:none;">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </a>
+              
+                <button onclick="toggleNotificacoes()" id="btnNotif" class="notif-toggle" title="Notificações">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span class="dot"></span>
+                </button>
+                <button onclick="toggleTheme()" class="theme-toggle">
+                    <i id="theme-icon" class="fa-solid fa-sun text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Filtros -->
+        <div class="flex gap-2 overflow-x-auto pb-3 no-scrollbar mb-3">
+            <button onclick="filtrar('dia')"    id="f-dia"    class="filter-btn active">Dia</button>
+            <button onclick="filtrar('semana')" id="f-semana" class="filter-btn">Semana</button>
+            <button onclick="filtrar('mes')"    id="f-mes"    class="filter-btn">Mês</button>
+            <button onclick="filtrar('todos')"  id="f-todos"  class="filter-btn">Todos</button>
+        </div>
+
+        <!-- Busca -->
+        <div class="relative mb-4">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 opacity-30 text-sm"></i>
+            <input type="text" id="buscaCliente" oninput="renderizarServicos()"
+                placeholder="Buscar cliente..."
+                class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:border-blue-500 transition-all text-sm">
+        </div>
+
+        <!-- Cards -->
+        <div id="container-historico" class="space-y-2">
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Sincronizando lista</p>
+            </div>
+        </div>
+    </div>
+
+
+
+<script type="module">
+  // ── Firebase SDK ──────────────────────────────────────────────
+  import { initializeApp }     from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js';
+
+  const FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyCxV-kcyBJXIpD-o-_NU8kLwntp8Tl8IMA",
+    authDomain:        "refrigeracao-eliezer.firebaseapp.com",
+    projectId:         "refrigeracao-eliezer",
+    storageBucket:     "refrigeracao-eliezer.firebasestorage.app",
+    messagingSenderId: "320066098066",
+    appId:             "1:320066098066:web:42a8ce4b3372a85060a74b"
+  };
+
+  const VAPID_KEY = "BD-kvvnlphUQY_IT0vYqTkMVOp_SkFNCVLxvpLdmjymb5H9Qe7IyWF8Bh6h4sabHYIM-rJ7jWYP4xE7FPKjLwSw";
+
+  const WORKER_URL   = "https://refrigeracao-push.refrigeracaoeliezeer.workers.dev";
+  const URL_CLIENTES = apiURL('config');
+  const URL_AGENDA   = apiURL('agenda');
+
+  let agendaGlobal  = [];
+  let clientesCache = [];
+  let filtroAtual   = 'dia';
+  let swRegistration = null;
+  let firebaseApp, messaging;
+
+  // ── Inicializa Firebase ───────────────────────────────────────
+  async function inicializarFirebase() {
+    try {
+      firebaseApp = initializeApp(FIREBASE_CONFIG);
+      messaging   = getMessaging(firebaseApp);
+      onMessage(messaging, payload => {
+        console.log('[Firebase] Mensagem foreground:', payload);
+        const d = payload.data || payload.notification || {};
+        mostrarToast((d.title || 'Notificação') + ' — ' + (d.body || ''));
+      });
+      console.log('[App] Firebase inicializado');
+    } catch (err) {
+      console.error('[App] Erro Firebase:', err);
+    }
+  }
+
+  async function registrarFCMToken() {
+    if (!messaging || !swRegistration) return;
+    try {
+      const token = await getToken(messaging, {
+        vapidKey:            VAPID_KEY,
+        serviceWorkerRegistration: swRegistration
+      });
+      if (!token) { console.warn('[App] Token FCM vazio'); return; }
+      console.log('[App] Token FCM:', token.slice(0, 30) + '...');
+      await fetch(WORKER_URL + '/subscribe-fcm', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ token })
+      });
+      localStorage.setItem('fcm_token', token);
+      console.log('[App] Token FCM registrado no servidor ✓');
+    } catch (err) {
+      console.error('[App] Erro ao obter token FCM:', err);
+    }
+  }
+
+  async function inicializarSW() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      swRegistration = await navigator.serviceWorker.register('sw.js');
+      console.log('[App] Service Worker registrado');
+      atualizarBotaoNotif();
+    } catch (err) {
+      console.error('[App] Erro SW:', err);
+    }
+  }
+
+  function atualizarBotaoNotif() {
+    const btn = document.getElementById('btnNotif');
+    if (!btn) return;
+    if (Notification.permission === 'granted') btn.classList.add('ativo');
+    else btn.classList.remove('ativo');
+  }
+
+  window.toggleNotificacoes = function() {
+    const perm = Notification.permission;
+    if (perm === 'granted')  mostrarToast('Notificações já estão ATIVAS ✓');
+    else if (perm === 'denied') mostrarToast('Notificações BLOQUEADAS — desbloqueie nas configurações');
+    else document.getElementById('popupNotificacao').classList.add('show');
+  };
+
+  window.solicitarPermissao = async function() {
+    dispensarPopupNotif();
+    try {
+      const result = await Notification.requestPermission();
+      if (result === 'granted') {
+        atualizarBotaoNotif();
+        await registrarFCMToken();
+        mostrarToast('Notificações ativadas! 🔔');
+      } else {
+        mostrarToast('Permissão negada. Ative nas configurações.');
+      }
+    } catch (err) { console.error(err); }
+  };
+
+  window.dispensarPopupNotif = function() {
+    document.getElementById('popupNotificacao').classList.remove('show');
+    localStorage.setItem('notif_dispensado', Date.now());
+  };
+
+  function checarExibirPopupNotif() {
+    if (Notification.permission === 'granted') { registrarFCMToken(); return; }
+    if (Notification.permission === 'denied') return;
+    const dispensado = localStorage.getItem('notif_dispensado');
+    if (dispensado && Date.now() - parseInt(dispensado) < 3*24*60*60*1000) return;
+    setTimeout(() => document.getElementById('popupNotificacao').classList.add('show'), 3000);
+  }
+
+  // ── Utilitários ───────────────────────────────────────────────
+
+  window.toggleTheme = function() {
+    document.body.classList.toggle('light-mode');
+    const isLight = document.body.classList.contains('light-mode');
+    document.getElementById('theme-icon').className =
+      isLight ? 'fa-solid fa-moon text-sm' : 'fa-solid fa-sun text-sm';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  };
+
+  window.abrirPopup = function() {
+    document.getElementById('modalTitle').innerText = "Nova Visita";
+    document.getElementById('formAgenda').reset();
+    document.getElementById('edit_id').value = "";
+    document.getElementById('popupAgendar').style.display = 'block';
+  };
+
+  window.fecharPopup = function() {
+    document.getElementById('popupAgendar').style.display = 'none';
+  };
+
+  async function carregarClientes() {
+    try { const res = await fetch(URL_CLIENTES); clientesCache = await res.json(); }
+    catch (e) { console.error("Erro clientes", e); }
+  }
+
+  async function carregarAgenda() {
+    document.getElementById('container-historico').innerHTML = `
+      <div class="flex flex-col items-center justify-center py-16">
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-white/5 border-t-blue-500 mb-3"></div>
+        <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Sincronizando agenda</p>
+      </div>`;
+    try {
+      const res = await fetch(URL_AGENDA + '&t=' + Date.now());
+      agendaGlobal = await res.json();
+      renderizarServicos();
+    } catch (e) {
+      document.getElementById('container-historico').innerHTML =
+        `<div class="text-center py-10 opacity-50 font-bold text-sm">ERRO AO CONECTAR</div>`;
+    }
+  }
+
+  window.filtrar = function(tipo) {
+    filtroAtual = tipo;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('f-' + tipo).classList.add('active');
+    renderizarServicos();
+  };
+
+  function renderizarServicos() {
+    const container = document.getElementById('container-historico');
+    const busca = document.getElementById('buscaCliente').value.toLowerCase();
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+
+    let dadosFiltrados = agendaGlobal.filter(item => {
+      const termoMatch = item.CLIENTE && item.CLIENTE.toString().toLowerCase().includes(busca);
+      if (!termoMatch) return false;
+      let tipo = getTipo(item);
+      // DATA_DO_SERVICO agora está na coluna F (índice 5 da planilha)
+      const dataServico = parseDataServico(item.DATA_DO_SERVICO);
+      if (tipo === 'Atenção' && dataServico < hoje && item.STATUS !== 'concluido') item.STATUS = 'concluido';
+      if (tipo === 'Atenção' && item.STATUS !== 'concluido') return true;
+      if (filtroAtual === 'todos') return true;
+      if (isNaN(dataServico)) return true;
+      if (filtroAtual === 'dia') return dataServico.toLocaleDateString() === hoje.toLocaleDateString();
+      if (filtroAtual === 'semana') { const diff=(dataServico-hoje)/(1000*60*60*24); return diff>=0&&diff<=7; }
+      if (filtroAtual === 'mes') return dataServico.getMonth()===hoje.getMonth()&&dataServico.getFullYear()===hoje.getFullYear();
+      return true;
+    });
+
+    dadosFiltrados.sort((a, b) => {
+      const cA = estaConcluido(a), cB = estaConcluido(b);
+      if (cA !== cB) return cA ? 1 : -1;
+      if (!cA) { const tA=getTipo(a)==='Atenção',tB=getTipo(b)==='Atenção'; if(tA!==tB) return tA?-1:1; }
+      return horaParaMin(a.HORA)-horaParaMin(b.HORA);
+    });
+
+    if (dadosFiltrados.length === 0) {
+      container.innerHTML = `<div class="text-center py-10 opacity-20 font-bold uppercase text-xs">Nenhum serviço encontrado</div>`;
+      return;
+    }
+    container.innerHTML = dadosFiltrados.map(item => gerarCardHTML(item)).join('');
+  }
+
+  window.renderizarServicos = renderizarServicos;
+
+  function getTipo(item) {
+    const d = item.DESCRICAO||"";
+    if (d.includes("[Orçamento]")) return "Orçamento";
+    if (d.includes("[Atenção]"))   return "Atenção";
+    return "Serviço";
+  }
+
+  // Card é tratado como concluído (cinza) se foi marcado manualmente
+  // OU se a data do serviço já passou (dia anterior a hoje).
+  function estaConcluido(item) {
+    if (item.STATUS === 'concluido') return true;
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const d = parseDataServico(item.DATA_DO_SERVICO);
+    if (!isNaN(d) && d < hoje) return true;
+    return false;
+  }
+
+  function parseDataServico(raw) {
+    if (!raw) return new Date(NaN);
+    const str = typeof raw==='string'?raw.split('T')[0]:new Date(raw).toISOString().split('T')[0];
+    return new Date(str+'T12:00:00');
+  }
+
+  function horaParaMin(h) {
+    if (!h) return 0;
+    const s=h.includes('T')?h.split('T')[1].substring(0,5):h;
+    const p=s.split(':'); return parseInt(p[0]||0)*60+parseInt(p[1]||0);
+  }
+
+  function formatarHoraStr(h) {
+    if (!h) return "--:--";
+    const s=h.includes('T')?h.split('T')[1].substring(0,5):h;
+    return s.substring(0,5);
+  }
+
+  // ── Formata valor para exibição no card (extrai só o total, antes do "|") ──
+  function formatarValor(v) {
+    if (!v && v !== 0) return null;
+    const total = v.toString().split('|')[0].trim(); // ignora entrada
+    const num = parseFloat(total);
+    if (isNaN(num) || num <= 0) return null;
+    return 'R$ ' + num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function gerarCardHTML(item) {
+    const isConcluido = estaConcluido(item);
+    const tipo = getTipo(item);
+    const obs = (item.DESCRICAO||item.OBSERVACAO||"").replace("[Orçamento]","").replace("[Serviço]","").replace("[Atenção]","").trim();
+    const dataF = (()=>{ const d=parseDataServico(item.DATA_DO_SERVICO); return isNaN(d)?(item.DATA_DO_SERVICO||"—"):d.toLocaleDateString('pt-BR'); })();
+    const hF = formatarHoraStr(item.HORA);
+    const itemId = item.ID||"";
+    const itemEncoded = encodeURIComponent(JSON.stringify(item));
+    const valorFormatado = formatarValor(item.VALOR);
+
+    let colorBorder='',badgeClass='';
+    if(tipo==='Serviço'){colorBorder='border-servico';badgeClass='badge-servico';}
+    else if(tipo==='Orçamento'){colorBorder='border-orcamento';badgeClass='badge-orcamento';}
+    else{colorBorder='border-atencao';badgeClass='badge-atencao';}
+
+    return `
+    <div class="glass-card px-4 py-3 relative ${isConcluido?'concluido':colorBorder}">
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
+          <span class="badge ${badgeClass} shrink-0">${tipo}</span>
+          <span class="font-black text-sm truncate leading-tight">${item.CLIENTE}</span>
+          ${valorFormatado ? `<span class="badge-valor shrink-0">${valorFormatado}</span>` : ''}
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="text-center bg-white/5 px-2 py-1 rounded-lg border border-white/5 leading-tight">
+            <p class="text-[10px] font-black text-blue-500">${dataF}</p>
+            <p class="text-[12px] font-bold">${hF}</p>
+          </div>
+          <button onclick="prepararEdicao('${itemEncoded}')" class="btn-card-acao text-blue-500 opacity-55 hover:opacity-100 p-1">
+            <i class="fa-solid fa-pen-to-square text-base"></i>
+          </button>
+          ${isConcluido ? `<button onclick="excluirServico('${itemId}')" class="btn-card-acao text-red-500 opacity-70 hover:opacity-100 p-1">
+            <i class="fa-solid fa-trash text-base"></i>
+          </button>` : ''}
+        </div>
+      </div>
+      <p class="text-xs opacity-55 truncate mb-1"><i class="fa-solid fa-location-dot mr-1"></i>${item.ENDERECO}</p>
+      <div class="flex items-center gap-2 mt-1">
+        <div class="flex-1 bg-black/20 rounded-lg px-3 py-1.5 min-w-0">
+          <p class="text-xs opacity-90 truncate">${obs||'Sem observações'}</p>
+        </div>
+        ${!isConcluido
+          ?`<button onclick="concluirServico('${itemId}')" class="shrink-0 px-3 py-1.5 bg-green-600/20 text-green-500 rounded-lg text-[10px] font-black uppercase whitespace-nowrap">✓ Concluir</button>`
+          :`<span class="shrink-0 text-[10px] font-black text-green-500 uppercase">✓ Feito</span>`
+        }
+      </div>
+    </div>`;
+  }
+
+  window.prepararEdicao = function(itemEncoded) {
+    const item = JSON.parse(decodeURIComponent(itemEncoded));
+    document.getElementById('modalTitle').innerText = "Editar Visita";
+    document.getElementById('cliente').value  = item.CLIENTE;
+    document.getElementById('endereco').value = item.ENDERECO;
+
+    let tipoOriginal = "Serviço";
+    if ((item.DESCRICAO||"").includes("[Orçamento]")) tipoOriginal = "Orçamento";
+    if ((item.DESCRICAO||"").includes("[Atenção]"))   tipoOriginal = "Atenção";
+    document.getElementById('tipo').value = tipoOriginal;
+
+    const obsLimpa = (item.DESCRICAO||"").replace("[Orçamento]","").replace("[Serviço]","").replace("[Atenção]","").trim();
+    document.getElementById('descricao').value = obsLimpa;
+
+    // Popula campos valor e entrada — separados por "|" na coluna E
+    const partes = (item.VALOR || "").toString().split('|');
+    document.getElementById('valor').value   = partes[0] ? partes[0].trim() : "";
+    document.getElementById('entrada').value = partes[1] ? partes[1].trim() : "";
+
+    const d = parseDataServico(item.DATA_DO_SERVICO);
+    if (!isNaN(d)) document.getElementById('data_visita').value = d.toISOString().split('T')[0];
+    document.getElementById('hora_visita').value = formatarHoraStr(item.HORA);
+    document.getElementById('edit_id').value = item.ID||"";
+    document.getElementById('popupAgendar').style.display = 'block';
+  };
+
+  // ── Modal de confirmação (excluir / concluir / limpar) ──────────
+  // Substitui o window.confirm() nativo do navegador por um modal no mesmo
+  // estilo visual do resto do app. Cor/ícone/texto mudam conforme a ação.
+  let confirmacaoPendente = null;
+
+  function hexToRgba(hex, alpha) {
+    const h = hex.replace('#', '');
+    const r = parseInt(h.substring(0, 2), 16);
+    const g = parseInt(h.substring(2, 4), 16);
+    const b = parseInt(h.substring(4, 6), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function abrirConfirmacao({ titulo, mensagem, textoBotao, cor, icone, acao }) {
+    document.getElementById('confirmTitulo').innerText = titulo;
+    document.getElementById('confirmMensagem').innerText = mensagem;
+
+    const botao = document.getElementById('confirmBotaoAcao');
+    botao.innerText = textoBotao;
+    botao.style.background = cor;
+
+    const icon = document.getElementById('confirmIcon');
+    icon.className = `fa-solid ${icone} text-2xl`;
+    icon.style.color = cor;
+
+    const iconWrap = document.getElementById('confirmIconWrap');
+    iconWrap.style.background = hexToRgba(cor, 0.15);
+    iconWrap.style.borderColor = hexToRgba(cor, 0.35);
+
+    confirmacaoPendente = acao;
+    document.getElementById('popupConfirmacao').classList.add('show');
+  }
+
+  window.fecharConfirmacao = function() {
+    document.getElementById('popupConfirmacao').classList.remove('show');
+    confirmacaoPendente = null;
+  };
+
+  window.executarConfirmacao = function() {
+    if (confirmacaoPendente) confirmacaoPendente();
+    window.fecharConfirmacao();
+  };
+
+  window.concluirServico = function(id) {
+    if (!id) { mostrarToast('Erro: ID não encontrado'); return; }
+    abrirConfirmacao({
+      titulo: "Concluir Visita",
+      mensagem: "Deseja marcar esta visita como CONCLUÍDA?",
+      textoBotao: "✓ Concluir",
+      cor: "#22c55e",
+      icone: "fa-check",
+      acao: () => enviarDados({ action: "concluir", id }, "Visita concluída!")
+    });
+  };
+
+  window.excluirServico = function(id) {
+    if (!id) { mostrarToast('Erro: ID não encontrado'); return; }
+    abrirConfirmacao({
+      titulo: "Excluir Visita",
+      mensagem: "Deseja excluir permanentemente esta visita? Essa ação não pode ser desfeita.",
+      textoBotao: "Excluir",
+      cor: "#ef4444",
+      icone: "fa-trash",
+      acao: () => enviarDados({ action: "excluir", id }, "Excluído com sucesso")
+    });
+  };
+
+  window.limparConcluidos = function() {
+    abrirConfirmacao({
+      titulo: "Limpar Concluídas",
+      mensagem: "Deseja excluir permanentemente todas as visitas concluídas? Essa ação não pode ser desfeita.",
+      textoBotao: "Excluir Tudo",
+      cor: "#ef4444",
+      icone: "fa-broom",
+      acao: () => enviarDados({ action: "limpar_concluidos" }, "Excluído com sucesso")
+    });
+  };
+
+  document.getElementById('formAgenda').onsubmit = function(e) {
+    e.preventDefault();
+    enviarDados({
+      action:       "cadastrar",
+      edit_id:      document.getElementById('edit_id').value,
+      cliente:      document.getElementById('cliente').value,
+      endereco:     document.getElementById('endereco').value,
+      descricao:    `[${document.getElementById('tipo').value}] ${document.getElementById('descricao').value}`,
+      valor:        (()=>{ const v=document.getElementById('valor').value||""; const e=document.getElementById('entrada').value||""; return e ? `${v}|${e}` : v; })(),   // salva "total|entrada" ou só "total"
+      data_servico: document.getElementById('data_visita').value.split('-').reverse().join('/'),
+      hora:         document.getElementById('hora_visita').value
+    }, "Salvo com sucesso!");
+  };
+
+  function enviarDados(payload, mensagemSucesso) {
+    const overlay = document.getElementById('statusOverlay');
+    overlay.style.display = 'flex';
+    document.getElementById('statusText').innerText = "Processando...";
+    fetch(URL_AGENDA, { method:'POST', mode:'no-cors', body:JSON.stringify(payload) });
+    setTimeout(() => {
+      document.getElementById('statusText').innerText = "Sucesso!";
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        fecharPopup();
+        const toast = document.getElementById('toast-minimal');
+        toast.innerHTML = `<i class="fa-solid fa-check mr-2"></i> ${mensagemSucesso.toUpperCase()}`;
+        toast.style.display = 'flex';
+        setTimeout(() => { toast.style.display='none'; carregarAgenda(); }, 1800);
+      }, 700);
+    }, 1000);
+  }
+
+  window.mostrarToast = function(msg) {
+    const toast = document.getElementById('toast-minimal');
+    toast.innerHTML = `<i class="fa-solid fa-check mr-2"></i> ${msg.toUpperCase()}`;
+    toast.style.display = 'flex';
+    setTimeout(() => { toast.style.display='none'; }, 3000);
+  };
+
+  window.toggleDropdown = function(el) {
+    const list = el.nextElementSibling||el.parentElement.querySelector('.dropdown-list');
+    const isVisible = list.style.display==='block';
+    document.querySelectorAll('.dropdown-list').forEach(l=>l.style.display='none');
+    if (!isVisible) { list.style.display='block'; filtrarClientesDropdown(document.getElementById('cliente').value); }
+  };
+
+  window.selecionarCliente = function(nome, endereco) {
+    document.getElementById('cliente').value = nome;
+    document.getElementById('endereco').value = endereco||"";
+    document.querySelectorAll('.dropdown-list').forEach(l=>l.style.display='none');
+  };
+
+  window.filtrarClientesDropdown = function(valor) {
+    const list = document.getElementById('lista_clientes_custom');
+    const busca = valor.toLowerCase();
+    const unicos = [...new Map(clientesCache.map(i=>[i.cli_nome,i])).values()];
+    const filtrados = unicos.filter(c=>c.cli_nome.toLowerCase().includes(busca));
+    if (filtrados.length>0) {
+      list.innerHTML = filtrados.map(c=>`<li class="dropdown-item" onclick="selecionarCliente('${c.cli_nome.replace(/'/g,"\\'")}','${(c.cli_end||'').replace(/'/g,"\\'")}')"> ${c.cli_nome}</li>`).join('');
+      list.style.display='block';
+    } else { list.style.display='none'; }
+  };
+
+  window.addEventListener('click', e => { if(!e.target.closest('.custom-dropdown')) document.querySelectorAll('.dropdown-list').forEach(l=>l.style.display='none'); });
+
+  // ── SWIPE PARA TROCAR ABA ─────────────────────────────────────
+  const ABAS = ['dia', 'semana', 'mes', 'todos'];
+
+  (function configurarSwipe() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let swipeAtivo = false;
+
+    const container = document.getElementById('container-historico');
+
+    document.addEventListener('touchstart', e => {
+      // Ignora se o popup estiver aberto
+      if (document.getElementById('popupAgendar').style.display === 'block') return;
+      if (document.getElementById('popupNotificacao').classList.contains('show')) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      swipeAtivo = true;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      if (!swipeAtivo) return;
+      swipeAtivo = false;
+
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+
+      // Só age se o movimento horizontal for dominante e significativo (>50px)
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaY) > Math.abs(deltaX) * 0.8) return;
+
+      const idxAtual = ABAS.indexOf(filtroAtual);
+      let proximo = idxAtual;
+
+      if (deltaX < 0) {
+        // Deslizou para a esquerda → próxima aba
+        proximo = Math.min(idxAtual + 1, ABAS.length - 1);
+      } else {
+        // Deslizou para a direita → aba anterior
+        proximo = Math.max(idxAtual - 1, 0);
+      }
+
+      if (proximo !== idxAtual) {
+        filtrar(ABAS[proximo]);
+
+        // Feedback visual: pisca levemente o container
+        if (container) {
+          container.style.transition = 'opacity 0.15s';
+          container.style.opacity = '0.5';
+          setTimeout(() => { container.style.opacity = '1'; }, 150);
+        }
+      }
+    }, { passive: true });
+  })();
+
+  // ── INICIALIZAÇÃO ─────────────────────────────────────────────
+  window.onload = async () => {
+    if (localStorage.getItem('theme') === 'light') toggleTheme();
+    document.addEventListener('contextmenu', e=>e.preventDefault());
+    document.addEventListener('keydown', e=>{
+      if((e.ctrlKey&&['c','u','s','p'].includes(e.key.toLowerCase()))||e.keyCode===123) e.preventDefault();
+    });
+
+    await carregarAgenda();
+    carregarClientes();
+    await inicializarSW();
+    await inicializarFirebase();
+    checarExibirPopupNotif();
+  };
+</script>
+</body>
+</html>

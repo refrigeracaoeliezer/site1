@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+ <script>
+    if (localStorage.getItem("inforos_logado") !== "true") {
+        window.location.replace("index.html");
+    }
+</script>
+
+    <meta charset="UTF-8">
+    <title>Configurações | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+
+/* Bloqueia a seleção de texto e o arraste de imagens */
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Mantém os campos de texto funcionando */
+    input, select, textarea {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+    }
+
+    /* Proteção extra para imagens */
+    img {
+        pointer-events: none !important;
+        -webkit-user-drag: none !important;
+    }
+
+
+     
+        /* --- INICIO VARIÁVEIS DE TEMA --- */
+        :root {
+            --bg-body: #0d1117;
+            --text-main: white;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --input-text: white;
+            --card-adm-bg: rgba(30, 64, 175, 0.05);
+            --dropdown-bg: #161b22;
+        }
+
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --text-main: #1a1f26;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --input-text: #1a1f26;
+            --card-adm-bg: rgba(30, 64, 175, 0.1);
+            --dropdown-bg: #ffffff;
+        }
+        /* --- FIM VARIÁVEIS DE TEMA --- */
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100vh; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Botão de Troca de Tema */
+        .theme-toggle { position: fixed; top: 20px; right: 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; }
+        .back-btn { position: fixed; top: 20px; right: 66px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; }
+        .home-btn { position: fixed; top: 20px; right: 112px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; text-decoration: none; }
+
+        .corner-ball {
+            position: fixed;
+            background: rgba(30, 64, 175, 0.05);
+            border-radius: 50%;
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+        .ball-top-right { width: 550px; height: 550px; top: -200px; right: -150px; }
+        .ball-bottom-left { width: 450px; height: 450px; bottom: -150px; left: -150px; }
+
+        .hidden { display: none !important; }
+        .container { width: 100%; max-width: 600px; position: relative; z-index: 10; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 30px; text-align: center; color: var(--text-main); }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .shake { 
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; 
+            border-color: #ff4b4b !important; 
+        }
+
+       .config-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column; gap: 15px;
+            transition: all 0.3s ease;
+            /* Adicione a linha abaixo */
+            position: relative; 
+        }
+
+        /* Adicione este bloco novo logo abaixo para corrigir o problema da imagem */
+        .config-section:focus-within {
+            z-index: 100;
+        }
+        .section-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; color: var(--text-main); }
+        input, textarea, select { background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 10px; padding: 12px; color: var(--input-text); font-size: 14px; width: 100%; outline: none; transition: 0.3s; }
+        input:focus, select:focus { border-color: #1e40af; }
+        input::placeholder { color: var(--text-main); opacity: 0.3; }
+
+        .btn-save { border: none; padding: 14px; border-radius: 12px; font-weight: 700; background: #1e40af; color: white; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; margin-top: 25px; }
+        .btn-save:hover { background: #2563eb; }
+        .btn-save:disabled { background: #2d3748; color: #718096; cursor: not-allowed; }
+
+        #toast-minimal {
+            position: fixed; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1e40af; 
+            color: white;
+            padding: 15px 30px; 
+            border-radius: 50px;
+            font-weight: 600; 
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: none; 
+            z-index: 10000;
+            animation: fadeInOut 2s ease forwards;
+            white-space: nowrap; 
+            text-align: center; 
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -60%); }
+            20% { opacity: 1; transform: translate(-50%, -50%); }
+            80% { opacity: 1; transform: translate(-50%, -50%); }
+            100% { opacity: 0; transform: translate(-50%, -40%); }
+        }
+
+        /* --- MODAL DE CONFIRMAÇÃO PERSONALIZADO --- */
+        #modal-confirm { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--bg-body); border: 1px solid #1e40af; padding: 30px; border-radius: 25px; text-align: center; max-width: 90%; width: 350px; box-shadow: 0 0 30px rgba(30, 64, 175, 0.4); }
+        .modal-btns { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; transition: 0.3s; }
+        .btn-sim { background: #ff4b4b; color: white; }
+        .btn-nao { background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+
+        #overlay-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; transition: background 0.3s; }
+        
+        .login-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            padding: 40px 30px; 
+            border: 1px solid #1e40af; 
+            border-radius: 40px; 
+            width: 100%; 
+            max-width: 410px; 
+            text-align: center; 
+            transition: 0.3s; 
+            z-index: 10;
+            box-shadow: 0 0 50px rgba(30, 64, 175, 0.3), 0 20px 40px rgba(0, 0, 0, 0.6);
+            color: var(--text-main);
+        }
+        
+        .link-auth { color: #1e40af; cursor: pointer; font-size: 13px; }
+        .status-msg { font-size: 13px; margin: 10px 0; display: none; padding: 8px; border-radius: 8px; }
+        .status-error { color: #ff4b4b; background: rgba(255, 75, 75, 0.1); border: 1px solid rgba(255, 75, 75, 0.2); }
+        .status-loading { color: #1e40af; }
+        .status-success { color: #44ff44; background: rgba(68, 255, 68, 0.1); border: 1px solid rgba(68, 255, 68, 0.2); }
+        
+        #sec-adm {
+            border: 2px solid #1e40af;
+            background: var(--card-adm-bg);
+        }
+
+        .security-content {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 15px;
+            width: 100%;
+        }
+
+        #btn-update-acesso { margin-top: 10px; }
+        label {
+            font-size: 11px;
+            color: var(--text-main);
+            margin-left: 5px;
+            margin-bottom: -10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .btn-toggle-security { background: none; border: 1px solid var(--glass-border); color: #1e40af; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+        /* --- ESTILOS DO DROPDOWN PESQUISÁVEL ATUALIZADOS --- */
+        .custom-dropdown { position: relative; width: 100%; }
+        .dropdown-list {
+            position: absolute; left: 0; right: 0; top: 110%;
+            background: var(--dropdown-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; z-index: 50; max-height: 200px; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: none;
+        }
+        /* Ajuste para alinhar lixeira à direita sempre */
+        .dropdown-item { 
+            padding: 12px; 
+            font-size: 14px; 
+            border-bottom: 1px solid var(--glass-border); 
+            transition: 0.2s; 
+            color: var(--text-main); 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .dropdown-item:hover { background: #1e40af; color: white; }
+        .dropdown-item:last-child { border-bottom: none; }
+        
+        /* --- ESTILO BOTÃO EXCLUIR --- */
+        .btn-del-item { color: #ff4b4b; padding: 5px 8px; border-radius: 5px; transition: 0.2s; cursor: pointer; }
+        .btn-del-item:hover { background: rgba(255, 75, 75, 0.2); transform: scale(1.1); }
+        
+        .search-input { 
+            background: var(--input-bg) !important; 
+            border: 1px solid var(--glass-border) !important; 
+            color: inherit !important; 
+            width: 100% !important; 
+            outline: none !important; 
+            display: block !important; 
+            padding: 12px !important; 
+            padding-right: 35px !important; /* Espaço para a seta */
+            border-radius: 10px !important; 
+            cursor: text;
+        }
+        
+        .rotate-icon { transform: translateY(-50%) rotate(180deg) !important; }
+    </style>
+
+
+
+ 
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+    <button onclick="history.back()" class="back-btn" title="Voltar">
+        <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <a href="sistemas.html" class="home-btn" title="Início">
+        <i class="fa-solid fa-house"></i>
+    </a>
+    <button onclick="toggleTheme()" class="theme-toggle">
+        <i id="theme-icon" class="fa-solid fa-sun"></i>
+    </button>
+
+    <div class="corner-ball ball-top-right"></div>
+    <div class="corner-ball ball-bottom-left"></div>
+
+    <div id="toast-minimal">Salvo com sucesso!</div>
+
+    <div id="modal-confirm">
+        <div class="modal-content">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 40px; color: #ff4b4b; margin-bottom: 15px;"></i>
+            <h3 id="modal-msg">Deseja realmente excluir?</h3>
+            <div class="modal-btns">
+                <button class="btn-modal btn-nao" onclick="fecharModalConfirm(false)">NÃO</button>
+                <button class="btn-modal btn-sim" onclick="fecharModalConfirm(true)">SIM</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-content">
+        <h1>Painel de Controle</h1>
+
+        <div class="config-section" id="sec-empresa-master">
+            <div class="section-title"><i class="fa-solid fa-building"></i> Dados da Empresa</div>
+            <label>Nome da Empresa</label>
+            <input type="text" id="emp_nome" list="lista_empresas" placeholder="Nome Comercial">
+            <datalist id="lista_empresas"></datalist>
+            <label>CNPJ</label>
+            <input type="text" id="emp_doc" placeholder="00.000.000/0000-00" oninput="mascaraDocumento(this)">
+            <label>Endereço</label>
+            <input type="text" id="emp_end" placeholder="Rua, Número, Bairro, Cidade">
+            <label>Telefone da Empresa</label>
+            <input type="tel" id="emp_tel" placeholder="(00) 0.0000-0000" oninput="mascaraTelefone(this)">
+            <label>Chave PIX da Empresa</label>
+            <input type="text" id="emp_pix" placeholder="E-mail, CPF, CNPJ ou Celular">
+            <label>Técnico Responsável</label>
+            <input type="text" id="emp_resp" placeholder="Nome para o Orçamento">
+            <label>Logo da Empresa</label>
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                <label for="emp_logo_file" style="flex:1; margin:0; text-align:center; padding:11px; border:1px dashed var(--glass-border); border-radius:10px; cursor:pointer; font-size:13px; font-weight:600;">
+                    📁 Enviar arquivo do dispositivo
+                </label>
+                <input type="file" id="emp_logo_file" accept="image/*" style="display:none;" onchange="handleLogoFile(this)">
+            </div>
+            <input type="text" id="emp_logo" placeholder="...ou cole aqui o link direto de uma imagem" oninput="document.getElementById('logo-preview').src=this.value">
+            <div style="margin:8px 0 16px;text-align:center;">
+                <img id="logo-preview" src="" alt="" style="max-width:120px;max-height:120px;border-radius:8px;display:inline-block;">
+                <div id="logo-file-info" style="font-size:11px;color:var(--text-secondary,#94a3b8);margin-top:4px;"></div>
+            </div>
+            <button class="btn-save" onclick="saveData('sec-empresa-master', this, 'Salvar Dados da Empresa')">Salvar Dados da Empresa</button>
+        </div>
+
+        <div class="config-section" id="sec-servico">
+            <div class="section-title"><i class="fa-solid fa-gears"></i> Detalhes do Serviço</div>
+            <div class="custom-dropdown" id="dropdown-servico">
+                <div style="position: relative; width: 100%;">
+                    <input type="text" class="search-input" placeholder="Selecionar Serviço..." oninput="filtrarDropdown(this)" onclick="toggleDropdown(this); event.stopPropagation()">
+                    <i class="fa-solid fa-chevron-down text-white/20 text-[10px] transition-transform duration-300" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+                <ul id="lista_servicos_custom" class="dropdown-list"></ul>
+                <input type="hidden" id="srv_nome">
+            </div>
+            <input type="text" id="srv_valor" placeholder="Valor R$">
+            <button class="btn-save" onclick="saveData('sec-servico', this, 'Salvar Serviço')">Salvar Serviço</button>
+        </div>
+
+        <div class="config-section" id="sec-cliente">
+            <div class="section-title"><i class="fa-solid fa-user"></i> Dados do Cliente</div>
+            <div class="custom-dropdown" id="dropdown-cliente">
+                <div style="position: relative; width: 100%;">
+                    <input type="text" class="search-input" placeholder="Selecionar Cliente..." oninput="filtrarDropdown(this)" onclick="toggleDropdown(this); event.stopPropagation()">
+                    <i class="fa-solid fa-chevron-down text-white/20 text-[10px] transition-transform duration-300" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none;"></i>
+                </div>
+                <ul id="lista_clientes_custom" class="dropdown-list"></ul>
+                <input type="hidden" id="cli_nome">
+            </div>
+            <label>CPF / CNPJ</label>
+            <input type="text" id="cli_doc" placeholder="CPF OU CNPJ" oninput="mascaraDocumento(this)" maxlength="18">
+            <label>WhatsApp</label>
+            <input type="tel" id="cli_tel" placeholder="(00) 00000-0000" oninput="mascaraCelular(this)" maxlength="15">
+            <label>Endereço Completo</label>
+            <input type="text" id="cli_end" placeholder="Rua, Número, Bairro, Cidade">
+            <button class="btn-save" onclick="saveData('sec-cliente', this, 'Salvar Cliente')">Salvar Cliente</button>
+        </div>
+
+        <p style="text-align: center; color: grey; font-size: 10px; margin-bottom: 40px;">SISTEMA V3.0 PROFESSIONAL</p>
+    </div>
+
+<script>
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registrado!', reg))
+      .catch(err => console.log('Erro ao registrar Service Worker', err));
+  }
+
+  // BLOQUEIOS DE SEGURANÇA (JavaScript)
+  document.addEventListener('contextmenu', event => event.preventDefault());
+  document.addEventListener('keydown', function(e) {
+    if (
+        (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || 
+        (e.keyCode === 123)
+    ) {
+        e.preventDefault();
+        alert('Ação protegida pelo sistema.');
+        return false;
+    }
+  });
+
+    const URL_DATABASE = apiURL('config');
+
+    let cacheDados = []; 
+
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            icon.classList.replace('fa-sun', 'fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.classList.replace('fa-moon', 'fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    window.onload = () => {
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
+    };
+
+    (function iniciarCarga() { 
+        buscarDadosPlanilha(); 
+    })();
+
+    function showStatus(id, msg, type, cardId) {
+        const el = document.getElementById(id);
+        const card = document.getElementById(cardId);
+        el.innerText = msg; el.className = 'status-msg status-' + type; el.style.display = 'block';
+        if (type === 'error' && card) {
+            card.classList.add('shake');
+            setTimeout(() => card.classList.remove('shake'), 500);
+        }
+    }
+
+    function toggleBtnLoading(btn, isLoading, originalHtml, loadingText = "Aguarde...") {
+        if (isLoading) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${loadingText}`;
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
+
+    async function buscarDadosPlanilha() {
+        try {
+            const resp = await fetch(URL_DATABASE, { priority: 'high' }); 
+            cacheDados = await resp.json();
+            renderizarDatalists();
+            if(cacheDados.length > 0) {
+                const emp = cacheDados[0]; 
+                if(emp.emp_nome) document.getElementById('emp_nome').value = emp.emp_nome;
+                if(emp.emp_cnpj) document.getElementById('emp_doc').value = emp.emp_cnpj;
+                if(emp.emp_pix) document.getElementById('emp_pix').value = emp.emp_pix;
+                if(emp.emp_end) document.getElementById('emp_end').value = emp.emp_end;
+                if(emp.emp_resp) document.getElementById('emp_resp').value = emp.emp_resp;
+                if(emp.emp_tel) document.getElementById('emp_tel').value = emp.emp_tel;
+                if(emp.emp_logo) { document.getElementById('emp_logo').value = emp.emp_logo; document.getElementById('logo-preview').src = emp.emp_logo; }
+            }
+        } catch (e) { console.error("Erro na carga:", e); }
+    }
+
+    function toggleDropdown(inputEl) {
+        const wrapper = inputEl.closest('.custom-dropdown');
+        const list = wrapper.querySelector('.dropdown-list');
+        const icon = wrapper.querySelector('.fa-chevron-down');
+        const isVisible = list.style.display === 'block';
+        
+        fecharTodosDropdowns();
+        if (!isVisible) {
+            list.style.display = 'block';
+            icon.classList.add('rotate-icon');
+            inputEl.focus();
+            filtrarDropdown(inputEl);
+        }
+    }
+
+    function filtrarDropdown(input) {
+        const termo = input.value.toLowerCase();
+        const wrapper = input.closest('.custom-dropdown');
+        const list = wrapper.querySelector('.dropdown-list');
+        const items = list.querySelectorAll('.dropdown-item');
+        
+        items.forEach(item => {
+            const spanText = item.querySelector('span').textContent.toLowerCase();
+            item.style.display = spanText.includes(termo) ? 'flex' : 'none';
+        });
+
+        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+        hiddenInput.value = input.value;
+    }
+
+    function selecionarItemCustom(li, valor, tipo) {
+        const wrapper = li.closest('.custom-dropdown');
+        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+        const searchInput = wrapper.querySelector('.search-input');
+        
+        hiddenInput.value = valor;
+        searchInput.value = valor;
+        
+        const encontrado = cacheDados.find(x => x[tipo === 'cliente' ? 'cli_nome' : 'srv_nome'] === valor);
+        if (encontrado) {
+            if (tipo === 'cliente') {
+                document.getElementById('cli_doc').value = encontrado.cli_doc || "";
+                document.getElementById('cli_tel').value = encontrado.cli_tel || "";
+                document.getElementById('cli_end').value = encontrado.cli_end || "";
+            } else {
+                let v = encontrado.srv_valor || "";
+                document.getElementById('srv_valor').value = v !== "" ? "R$ " + v.toString().replace("R$", "").trim() : "";
+            }
+        }
+        fecharTodosDropdowns();
+    }
+
+    function fecharTodosDropdowns() {
+        document.querySelectorAll('.dropdown-list').forEach(l => l.style.display = 'none');
+        document.querySelectorAll('.fa-chevron-down').forEach(i => i.classList.remove('rotate-icon'));
+    }
+
+    window.addEventListener('click', e => { if (!e.target.closest('.custom-dropdown')) fecharTodosDropdowns(); });
+
+    /* --- INICIO LOGICA DE RENDERIZAÇÃO COM LIXEIRA --- */
+    function renderizarDatalists() {
+        const criarOpcoesEmpresa = (campo) => [...new Set(cacheDados.slice(0, 5).map(d => d[campo]))].filter(Boolean).map(n => `<option value="${n}">`).join('');
+        document.getElementById('lista_empresas').innerHTML = criarOpcoesEmpresa('emp_nome');
+
+        const clientes = [...new Set(cacheDados.map(d => d.cli_nome))].filter(Boolean);
+        const servicos = [...new Set(cacheDados.map(d => d.srv_nome))].filter(Boolean);
+
+        document.getElementById('lista_clientes_custom').innerHTML = clientes.map(n => 
+            `<li class="dropdown-item" onclick="selecionarItemCustom(this, '${n}', 'cliente')">
+                <span>${n}</span>
+                <i class="fa-solid fa-trash-can btn-del-item" onclick="solicitarExclusao(event, '${n}', 'cliente')"></i>
+            </li>`).join('');
+        
+        document.getElementById('lista_servicos_custom').innerHTML = servicos.map(n => 
+            `<li class="dropdown-item" onclick="selecionarItemCustom(this, '${n}', 'servico')">
+                <span>${n}</span>
+                <i class="fa-solid fa-trash-can btn-del-item" onclick="solicitarExclusao(event, '${n}', 'servico')"></i>
+            </li>`).join('');
+    }
+    /* --- FIM LOGICA DE RENDERIZAÇÃO COM LIXEIRA --- */
+
+    /* --- INICIO FUNÇÃO DE EXCLUSÃO PERSONALIZADA --- */
+    let itemParaExcluir = null;
+
+    function solicitarExclusao(event, valor, tipo) {
+        event.stopPropagation();
+        itemParaExcluir = { valor, tipo };
+        document.getElementById('modal-msg').innerText = `Deseja realmente excluir "${valor}"?`;
+        document.getElementById('modal-confirm').style.display = 'flex';
+    }
+
+    function fecharModalConfirm(confirmado) {
+        document.getElementById('modal-confirm').style.display = 'none';
+        if (confirmado && itemParaExcluir) {
+            executarExclusao(itemParaExcluir.valor, itemParaExcluir.tipo);
+        }
+        itemParaExcluir = null;
+    }
+
+    async function executarExclusao(valor, tipo) {
+        const toast = document.getElementById('toast-minimal');
+        try {
+            const resp = await fetch(`${URL_DATABASE}&action=deletar&tipo=${tipo}&valor=${encodeURIComponent(valor)}`);
+            const result = await resp.text();
+
+            if (result.trim() === "sucesso") {
+                toast.innerText = "Excluído com sucesso!";
+                toast.style.display = 'block';
+                
+                if (tipo === 'cliente') {
+                    document.getElementById('cli_nome').value = "";
+                    document.querySelector('#dropdown-cliente .search-input').value = "";
+                } else {
+                    document.getElementById('srv_nome').value = "";
+                    document.querySelector('#dropdown-servico .search-input').value = "";
+                }
+
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                    toast.innerText = "Salvo com sucesso!";
+                    buscarDadosPlanilha();
+                }, 2000);
+            } else { alert("Erro ao excluir."); }
+        } catch (e) { console.error("Erro na exclusão:", e); }
+    }
+    /* --- FIM FUNÇÃO DE EXCLUSÃO PERSONALIZADA --- */
+
+    function handleLogoFile(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const LIMITE_MB = 2.5;
+        if (file.size > LIMITE_MB * 1024 * 1024) {
+            alert(`Essa imagem tem ${(file.size/1024/1024).toFixed(1)}MB. Use uma imagem de até ${LIMITE_MB}MB (ideal: um PNG/JPG pequeno, tipo ícone/logo).`);
+            input.value = '';
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // Guardamos o base64 no próprio campo de texto do link — o backend
+            // detecta automaticamente que é um arquivo (começa com "data:image")
+            // e faz o upload pro Google Drive, salvando o link final na planilha.
+            document.getElementById('emp_logo').value = e.target.result;
+            document.getElementById('logo-preview').src = e.target.result;
+            document.getElementById('logo-file-info').textContent = `Arquivo selecionado: ${file.name} (${(file.size/1024).toFixed(0)}KB) — será enviado ao salvar`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveData(sectionId, btn, originalText) {
+        const container = document.getElementById(sectionId);
+        const fields = container.querySelectorAll('input, textarea');
+        let hasValue = false;
+        fields.forEach(f => { if(f.type !== 'hidden' && f.value.trim() !== "") hasValue = true; });
+        if(!hasValue) {
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 500);
+            return;
+        }
+        toggleBtnLoading(btn, true, originalText, "Salvando...");
+        const payload = {
+            emp_pix: document.getElementById('emp_pix').value,
+            emp_end: document.getElementById('emp_end').value,
+            emp_resp: document.getElementById('emp_resp').value,
+            emp_tel: document.getElementById('emp_tel').value,
+            emp_nome: document.getElementById('emp_nome').value, 
+            emp_cnpj: document.getElementById('emp_doc').value,
+            emp_logo: document.getElementById('emp_logo').value,
+            srv_nome: document.getElementById('srv_nome').value, 
+            srv_valor: document.getElementById('srv_valor').value.replace("R$", "").trim(),
+            cli_nome: document.getElementById('cli_nome').value || document.querySelector('#dropdown-cliente .search-input').value, 
+            cli_doc: document.getElementById('cli_doc').value,
+            cli_tel: document.getElementById('cli_tel').value, 
+            cli_end: document.getElementById('cli_end').value
+        };
+        fetch(URL_DATABASE, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        setTimeout(() => {
+            document.getElementById('toast-minimal').style.display = 'block';
+            if(sectionId !== 'sec-empresa-master') {
+                fields.forEach(el => {
+                   if(el.type !== 'hidden') el.value = '';
+                });
+                // Limpa também os search-inputs dos dropdowns visíveis
+                const container = document.getElementById(sectionId);
+                container.querySelectorAll('.search-input').forEach(el => el.value = '');
+            }
+            setTimeout(() => { 
+                document.getElementById('toast-minimal').style.display = 'none'; 
+                toggleBtnLoading(btn, false, originalText);
+                buscarDadosPlanilha(); 
+            }, 2000);
+        }, 800);
+    }
+
+    function mascaraTelefone(i) {
+        let v = i.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+        if (v.length > 9) v = v.replace(/(\(\d{2}\)\s\d)(\d)/, "$1.$2");
+        i.value = v;
+    }
+
+    function mascaraCelular(i) {
+        let v = i.value.replace(/\D/g, "");
+        if (v.length > 11) v = v.slice(0, 11);
+        if (v.length > 6) {
+            v = v.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+        } else if (v.length > 2) {
+            v = v.replace(/^(\d{2})(\d+)/, "($1) $2");
+        } else if (v.length > 0) {
+            v = v.replace(/^(\d+)/, "($1");
+        }
+        i.value = v;
+    }
+
+    function mascaraDocumento(i) {
+        let v = i.value.replace(/\D/g, "");
+        if (v.length <= 11) {
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        } else {
+            v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+            v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+            v = v.replace(/(\d{4})(\d)/, "$1-$2");
+        }
+        i.value = v;
+    }
+</script>
+</body>
+</html>

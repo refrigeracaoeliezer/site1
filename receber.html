@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+        if (localStorage.getItem("inforos_logado") !== "true") {
+            window.location.replace("index.html");
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Contas a Receber | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0d1117; --text-main: white;
+            --glass-bg: rgba(255,255,255,0.03); --glass-border: rgba(255,255,255,0.1);
+            --card-bg: rgba(255,255,255,0.04); --input-bg: rgba(255,255,255,0.05);
+            --dropdown-bg: #161b22;
+        }
+        body.light-mode {
+            --bg-body: #f0f2f5; --text-main: #1a1f26;
+            --glass-bg: rgba(255,255,255,0.85); --glass-border: rgba(0,0,0,0.1);
+            --card-bg: rgba(255,255,255,0.85); --input-bg: rgba(0,0,0,0.05);
+            --dropdown-bg: #ffffff;
+        }
+        body {
+            background: var(--bg-body); color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            -webkit-user-select: none; user-select: none;
+            transition: background 0.3s, color 0.3s;
+        }
+        input, textarea { -webkit-user-select: text !important; user-select: text !important; }
+
+        .glass-card {
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+            border-radius: 18px; transition: 0.3s;
+        }
+        .devedor-border { border-left: 3px solid #ef4444 !important; }
+        .pago-border    { border-left: 3px solid #22c55e !important; }
+        .glass-card.pago-border {
+            opacity: 0.45;
+            filter: grayscale(1);
+            border-color: var(--glass-border) !important;
+            border-left-color: #22c55e !important;
+        }
+        .glass-card.pago-border .edit-btn,
+        .glass-card.pago-border .trash-btn {
+            filter: grayscale(0) !important;
+            opacity: 0.6 !important;
+        }
+        .glass-card.pago-border .edit-btn:hover,
+        .glass-card.pago-border .trash-btn:hover {
+            opacity: 1 !important;
+        }
+
+        .stat-box {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 12px 16px;
+        }
+
+        .header-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-main); width: 36px; height: 36px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+        .header-btn.red { color: #ef4444; border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.08); }
+
+        .btn-flutuante {
+            position: fixed; bottom: 26px; right: 22px;
+            width: 54px; height: 54px; background: #ef4444; color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 25px rgba(239,68,68,0.45); cursor: pointer; z-index: 90; transition: 0.3s;
+        }
+        .btn-flutuante:hover { transform: scale(1.1); }
+
+        #popupFinanceiro {
+            background: var(--bg-body); color: var(--text-main);
+            width: 95%; max-width: 450px; padding: 28px;
+            border-radius: 22px; border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            display: none; position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 100; max-height: 92vh; overflow-y: auto;
+        }
+        .input-group { margin-bottom: 13px; }
+        .input-group label { display: block; font-size: 10px; opacity: 0.5; text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+        .input-group input {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border);
+            border-radius: 11px; padding: 10px 12px; color: inherit; outline: none; font-size: 14px;
+        }
+
+        .custom-dropdown { position: relative; }
+        .dropdown-list {
+            position: absolute; left: 0; right: 0; top: 110%;
+            background: var(--dropdown-bg); border: 1px solid var(--glass-border);
+            border-radius: 13px; z-index: 150; max-height: 190px; overflow-y: auto;
+            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .dropdown-item { padding: 11px 15px; font-size: 13px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
+        .dropdown-item:hover { background: #ef4444; color: white; }
+
+        #statusOverlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); border-radius: 22px;
+            flex-direction: column; align-items: center; justify-content: center; z-index: 110;
+        }
+
+        #toast-minimal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            background: #22c55e; color: white; padding: 11px 22px; border-radius: 50px;
+            font-weight: 700; display: none; z-index: 10000;
+            white-space: nowrap; align-items: center; justify-content: center;
+            font-size: 13px; box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        #confirmOverlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.78); z-index: 200;
+            align-items: center; justify-content: center;
+        }
+        #confirmOverlay.show { display: flex; }
+        .confirm-card {
+            background: var(--bg-body); border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 28px; max-width: 320px; width: 90%;
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+        }
+
+        /* ── POPUP CONFIRMAÇÃO DE EXCLUSÃO (mesmo estilo/modal da agenda) ── */
+        #popupExclusao {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72); z-index: 200;
+            align-items: center; justify-content: center;
+        }
+        #popupExclusao.show { display: flex; }
+        .notif-icon-wrap {
+            width: 64px; height: 64px;
+            background: rgba(239,68,68,0.15);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+
+        #modalPagamento {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.78); z-index: 200;
+            align-items: center; justify-content: center; padding: 16px;
+        }
+        #modalPagamento.show { display: flex; }
+
+        .btn-quitar {
+            background: rgba(34,197,94,0.12); color: #22c55e;
+            border: 1px solid rgba(34,197,94,0.35); border-radius: 10px;
+            padding: 7px 12px; font-size: 10px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            cursor: pointer; transition: 0.2s; white-space: nowrap;
+        }
+        .btn-quitar:hover { background: rgba(34,197,94,0.25); }
+        .btn-quitar:active { transform: scale(0.97); }
+
+        .badge-origem {
+            padding: 2px 7px; border-radius: 5px; font-size: 9px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .badge-agenda     { background: rgba(37,99,235,0.15); color: #3b82f6; border: 1px solid rgba(37,99,235,0.4); }
+        .badge-financeiro { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+        .badge-os         { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.4); }
+
+        .edit-btn  { color: #3b82f6; opacity: 0.5; cursor: pointer; transition: 0.2s; background: none; border: none; padding: 4px; }
+        .trash-btn { color: #ef4444; opacity: 0.5; cursor: pointer; transition: 0.2s; background: none; border: none; padding: 4px; }
+        .edit-btn:hover, .trash-btn:hover { opacity: 1; }
+
+        .filter-btn {
+            padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; border: 1px solid var(--glass-border);
+            background: var(--glass-bg); opacity: 0.6; transition: 0.3s; white-space: nowrap; cursor: pointer;
+        }
+        .filter-btn.active { background: #ef4444; color: white; opacity: 1; border-color: #ef4444; }
+
+        .valor-wrapper { position: relative; }
+        .valor-wrapper span {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            font-size: 13px; opacity: 0.5; font-weight: 700; pointer-events: none;
+        }
+        .valor-wrapper input { padding-left: 32px !important; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body class="p-3 pb-24">
+
+<div id="toast-minimal"><i class="fa-solid fa-check mr-2"></i> SALVO!</div>
+
+<!-- Confirm Overlay -->
+<div id="confirmOverlay">
+    <div class="confirm-card">
+        <div class="w-14 h-14 bg-green-500/15 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/30">
+            <i class="fa-solid fa-circle-check text-green-500 text-2xl"></i>
+        </div>
+        <h3 class="font-black text-base uppercase mb-1">Dívida Quitada?</h3>
+        <p class="text-xs opacity-50 mb-5 leading-relaxed">
+            Confirme que o cliente pagou o valor restante.<br>
+            O registro será removido da lista de devedores.
+        </p>
+        <div class="flex gap-3">
+            <button onclick="cancelarConfirm()"
+                class="flex-1 py-3 rounded-xl text-xs font-bold uppercase opacity-40 border border-white/10">
+                Cancelar
+            </button>
+            <button onclick="confirmarQuitar()"
+                class="flex-1 py-3 bg-green-600 rounded-xl text-xs font-black uppercase">
+                ✓ Confirmar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registrar Pagamento -->
+<div id="modalPagamento">
+    <div class="confirm-card">
+        <div class="w-14 h-14 bg-red-500/15 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/30">
+            <i class="fa-solid fa-hand-holding-dollar text-red-500 text-2xl"></i>
+        </div>
+        <h3 class="font-black text-base uppercase mb-1">Registrar Pagamento</h3>
+        <p class="text-xs opacity-50 mb-5 leading-relaxed" id="modalPagamentoInfo">Valor total já pago:</p>
+        <div class="input-group text-left">
+            <label>Valor Pago (R$)</label>
+            <input type="number" id="inputValorPagamento" min="0" step="0.01" placeholder="0,00"
+                oninput="document.getElementById('modalPagamentoErro').classList.add('hidden')">
+        </div>
+        <p id="modalPagamentoErro" class="text-[11px] text-red-500 font-bold mt-1 mb-1 hidden">Informe um valor válido.</p>
+        <div class="flex gap-3 mt-4">
+            <button onclick="cancelarPagamento()"
+                class="flex-1 py-3 rounded-xl text-xs font-bold uppercase opacity-40 border border-white/10">
+                Cancelar
+            </button>
+            <button onclick="confirmarPagamento()"
+                class="flex-1 py-3 bg-red-600 rounded-xl text-xs font-black uppercase">
+                ✓ Salvar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup de confirmação de exclusão (mesmo estilo da agenda) -->
+<div id="popupExclusao">
+    <div class="confirm-card">
+        <div class="notif-icon-wrap" id="exclusaoIconWrap">
+            <i id="exclusaoIcon" class="fa-solid fa-trash text-2xl"></i>
+        </div>
+        <h2 id="exclusaoTitulo" class="font-black text-lg uppercase mb-2">Excluir Registro</h2>
+        <p id="exclusaoMensagem" class="text-sm opacity-60 mb-5 leading-relaxed">
+            Deseja excluir permanentemente este registro?
+        </p>
+        <div class="flex gap-3">
+            <button onclick="fecharExclusao()" class="flex-1 py-3 rounded-xl font-bold text-xs opacity-40 border border-white/10">
+                Cancelar
+            </button>
+            <button id="exclusaoBotaoAcao" onclick="executarExclusao()" class="flex-1 py-3 rounded-xl font-black uppercase text-sm text-white">
+                Excluir
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- FAB -->
+<div onclick="abrirPopup()" class="btn-flutuante">
+    <i class="fa-solid fa-plus text-xl"></i>
+</div>
+
+<!-- Popup Lançar Débito -->
+<div id="popupFinanceiro">
+    <span class="absolute top-5 right-5 cursor-pointer text-xl opacity-50" onclick="fecharPopup()">&times;</span>
+    <h2 id="modalTitle" class="font-black text-lg uppercase mb-5 tracking-tight">Lançar Débito</h2>
+
+    <div id="statusOverlay">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-red-500 mb-4"></div>
+        <div id="statusText" class="font-black text-red-500 uppercase tracking-widest">Processando...</div>
+    </div>
+
+    <form id="formFinanceiro">
+        <input type="hidden" id="edit_index">
+        <input type="hidden" id="edit_os_id">
+
+        <div class="input-group">
+            <label>Cliente</label>
+            <div class="custom-dropdown">
+                <input type="text" id="cliente_nome" placeholder="Nome do cliente..."
+                    oninput="filtrarDrop(this,'lista_clientes_fin')"
+                    onclick="mostrarDrop('lista_clientes_fin')"
+                    autocomplete="off" required>
+                <ul id="lista_clientes_fin" class="dropdown-list no-scrollbar"></ul>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Serviço / Descrição</label>
+            <div class="custom-dropdown">
+                <input type="text" id="servico_desc" placeholder="Descreva o serviço..."
+                    oninput="filtrarDrop(this,'lista_servicos_fin')"
+                    onclick="mostrarDrop('lista_servicos_fin')"
+                    autocomplete="off" required>
+                <ul id="lista_servicos_fin" class="dropdown-list no-scrollbar"></ul>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <div class="input-group flex-1">
+                <label>Valor Total</label>
+                <div class="valor-wrapper"><span>R$</span>
+                    <input type="number" step="0.01" id="valor_total" placeholder="0,00" required>
+                </div>
+            </div>
+            <div class="input-group flex-1">
+                <label>Valor Recebido</label>
+                <div class="valor-wrapper"><span>R$</span>
+                    <input type="number" step="0.01" id="valor_recebido" placeholder="0,00" value="0">
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Custo de Material (Opcional)</label>
+            <div class="valor-wrapper"><span>R$</span>
+                <input type="number" step="0.01" id="valor_material" placeholder="0,00">
+            </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-red-600 rounded-xl font-black uppercase text-sm mt-1">
+            Salvar Registro
+        </button>
+    </form>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="max-w-4xl mx-auto">
+    <header class="flex justify-between items-center mb-5">
+        <div>
+            <h1 class="text-xl font-black uppercase tracking-tighter">
+                Contas a <span class="text-red-500">Receber</span>
+            </h1>
+            <span class="text-[10px] opacity-40 font-bold uppercase tracking-widest">Refrigeração Eliezer</span>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="history.back()" class="header-btn"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+            <a href="sistemas.html" class="header-btn" title="Início" style="text-decoration:none;"><i class="fa-solid fa-house text-sm"></i></a>
+            <button onclick="toggleTheme()" class="header-btn"><i id="theme-icon" class="fa-solid fa-sun text-sm"></i></button>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="stat-box">
+            <p class="text-[9px] opacity-40 font-black uppercase mb-0.5">Total Pendente</p>
+            <p id="total-pendente" class="text-xl font-black text-red-500 leading-tight">R$ 0,00</p>
+        </div>
+        <div class="stat-box">
+            <p class="text-[9px] opacity-40 font-black uppercase mb-0.5">Devedores</p>
+            <p id="total-clientes" class="text-xl font-black text-orange-400 leading-tight">0</p>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-3">
+        <button onclick="setFiltro('pendente')" id="f-pendente" class="filter-btn active">Pendentes</button>
+        <button onclick="setFiltro('todos')"    id="f-todos"    class="filter-btn">Todos</button>
+    </div>
+
+    <!-- Busca -->
+    <div class="relative mb-4">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 opacity-30 text-sm"></i>
+        <input type="text" id="buscaCliente" oninput="renderizar()"
+            placeholder="Buscar cliente..."
+            class="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:border-red-500 transition-all text-sm">
+    </div>
+
+    <!-- Cards -->
+    <div id="container-devedores" class="space-y-3">
+        <div class="flex flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-red-500 mb-4"></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Sincronizando...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registrado!', reg))
+            .catch(err => console.log('Erro ao registrar Service Worker', err));
+    }
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('keydown', function(e) {
+        if (
+            (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) ||
+            (e.keyCode === 123)
+        ) { e.preventDefault(); return false; }
+    });
+
+    const URL_CLIENTES   = apiURL('config');
+    const URL_FINANCEIRO = apiURL('receber');
+    const URL_AGENDA     = apiURL('agenda');
+    const URL_OS         = apiURL('os');
+
+    // Extrai o número da O.S. de um texto tipo "O.S. #123 — 1x Carga de Gás".
+    // É o identificador estável usado para sincronizar o pagamento de volta
+    // com a planilha "os" (a mesma marca usada pelo imp-ordem.html).
+    function extrairIdOS(servicoTexto) {
+        const m = (servicoTexto || '').toString().match(/O\.S\.\s*#\s*(\d+)/i);
+        return m ? m[1] : null;
+    }
+
+    // Remove acentos, espaços nas pontas e deixa minúsculo. Usado para comparar
+    // valores de status vindos da planilha (ex.: "Concluído", " CONCLUIDO ",
+    // "Concluído ") sem depender de como o texto foi digitado na planilha.
+    function normalizarTexto(s) {
+        return (s || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+    }
+
+    // Converte um número puro (ex.: 1000.5, vindo de um <input type="number">)
+    // para o formato "1.000,50" que o imp-ordem.html espera dentro do
+    // marcador "##PG##" da planilha "os".
+    function paraMoedaBR(num) {
+        return (parseFloat(num) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // Envia o valor pago mais atual para a planilha "os", SE o registro em
+    // edição tiver vindo de uma O.S. Isso é o que faz o imp-ordem.html (via
+    // Garantias > Editar > gerar PDF) enxergar, na próxima vez que a O.S. for
+    // aberta, exatamente o mesmo valor que acabou de ser lançado aqui.
+    async function sincronizarPagamentoComOS(osId, valorPago) {
+        if (!osId) return;
+        try {
+            await fetch(URL_OS, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams({
+                    action: 'atualizar_pago',
+                    ID_OS: osId,
+                    PAGO: paraMoedaBR(valorPago)
+                })
+            });
+        } catch (e) {
+            console.error('Erro ao sincronizar pagamento com a O.S.:', e);
+        }
+    }
+
+    let dadosUnificados = [];
+    let clientesCache   = [];
+    let servicosCache   = [];
+    let filtroAtual     = 'pendente';
+    let pendingItem     = null;
+
+    // ── Tema ──────────────────────────────────────────────────────────────────
+    window.toggleTheme = function() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        document.getElementById('theme-icon').className =
+            isLight ? 'fa-solid fa-moon text-sm' : 'fa-solid fa-sun text-sm';
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    };
+
+    function fmt(v) {
+        return parseFloat(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    // ── Carregar TODAS as planilhas ────────────────────────────────────────────
+    // Busca com prazo máximo (evita ficar "Sincronizando..." pra sempre se o
+    // Apps Script demorar demais pra responder — comum em cold start).
+    function fetchComPrazo(url, prazoMs = 20000) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), prazoMs);
+        return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(timeoutId));
+    }
+
+    async function carregarTudo() {
+        // Mostra o spinner de novo a cada chamada (inclusive em "Tentar novamente")
+        document.getElementById('container-devedores').innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-red-500 mb-4"></div>
+                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Sincronizando...</p>
+            </div>`;
+        try {
+            const [resFin, resAgenda, resOS] = await Promise.all([
+                fetchComPrazo(URL_FINANCEIRO + '&t=' + Date.now()),
+                fetchComPrazo(URL_AGENDA     + '&t=' + Date.now()),
+                fetchComPrazo(URL_OS         + '&t=' + Date.now())
+            ]);
+
+            // Lê como texto primeiro: se o Apps Script devolver uma página de
+            // erro/login (HTML) em vez de JSON, isso vira um erro claro em vez
+            // de travar silenciosamente ou aparentar "nenhum devedor".
+            const [txtFin, txtAgenda, txtOS] = await Promise.all([
+                resFin.text(), resAgenda.text(), resOS.text()
+            ]);
+            let dadosFin, dadosAgenda, dadosOS;
+            try {
+                dadosFin    = JSON.parse(txtFin);
+                dadosAgenda = JSON.parse(txtAgenda);
+                dadosOS     = JSON.parse(txtOS);
+            } catch (eParse) {
+                throw new Error('Resposta inválida da planilha (não é JSON). Publique o Apps Script como "Qualquer pessoa" e tente de novo.');
+            }
+
+            // ── Planilha RECEBER ─────────────────────────────────────────────
+            // Colunas: CLIENTE | SERVICO | VALOR_TOTAL | VALOR_RECEBIDO | FALTA_PAGAR | MATERIAL | VALOR_LIQUIDO | STATUS
+            // Dívidas de O.S. agora vêm direto da planilha "os" (ver itemsOS
+            // abaixo) — por isso qualquer registro antigo/duplicado aqui que
+            // ainda mencione "O.S. #..." no serviço é ignorado, evitando
+            // mostrar a mesma dívida duas vezes.
+            const itemsFin = dadosFin
+                .filter(item => !/O\.S\.\s*#\s*\d+/i.test((item.SERVICO || '').toString()))
+                .map(item => {
+                const total    = parseFloat(item.VALOR_TOTAL    || 0);
+                const recebido = parseFloat(item.VALOR_RECEBIDO || 0);
+                const material = parseFloat(item.MATERIAL       || 0);
+                const falta    = parseFloat(item.FALTA_PAGAR != null ? item.FALTA_PAGAR : (total - recebido));
+                const status   = normalizarTexto(item.STATUS);
+                const nomeLimpo = (item.CLIENTE || '').replace(/\[.*?\]\s?/g, '').trim();
+                return {
+                    origem:     'financeiro',
+                    id:         null,
+                    clienteKey: item.CLIENTE,
+                    nome:       nomeLimpo,
+                    servico:    item.SERVICO || '—',
+                    total, recebido, material, falta,
+                    isPago:     status === 'recebido' || falta <= 0,
+                    rawItem:    item
+                };
+            });
+
+            // ── Planilha AGENDA ──────────────────────────────────────────────
+            // Só entram itens com FALTA_PAGAR numérico > 0 (exclui vazio e "dívida quitada")
+            const itemsAgenda = dadosAgenda
+                .filter(item => {
+                    // Só aparece se o serviço foi CONCLUÍDO. Usa normalizarTexto para
+                    // ignorar acentuação/maiúsculas: "Concluído", "CONCLUIDO", "concluído "
+                    // etc. todos batem aqui. Antes a comparação era feita direto com
+                    // toLowerCase() (sem remover acento), então "concluído" (vindo da
+                    // planilha) nunca era igual a 'concluido' e o item — mesmo estando
+                    // concluído e com saldo pendente — era descartado sem aviso nenhum.
+                    const status = normalizarTexto(item.STATUS);
+                    if (status !== 'concluido') return false;
+                    // E tiver saldo pendente na coluna I
+                    const fp = normalizarTexto(item.FALTA_PAGAR);
+                    if (!fp || fp === 'divida quitada') return false;
+                    const num = parseFloat(fp);
+                    return !isNaN(num) && num > 0;
+                })
+                .map(item => {
+                    const partes  = (item.VALOR || '').toString().split('|');
+                    const total   = parseFloat(partes[0]) || 0;
+                    const entrada = parseFloat(partes[1]) || 0;
+                    const falta   = parseFloat(item.FALTA_PAGAR) || 0;
+                    const servico = (item.DESCRICAO || '')
+                        .replace('[Serviço]','').replace('[Orçamento]','').replace('[Atenção]','').trim() || '—';
+                    return {
+                        origem:     'agenda',
+                        id:         item.ID,
+                        clienteKey: item.CLIENTE,
+                        nome:       item.CLIENTE || '—',
+                        servico,
+                        total, recebido: entrada, material: 0, falta,
+                        isPago:     false,
+                        rawItem:    item
+                    };
+                });
+
+            // ── Planilha OS ───────────────────────────────────────────────────
+            // Fonte única da verdade para dívidas de Ordem de Serviço: o total
+            // (##TOTAL##) e o valor já pago (##PG##) vêm embutidos no campo
+            // VALOR_TOTAL (ver imp-ordem.html). O.S. antigas, salvas antes
+            // dessa marcação existir, não têm ##TOTAL## e por isso não entram
+            // aqui — nesse caso, lance a dívida manualmente pelo botão "+".
+            const itemsOS = dadosOS
+                .map(item => {
+                    const idOS = (item.ID_OS || '').toString().replace(/^'/, '').trim();
+                    const valorTxt = (item.VALOR_TOTAL || '').toString();
+                    const mTotal = valorTxt.match(/##TOTAL##\s*([\d.,]+)/);
+                    if (!mTotal) return null;
+                    const total = parseFloat(mTotal[1].replace(/\./g, '').replace(',', '.')) || 0;
+                    if (total <= 0) return null;
+                    const mPago = valorTxt.match(/##PG##\s*([\d.,]+)/);
+                    const pago  = mPago ? (parseFloat(mPago[1].replace(/\./g, '').replace(',', '.')) || 0) : 0;
+                    const falta = Math.max(0, total - pago);
+                    return {
+                        origem:     'os',
+                        id:         idOS,
+                        clienteKey: item.CLIENTE,
+                        nome:       item.CLIENTE || '—',
+                        servico:    'O.S. #' + idOS + (item.TIPO_DE_SERVICO ? ' — ' + item.TIPO_DE_SERVICO : ''),
+                        total, recebido: pago, material: 0, falta,
+                        isPago:     falta <= 0.009,
+                        rawItem:    item
+                    };
+                })
+                .filter(Boolean);
+
+            dadosUnificados = [...itemsFin, ...itemsAgenda, ...itemsOS];
+
+            // Autocomplete serviços
+            servicosCache = [...new Set(dadosFin.map(i => i.SERVICO).filter(Boolean))].map(s => ({ nome: s }));
+            renderizarListaDrop('lista_servicos_fin', servicosCache, 'servico_desc');
+
+            renderizar();
+        } catch (e) {
+            console.error(e);
+            const foiTimeout = e && e.name === 'AbortError';
+            const msg = foiTimeout
+                ? 'A planilha demorou demais para responder'
+                : (e && e.message ? e.message : 'Erro ao conectar');
+            document.getElementById('container-devedores').innerHTML = `
+                <div class="text-center py-10">
+                    <p class="opacity-50 font-bold text-sm uppercase mb-4">${msg}</p>
+                    <button onclick="carregarTudo()" class="px-5 py-2.5 bg-red-600 rounded-xl font-black uppercase text-[11px] tracking-widest">
+                        <i class="fa-solid fa-rotate-right mr-2"></i>Tentar novamente
+                    </button>
+                </div>`;
+        }
+    }
+
+    async function carregarClientes() {
+        try {
+            const res = await fetch(URL_CLIENTES);
+            const raw = await res.json();
+            clientesCache = raw.filter(c => !c.cli_nome.includes('ATENÇÃO'));
+            renderizarListaDrop('lista_clientes_fin', clientesCache.map(c => ({ nome: c.cli_nome })), 'cliente_nome');
+        } catch (e) {}
+    }
+
+    // ── Filtro ────────────────────────────────────────────────────────────────
+    window.setFiltro = function(f) {
+        filtroAtual = f;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('f-' + f).classList.add('active');
+        renderizar();
+    };
+
+    // ── Renderizar ────────────────────────────────────────────────────────────
+    function renderizar() {
+        const container = document.getElementById('container-devedores');
+        const busca     = document.getElementById('buscaCliente').value.toLowerCase();
+
+        let lista = dadosUnificados.filter(item => {
+            const match = item.nome.toLowerCase().includes(busca) ||
+                          item.servico.toLowerCase().includes(busca);
+            if (!match) return false;
+            if (filtroAtual === 'pendente') return !item.isPago;
+            return true;
+        });
+
+        // Pendentes primeiro
+        lista.sort((a, b) => (a.isPago === b.isPago) ? 0 : a.isPago ? 1 : -1);
+
+        // Totalizadores (sobre todos, não só filtrados pela busca)
+        let somaPendente = 0, qtdDevedores = 0;
+        dadosUnificados.forEach(item => {
+            if (!item.isPago) { somaPendente += item.falta; qtdDevedores++; }
+        });
+        document.getElementById('total-pendente').innerText = fmt(somaPendente);
+        document.getElementById('total-clientes').innerText = qtdDevedores;
+
+        if (lista.length === 0) {
+            container.innerHTML = `<div class="text-center py-10 opacity-20 font-bold uppercase text-xs">
+                ${filtroAtual === 'pendente' ? 'Nenhum devedor! 🎉' : 'Nenhum registro encontrado'}
+            </div>`;
+            return;
+        }
+
+        container.innerHTML = lista.map(item => {
+            const enc          = encodeURIComponent(JSON.stringify(item));
+            const badgeClass   = item.origem === 'agenda' ? 'badge-agenda' : (item.origem === 'os' ? 'badge-os' : 'badge-financeiro');
+            const badgeLabel   = item.origem === 'agenda' ? 'Agenda' : (item.origem === 'os' ? 'O.S.' : 'Manual');
+            const borderClass  = item.isPago ? 'pago-border' : 'devedor-border';
+
+            return `
+            <div class="glass-card px-4 py-4 ${borderClass}">
+                <!-- Cabeçalho do card -->
+                <div class="flex items-start justify-between gap-2 mb-3">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                            <span class="badge-origem ${badgeClass}">${badgeLabel}</span>
+                            <span class="font-black text-sm truncate">${item.nome}</span>
+                        </div>
+                        <p class="text-xs opacity-55 truncate">${item.servico}</p>
+                    </div>
+                    <!-- Botões editar/excluir (só planilha receber) / registrar pagamento (O.S.) -->
+                    <div class="flex gap-1 shrink-0">
+                        ${item.origem === 'financeiro' ? `
+                            <button class="edit-btn" onclick="prepararEdicao('${enc}')">
+                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                            </button>
+                            ${item.isPago ? `<button class="trash-btn" onclick="excluirItem('${enc}')">
+                                <i class="fa-solid fa-trash text-sm"></i>
+                            </button>` : ''}
+                        ` : ''}
+                        ${item.origem === 'os' && !item.isPago ? `
+                            <button class="edit-btn" onclick="registrarPagamentoOS('${enc}')" title="Registrar pagamento parcial">
+                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <!-- Valores -->
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <div class="bg-white/5 rounded-xl p-2 text-center">
+                        <p class="text-[9px] opacity-40 font-black uppercase mb-0.5">Total</p>
+                        <p class="text-xs font-bold">${fmt(item.total)}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-2 text-center">
+                        <p class="text-[9px] opacity-40 font-black uppercase mb-0.5">Já Pagou</p>
+                        <p class="text-xs font-bold text-blue-400">${fmt(item.recebido)}</p>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-2 text-center">
+                        <p class="text-[9px] ${item.isPago ? 'text-green-500' : 'text-red-400'} font-black uppercase mb-0.5">Falta</p>
+                        <p class="text-xs font-bold ${item.isPago ? 'text-green-500' : 'text-red-400'}">
+                            ${item.isPago ? 'Quitado' : fmt(item.falta)}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botão ação -->
+                <div class="flex justify-end">
+                    ${!item.isPago
+                        ? `<button class="btn-quitar" onclick="solicitarQuitar('${enc}')">
+                               <i class="fa-solid fa-circle-check mr-1"></i> Já Pagou!
+                           </button>`
+                        : `<span class="text-[10px] font-black text-green-500 uppercase opacity-70">✓ Liquidado</span>`
+                    }
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ── Quitar Dívida → envia para AMBAS as planilhas ─────────────────────────
+    window.solicitarQuitar = function(enc) {
+        pendingItem = JSON.parse(decodeURIComponent(enc));
+        document.getElementById('confirmOverlay').classList.add('show');
+    };
+
+    window.cancelarConfirm = function() {
+        pendingItem = null;
+        document.getElementById('confirmOverlay').classList.remove('show');
+    };
+
+    window.confirmarQuitar = async function() {
+        document.getElementById('confirmOverlay').classList.remove('show');
+        if (!pendingItem) return;
+        const item = pendingItem;
+        pendingItem = null;
+
+        const promises = [];
+
+        // 1) Planilha AGENDA → escreve "divida quitada" na coluna I
+        //    (enviado sempre que o item vier da agenda E tiver ID)
+        if (item.origem === 'agenda' && item.id) {
+            promises.push(
+                fetch(URL_AGENDA, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'quitar_divida', id: item.id })
+                })
+            );
+        }
+
+        // 2) Planilha OS → fonte única da verdade para dívidas de O.S.
+        //    Grava direto o "Valor Já Pago" = total (quitado). Não é mais
+        //    preciso tocar na planilha "receber" para itens de O.S., já que
+        //    receber.html lê o saldo devedor direto da planilha "os".
+        if (item.origem === 'os' && item.id) {
+            promises.push(sincronizarPagamentoComOS(item.id, item.total));
+        }
+
+        // 3) Planilha RECEBER → só para débitos lançados manualmente aqui.
+        //    Cadastra/atualiza o registro com valor_recebido = valor_total,
+        //    o que faz falta_pagar = 0 e status = "recebido".
+        if (item.origem === 'financeiro') {
+            promises.push(
+                fetch(URL_FINANCEIRO, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({
+                        action:         'cadastrar',
+                        edit_id:        item.clienteKey,  // chave de busca (nome original com data)
+                        cliente:        item.clienteKey,
+                        servico:        item.servico,
+                        valor_total:    item.total,
+                        valor_recebido: item.total,        // igual ao total → falta = 0 → "recebido"
+                        valor_material: item.material || 0
+                    })
+                })
+            );
+            // Se esse débito manual também referenciar uma O.S. no texto,
+            // mantém a "os" em dia (compatibilidade com registros antigos).
+            const osIdQuitar = extrairIdOS(item.servico);
+            if (osIdQuitar) {
+                promises.push(sincronizarPagamentoComOS(osIdQuitar, item.total));
+            }
+        }
+
+        await Promise.allSettled(promises);
+
+        mostrarToast('Dívida quitada com sucesso!');
+        setTimeout(() => carregarTudo(), 2000);
+    };
+
+    // ── Popup de confirmação de exclusão (mesmo estilo/modal da agenda) ───────
+    // Substitui o window.confirm() nativo por um modal no estilo visual do app.
+    let exclusaoPendente = null;
+
+    function hexToRgba(hex, alpha) {
+        const h = hex.replace('#', '');
+        const r = parseInt(h.substring(0, 2), 16);
+        const g = parseInt(h.substring(2, 4), 16);
+        const b = parseInt(h.substring(4, 6), 16);
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    function abrirExclusao({ titulo, mensagem, textoBotao, cor, icone, acao }) {
+        document.getElementById('exclusaoTitulo').innerText = titulo;
+        document.getElementById('exclusaoMensagem').innerText = mensagem;
+
+        const botao = document.getElementById('exclusaoBotaoAcao');
+        botao.innerText = textoBotao;
+        botao.style.background = cor;
+
+        const icon = document.getElementById('exclusaoIcon');
+        icon.className = `fa-solid ${icone} text-2xl`;
+        icon.style.color = cor;
+
+        const iconWrap = document.getElementById('exclusaoIconWrap');
+        iconWrap.style.background = hexToRgba(cor, 0.15);
+        iconWrap.style.borderColor = hexToRgba(cor, 0.35);
+
+        exclusaoPendente = acao;
+        document.getElementById('popupExclusao').classList.add('show');
+    }
+
+    window.fecharExclusao = function() {
+        document.getElementById('popupExclusao').classList.remove('show');
+        exclusaoPendente = null;
+    };
+
+    window.executarExclusao = function() {
+        if (exclusaoPendente) exclusaoPendente();
+        window.fecharExclusao();
+    };
+
+    // ── Excluir item (planilha receber) ───────────────────────────────────────
+    window.excluirItem = function(enc) {
+        const item = JSON.parse(decodeURIComponent(enc));
+        abrirExclusao({
+            titulo: "Excluir Registro",
+            mensagem: `Deseja excluir permanentemente o registro de "${item.nome}"? Essa ação não pode ser desfeita.`,
+            textoBotao: "Excluir",
+            cor: "#ef4444",
+            icone: "fa-trash",
+            acao: () => {
+                fetch(URL_FINANCEIRO, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'deletar_item', cliente: item.clienteKey, servico: item.servico })
+                });
+                mostrarToast('Registro excluído');
+                setTimeout(() => carregarTudo(), 1800);
+            }
+        });
+    };
+
+    // ── Limpar pagos (planilha receber) ───────────────────────────────────────
+    window.limparPagos = function() {
+        abrirExclusao({
+            titulo: "Limpar Quitados",
+            mensagem: "Deseja excluir permanentemente todos os registros quitados da planilha receber? Essa ação não pode ser desfeita.",
+            textoBotao: "Excluir Tudo",
+            cor: "#ef4444",
+            icone: "fa-broom",
+            acao: () => {
+                fetch(URL_FINANCEIRO, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ action: 'limpar_pagos' })
+                });
+                mostrarToast('Registros quitados removidos');
+                setTimeout(() => carregarTudo(), 1800);
+            }
+        });
+    };
+
+    // ── Registrar pagamento parcial de uma O.S. (planilha os) ──────────────────
+    // Diferente do popup de "Lançar/Editar Débito" (que é só para a planilha
+    // "receber"), aqui o valor pago é gravado direto na planilha "os" — a
+    // mesma que o imp-ordem.html usa — então as duas telas ficam sempre
+    // sincronizadas sem precisar duplicar o dado em nenhum outro lugar.
+    let pendingPagamentoItem = null;
+
+    window.registrarPagamentoOS = function(enc) {
+        const item = JSON.parse(decodeURIComponent(enc));
+        pendingPagamentoItem = item;
+        document.getElementById('modalPagamentoInfo').innerText =
+            `Valor total já pago por ${item.nome} (de ${fmt(item.total)}):`;
+        document.getElementById('inputValorPagamento').value = item.recebido || 0;
+        document.getElementById('modalPagamentoErro').classList.add('hidden');
+        document.getElementById('modalPagamento').classList.add('show');
+    };
+
+    window.cancelarPagamento = function() {
+        document.getElementById('modalPagamento').classList.remove('show');
+        pendingPagamentoItem = null;
+    };
+
+    window.confirmarPagamento = async function() {
+        if (!pendingPagamentoItem) return;
+        const valorStr = document.getElementById('inputValorPagamento').value;
+        const num = parseFloat(valorStr);
+
+        if (isNaN(num) || num < 0) {
+            document.getElementById('modalPagamentoErro').classList.remove('hidden');
+            return;
+        }
+
+        const item = pendingPagamentoItem;
+        document.getElementById('modalPagamento').classList.remove('show');
+        pendingPagamentoItem = null;
+
+        await sincronizarPagamentoComOS(item.id, num);
+        mostrarToast('Pagamento atualizado!');
+        setTimeout(() => carregarTudo(), 1500);
+    };
+
+    // ── Popup Novo/Editar Débito ──────────────────────────────────────────────
+    window.abrirPopup = function() {
+        document.getElementById('modalTitle').innerText = 'Lançar Débito';
+        document.getElementById('formFinanceiro').reset();
+        document.getElementById('edit_index').value = '';
+        document.getElementById('edit_os_id').value = '';
+        document.getElementById('popupFinanceiro').style.display = 'block';
+    };
+
+    window.fecharPopup = function() {
+        document.getElementById('popupFinanceiro').style.display = 'none';
+        document.querySelectorAll('.dropdown-list').forEach(l => l.style.display = 'none');
+    };
+
+    window.prepararEdicao = function(enc) {
+        const item = JSON.parse(decodeURIComponent(enc));
+        document.getElementById('modalTitle').innerText  = 'Editar Débito';
+        document.getElementById('cliente_nome').value    = item.nome;
+        document.getElementById('servico_desc').value    = item.servico;
+        document.getElementById('valor_total').value     = item.total;
+        document.getElementById('valor_recebido').value  = item.recebido;
+        document.getElementById('valor_material').value  = item.material || 0;
+        document.getElementById('edit_index').value      = item.clienteKey;
+        document.getElementById('edit_os_id').value       = extrairIdOS(item.servico) || '';
+        document.getElementById('popupFinanceiro').style.display = 'block';
+    };
+
+    document.getElementById('formFinanceiro').onsubmit = function(e) {
+        e.preventDefault();
+        const overlay = document.getElementById('statusOverlay');
+        overlay.style.display = 'flex';
+        document.getElementById('statusText').innerText = 'Salvando...';
+
+        const valorRecebidoForm = document.getElementById('valor_recebido').value;
+        const osIdForm = document.getElementById('edit_os_id').value;
+
+        fetch(URL_FINANCEIRO, {
+            method: 'POST', mode: 'no-cors',
+            body: JSON.stringify({
+                action:         'cadastrar',
+                edit_id:        document.getElementById('edit_index').value,
+                cliente:        document.getElementById('cliente_nome').value,
+                servico:        document.getElementById('servico_desc').value,
+                valor_total:    document.getElementById('valor_total').value,
+                valor_recebido: valorRecebidoForm,
+                valor_material: document.getElementById('valor_material').value
+            })
+        });
+
+        // Se esse débito pertence a uma O.S., o valor pago também é gravado
+        // na planilha "os" — assim, da próxima vez que a O.S. for aberta via
+        // Garantias > Editar, o "Valor Já Pago" já vem correto, sem precisar
+        // passar de novo pelo imp-ordem.html.
+        sincronizarPagamentoComOS(osIdForm, valorRecebidoForm);
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            fecharPopup();
+            mostrarToast('Salvo com sucesso!');
+            setTimeout(() => carregarTudo(), 1800);
+        }, 1200);
+    };
+
+    // ── Dropdown helpers ──────────────────────────────────────────────────────
+    function renderizarListaDrop(idLista, dados, idInput) {
+        const list = document.getElementById(idLista);
+        if (!list) return;
+        list.innerHTML = dados.map(d =>
+            `<li class="dropdown-item" onclick="selecionarDrop('${idInput}','${d.nome.replace(/'/g,"\\'")}','${idLista}')">${d.nome}</li>`
+        ).join('');
+    }
+
+    window.mostrarDrop = function(id) {
+        document.getElementById(id).style.display = 'block';
+    };
+
+    window.filtrarDrop = function(input, idLista) {
+        const termo = input.value.toLowerCase();
+        const base  = idLista === 'lista_clientes_fin'
+            ? clientesCache.map(c => ({ nome: c.cli_nome }))
+            : servicosCache;
+        const filtrados = base.filter(d => d.nome.toLowerCase().includes(termo));
+        renderizarListaDrop(idLista, filtrados, input.id);
+        mostrarDrop(idLista);
+    };
+
+    window.selecionarDrop = function(idInput, valor, idLista) {
+        document.getElementById(idInput).value = valor;
+        document.getElementById(idLista).style.display = 'none';
+    };
+
+    window.addEventListener('click', e => {
+        if (!e.target.closest('.custom-dropdown'))
+            document.querySelectorAll('.dropdown-list').forEach(l => l.style.display = 'none');
+    });
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    function mostrarToast(msg) {
+        const t = document.getElementById('toast-minimal');
+        t.innerHTML = `<i class="fa-solid fa-check mr-2"></i> ${msg.toUpperCase()}`;
+        t.style.display = 'flex';
+        setTimeout(() => { t.style.display = 'none'; }, 2500);
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    window.onload = () => {
+        if (localStorage.getItem('theme') === 'light') toggleTheme();
+        carregarTudo();
+        carregarClientes();
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="pt-br"> 
+<head>
+     <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
+    <script>
+    if (localStorage.getItem("inforos_logado") !== "true") { 
+        window.location.replace("index.html");
+    }
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Orçamento | Refrigeração Eliezer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+    /* Bloqueia a seleção de texto e o arraste de imagens */
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Mantém os campos de texto funcionando */
+    input, select, textarea {
+        -webkit-user-select: text !important;
+        -moz-user-select: text !important;
+        -ms-user-select: text !important;
+        user-select: text !important;
+    }
+
+    /* Proteção extra para imagens */
+    img {
+        pointer-events: none !important;
+        -webkit-user-drag: none !important;
+    }
+        
+        :root {
+            --bg-body: #0d1117;
+            --text-main: white;
+            --glass-bg: rgba(255, 255, 255, 0.03); 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-text: white;
+            --card-sub: rgba(255, 255, 255, 0.02);
+            --modal-text-box: rgba(255, 255, 255, 0.05);
+            --modal-text-color: #ffffff;
+            --total-container-bg: rgba(30, 64, 175, 0.3);
+            --total-text-color: #ffffff;
+            --dropdown-bg: #161b22;
+        }
+
+        body.light-mode {
+            --bg-body: #f0f2f5;
+            --text-main: #1a1f26;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.05);
+            --input-text: #1a1f26;
+            --card-sub: rgba(0, 0, 0, 0.02);
+            --modal-text-box: #f3f4f6;
+            --modal-text-color: #1a1f26;
+            --total-container-bg: #1e40af;
+            --dropdown-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; min-height: 100vh; min-height: 100dvh; background: var(--bg-body); color: var(--text-main); position: relative; overflow-x: hidden; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+
+        .corner-ball { position: fixed; background: rgba(30, 64, 175, 0.1); border-radius: 50%; z-index: 0; pointer-events: none; filter: blur(80px); }
+        .ball-top-right { width: 400px; height: 400px; top: -100px; right: -100px; }
+        .ball-bottom-left { width: 300px; height: 300px; bottom: -100px; left: -100px; }
+
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-top: 4px solid #1e40af; border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); transition: all 0.5s ease; }
+
+        .is-os { border-top-color: #10b981 !important; color: white !important; }
+        .is-os .text-blue-500, .is-os .text-blue-400, .is-os .section-header i, .is-os .section-header span { color: #10b981 !important; }
+        .is-os .btn-primary { background: linear-gradient(135deg, #065f46 0%, #10b981 100%) !important; }
+        .is-os .total-container { background: #065f46 !important; border-color: rgba(16, 185, 129, 0.3) !important; }
+        body.light-mode.is-os .total-container { background: #1e40af !important; border-color: rgba(255,255,255,0.1) !important; }
+
+        #label-prazo { color: #3b82f6; transition: color 0.3s; }
+        .is-os #label-prazo { color: #10b981 !important; }
+
+        .dark-input { background: var(--input-bg) !important; border: 1px solid var(--glass-border) !important; color: var(--input-text) !important; transition: all 0.3s ease; }
+        .dark-input:focus { border-color: #3b82f6 !important; background: rgba(255, 255, 255, 0.08) !important; outline: none; }
+        .is-os .dark-input:focus { border-color: #10b981 !important; }
+
+        .service-card { background: var(--card-sub); border-radius: 20px; padding: 15px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px; }
+        .qty-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: var(--input-bg); color: #3b82f6; transition: 0.2s; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .is-os .qty-btn { color: #10b981 !important; border-color: rgba(16, 185, 129, 0.2) !important; }
+        
+        .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .section-header i { font-size: 14px; color: #3b82f6; }
+        .section-header span { font-size: 11px; font-weight: 800; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .btn-primary { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); transition: transform 0.2s, background 0.4s; box-shadow: 0 10px 20px -5px rgba(30, 104, 175, 0.5); }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-primary.mode-os { background: linear-gradient(135deg, #065f46 0%, #10b981 100%) !important; box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4); }
+
+        .btn-add-item { width: 100%; padding: 1rem; border: 2px dashed rgba(59, 130, 246, 0.5); border-radius: 1.25rem; color: var(--text-main); font-weight: 700; font-size: 0.75rem; transition: all 0.3s; background: rgba(59, 130, 246, 0.05); }
+        .is-os .btn-add-item { border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.05); }
+
+        #obsGeral { overflow: hidden; resize: none; min-height: 100px; transition: min-height 0.2s ease; }
+
+        .switch { position: relative; display: inline-block; width: 100%; height: 44px; background: var(--input-bg); border-radius: 15px; padding: 4px; border: 1px solid var(--glass-border); cursor: pointer; }
+        .switch-bg { position: absolute; top: 4px; left: 4px; width: calc(50% - 4px); height: calc(100% - 8px); background: #1e40af; border-radius: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+        .switch-labels { position: relative; display: flex; height: 100%; z-index: 2; align-items: center; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .switch-labels div { flex: 1; text-align: center; color: rgba(128,128,128,0.6); transition: color 0.3s; }
+        .active-label { color: white !important; }
+        .mode-os .switch-bg { left: 50%; background: #10b981; }
+
+        .dropdown-list { position: absolute; left: 0; right: 0; top: 110%; background: var(--dropdown-bg); border: 1px solid var(--glass-border); border-radius: 20px; z-index: 50; max-height: 250px; overflow-y: auto; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .dropdown-item { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--glass-border); transition: 0.2s; cursor: pointer; }
+        .dropdown-item:hover { background: #1e40af; color: white; }
+        .is-os .dropdown-item:hover { background: #10b981; }
+
+        .is-searching .selected-text { display: none; }
+        .search-input { background: transparent; border: none; color: inherit; width: 100%; outline: none; display: none; }
+        .is-searching .search-input { display: block; }
+        
+        .selected-text { 
+            color: var(--text-main) !important; 
+            opacity: 1 !important; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            display: block; 
+            width: 100%; 
+        }
+
+        .total-container { background: var(--total-container-bg) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: all 0.4s ease; }
+        
+        #modal-mensagens { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(10px); z-index: 100; overflow-y: auto; display: none; padding: 20px; }
+        body.light-mode #modal-mensagens { background: rgba(240, 242, 245, 0.98); color: #1a1f26; }
+        .modal-glass-container { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .text-preview-box { background: var(--modal-text-box); border-radius: 20px; padding: 15px; font-family: monospace; font-size: 13px; color: var(--modal-text-color); white-space: pre-wrap; word-break: break-all; margin: 15px 0; border: 1px solid var(--glass-border); }
+        .btn-copy-custom { background: rgba(128,128,128,0.15); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-copy-success { background-color: #3b82f6 !important; color: white !important; }
+        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body class="p-4 pb-10">
+
+    <div class="corner-ball ball-top-right"></div>
+    <div class="corner-ball ball-bottom-left"></div>
+
+    <div id="modal-mensagens">
+        <div class="max-w-md mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-black uppercase tracking-tighter">Mensagens <span class="text-blue-500">Prontas</span></h2>
+                <button onclick="fecharModal()" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-glass-container">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white">1</span>
+                    <span class="text-xs font-bold uppercase">Proposta</span>
+                </div>
+                <div id="txt-proposta" class="text-preview-box"></div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="copiarTextoProfissional('txt-proposta', this)" class="py-3 btn-copy-custom rounded-xl font-bold text-[9px] uppercase">COPIAR</button>
+                    <button onclick="baixarPDF()" class="py-3 bg-red-600/20 text-red-500 border border-red-500/30 rounded-xl font-bold text-[9px] uppercase">GERAR PDF</button>
+                    <button onclick="enviarWpp('txt-proposta')" class="py-3 bg-blue-600 text-white rounded-xl font-bold text-[9px] uppercase">WHATSAPP</button>
+                </div>
+            </div>
+
+            <div class="modal-glass-container">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-6 h-6 rounded-full bg-orange-600 flex items-center justify-center text-[10px] font-bold text-white">2</span>
+                    <span class="text-xs font-bold uppercase">Sinal</span>
+                </div>
+                <div id="txt-sinal" class="text-preview-box"></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="copiarTextoProfissional('txt-sinal', this)" class="py-3 btn-copy-custom rounded-xl font-bold text-[10px] uppercase">COPIAR</button>
+                    <button onclick="enviarWpp('txt-sinal')" class="py-3 bg-orange-600 text-white rounded-xl font-bold text-[10px] uppercase">WHATSAPP</button>
+                </div>
+            </div>
+
+            <div class="modal-glass-container">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full bg-green-600 flex items-center justify-center text-[10px] font-bold text-white">3</span>
+                        <span class="text-xs font-bold uppercase">Conclusão</span>
+                    </div>
+                    <button id="btn-quitar" onclick="alternarQuitacao()" class="text-[9px] font-black px-3 py-1 rounded-lg border border-green-500/30 text-green-500 bg-green-500/10">QUITAR SALDO</button>
+                </div>
+                <div id="txt-conclusao" class="text-preview-box"></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="copiarTextoProfissional('txt-conclusao', this)" class="py-3 btn-copy-custom rounded-xl font-bold text-[10px] uppercase">COPIAR</button>
+                    <button onclick="enviarWpp('txt-conclusao')" class="py-3 bg-green-600 text-white rounded-xl font-bold text-[10px] uppercase">WHATSAPP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-reativacao" style="position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(13,17,23,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);">
+        <div class="glass-card" style="max-width:400px; width:100%; padding:28px 24px; text-align:center;">
+            <div style="width:52px; height:52px; margin:0 auto 16px; border-radius:16px; background:rgba(30,64,175,0.15); border:1px solid rgba(30,64,175,0.35); display:flex; align-items:center; justify-content:center;">
+                <i class="fa-solid fa-shield-halved" style="font-size:22px; color:#3b82f6;"></i>
+            </div>
+            <h3 class="text-lg font-black uppercase tracking-tight" style="margin-bottom:8px;">Reativação Pendente</h3>
+            <p style="font-size:13px; color:var(--text-secondary,#94a3b8); line-height:1.5; margin-bottom:4px;">
+                Esta é uma reativação de garantia pendente da OS <strong id="modal-reativacao-os" style="color:#3b82f6;">#---</strong>. Deseja continuar de onde parou?
+            </p>
+            <p style="font-size:11px; color:var(--text-secondary,#94a3b8); line-height:1.5; margin-bottom:20px; opacity:0.8;">
+                Se você não reconhece essa ação, toque em Cancelar para começar um orçamento/O.S. em branco.
+            </p>
+            <div class="grid grid-cols-2 gap-3">
+                <button id="btn-reativacao-cancelar" class="py-3 rounded-xl font-bold text-xs uppercase" style="background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-main);">Cancelar</button>
+                <button id="btn-reativacao-ok" class="py-3 rounded-xl font-bold text-xs uppercase" style="background:#1e40af; color:#fff;">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-md mx-auto relative z-10" id="main-container">
+
+        <!-- CABEÇALHO -->
+        <header class="flex justify-between items-center mb-5 pt-2">
+            <div>
+                <h1 class="text-xl font-black tracking-tighter uppercase leading-none">REFRIGERAÇÃO <span class="text-blue-500" id="header-name">ELIEZER</span></h1>
+                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest" id="sub-title">Sistema de Orçamento</span>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="history.back()" class="theme-toggle" title="Voltar">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <a href="sistemas.html" class="theme-toggle" title="Início" style="text-decoration:none;">
+                    <i class="fa-solid fa-house"></i>
+                </a>
+                <button onclick="toggleTheme()" class="theme-toggle">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- SWITCH DE MODO (com dica de swipe) -->
+        <div class="mb-6">
+            <div class="switch" id="toggleMode" onclick="alternarModo()">
+                <div class="switch-bg" id="switch-thumb"></div>
+                <div class="switch-labels">
+                    <div id="lbl-orc" class="active-label">Orçamento</div>
+                    <div id="lbl-os">O.S.</div>
+                </div>
+            </div>
+            <p class="text-center text-[9px] font-bold uppercase tracking-widest opacity-20 mt-2 flex items-center justify-center gap-1">
+                <i class="fa-solid fa-left-right"></i> Deslize para alternar o modo
+            </p>
+        </div>
+
+        <!-- CARD 1: DADOS DO CLIENTE -->
+        <div class="glass-card p-6 mb-4" id="card-principal">
+            <div id="sec-dados" class="space-y-4">
+                <div class="section-header flex justify-between items-center w-full">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <span id="label-dados">Dados do Orçamento</span>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 px-4 py-1.5 rounded-xl backdrop-blur-md shadow-sm">
+                        <span class="text-[9px] font-black text-blue-500/60 uppercase tracking-tighter">OS nº</span>
+                        <span id="display-id" class="text-xs font-black text-blue-500 ml-1 tracking-widest">---</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <input type="text" id="nomePrestador" placeholder="Sua Empresa" class="w-full p-4 rounded-2xl dark-input text-sm font-semibold outline-none">
+                    <div class="relative custom-dropdown min-w-0" id="dropdown-cliente">
+                        <div class="w-full p-4 rounded-2xl dark-input text-sm font-semibold flex justify-between items-center cursor-pointer" onclick="toggleDropdown(this)">
+                            <span class="selected-text truncate block w-full">Selecionar Cliente</span>
+                            <input type="text" class="search-input w-full" placeholder="Selecionar Cliente" oninput="filtrarDropdown(this, 'cliente')" onclick="event.stopPropagation()">
+                            <i class="fa-solid fa-chevron-down text-white/10 text-xs ml-2"></i>
+                        </div>
+                        <ul id="lista-clientes-custom" class="dropdown-list"></ul>
+                        <input type="hidden" id="nomeCliente">
+                    </div>
+                    <input type="text" id="enderecoCliente" placeholder="Endereço Completo" class="w-full p-4 rounded-2xl dark-input text-sm font-semibold outline-none">
+                    <input type="tel" id="telCliente" placeholder="CPF / CNPJ" maxlength="18"
+                        class="w-full p-4 rounded-2xl dark-input text-sm font-semibold outline-none"
+                        oninput="mascaraMutuario(this)">
+
+                    <!-- Datas + Prazo numa grade de 3 colunas -->
+                    <div class="grid grid-cols-3 gap-2 pt-2 items-end">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-bold text-white/30 uppercase ml-1 block">Início</label>
+                            <input type="date" id="dataInicio" class="w-full p-3 rounded-xl dark-input text-[10px] font-bold text-center" onchange="calcularDataFinal()">
+                        </div>
+                        <div class="space-y-1">
+                            <label id="label-data-fim" class="text-[9px] font-bold text-white/30 uppercase ml-1 block">Vencimento</label>
+                            <input type="date" id="dataPrazoFinal" class="w-full p-3 rounded-xl dark-input text-[10px] font-bold text-center" readonly>
+                        </div>
+                        <div class="space-y-1">
+                            <label id="label-prazo" class="text-[9px] font-bold text-white/30 uppercase ml-1 block">Dias</label>
+                            <div class="relative">
+                                <input type="number" id="inputGarantia" value="30" class="w-full p-3 rounded-xl dark-input text-[10px] font-bold text-center pr-7" oninput="calcularDataFinal()">
+                                <span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[8px] text-white/20 font-black pointer-events-none">d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 2: SERVIÇOS -->
+        <div class="glass-card p-6 mb-4">
+            <div id="sec-servicos" class="space-y-4">
+                <div class="section-header">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span id="label-servicos">Serviços do Orçamento</span>
+                </div>
+                <div id="services-container" class="space-y-4"></div>
+                <button onclick="adicionarServico()" class="btn-add-item">
+                    <i id="btn-add-icon" class="fa-solid fa-circle-plus mr-2 text-blue-500"></i> ADICIONAR ITEM
+                </button>
+
+                <!-- Observações -->
+                <div class="space-y-1 pt-2">
+                    <div class="section-header mb-2">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span>Observações / Detalhes Técnicos</span>
+                    </div>
+                    <textarea id="obsGeral" placeholder="Escreva os detalhes técnicos aqui..." class="w-full p-4 rounded-2xl dark-input text-sm outline-none" oninput="autoExpandir(this)"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: TOTAL E PAGAMENTO -->
+        <div class="glass-card p-6 mb-6" id="sec-custos">
+            <div class="space-y-4">
+                <div class="section-header">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span id="label-total">Total do Orçamento</span>
+                </div>
+                <div class="total-container p-6 rounded-3xl">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl font-black text-white/40">R$</span>
+                        <input type="text" id="totalFinal" placeholder="0,00" class="w-full bg-transparent border-none text-3xl font-black text-[#ffffff] focus:outline-none" readonly>
+                    </div>
+                </div>
+                <div id="sec-desconto" class="space-y-2 pt-2">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Desconto (R$)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 font-bold text-xs">R$</span>
+                                <input type="text" id="descontoReais" placeholder="0,00" class="w-full dark-input pl-9 p-4 rounded-2xl text-sm font-bold" oninput="formatarMoedaDesconto(this)">
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Desconto (%)</label>
+                            <div class="relative">
+                                <input type="text" id="descontoPercentual" placeholder="0" class="w-full dark-input pr-8 p-4 rounded-2xl text-sm font-bold text-right" oninput="formatarPercentualDesconto(this)">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 font-bold text-xs">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Total com Desconto</label>
+                        <div id="totalComDesconto" class="w-full p-4 rounded-2xl text-sm font-black text-center dark-input">R$ 0,00</div>
+                    </div>
+                    <p class="text-[10px] text-white/30 ml-1 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-info"></i> O desconto é aplicado sobre o total e enviado junto ao orçamento.
+                    </p>
+                </div>
+                <div id="sec-pagamento" class="hidden space-y-2 pt-2">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Valor Já Pago</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 font-bold text-xs">R$</span>
+                                <input type="text" id="valorPago" placeholder="0,00" class="w-full dark-input pl-9 p-4 rounded-2xl text-sm font-bold" onkeyup="formatarMoedaPago(this)">
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Saldo Devedor</label>
+                            <div id="saldoDevedor" class="w-full p-4 rounded-2xl text-sm font-black text-center" style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444;">R$ 0,00</div>
+                        </div>
+                    </div>
+                    <div id="infoDescontoOS" class="hidden space-y-1">
+                        <label class="text-[9px] font-bold text-white/30 uppercase ml-2">Desconto Concedido ao Cliente</label>
+                        <div id="descontoConcedidoTexto" class="w-full p-3 rounded-2xl text-xs font-black text-center dark-input">R$ 0,00 (0%)</div>
+                    </div>
+                    <p class="text-[10px] text-white/30 ml-1 flex items-center gap-1">
+                        <i class="fa-solid fa-circle-info"></i> Havendo saldo, ele é lançado em Contas a Receber ao salvar a O.S.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTÃO CTA FORA DOS CARDS -->
+        <button onclick="gerarDocumento()" id="btn-acao" class="w-full btn-primary text-white py-5 rounded-2xl font-black text-base uppercase tracking-widest flex items-center justify-center gap-3 mb-6">
+            Gerar Orçamento <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+    </div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registrado!', reg))
+      .catch(err => console.log('Erro ao registrar Service Worker', err));
+  }
+
+  document.addEventListener('contextmenu', function(event) {
+    // Libera o menu (copiar/colar/selecionar) dentro de campos de texto.
+    // Mantém o bloqueio no restante da página.
+    const alvo = event.target;
+    const ehCampoTexto = ['INPUT', 'TEXTAREA'].includes(alvo.tagName) || alvo.isContentEditable;
+    if (ehCampoTexto) return;
+    event.preventDefault();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    // Permite Ctrl+C, Ctrl+V, Ctrl+A, Ctrl+X e Ctrl+Z dentro de campos de digitação
+    const emCampoTexto = ['INPUT', 'TEXTAREA'].includes(e.target.tagName) || e.target.isContentEditable;
+    if (emCampoTexto && e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'a' || e.key === 'x' || e.key === 'z')) {
+        return;
+    }
+    if (
+        (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) || 
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || 
+        (e.keyCode === 123)
+    ) {
+        e.preventDefault();
+        alert('Ação protegida pelo sistema.');
+        return false;
+    }
+  });
+    
+const URL_READ_ID = apiURL('os');
+const URL_DATABASE = apiURL('config'); 
+
+let cacheDados = [];
+let modoOS = false;
+let saldoQuitado = false;
+let id_os_atual = ""; 
+let osEmEdicao = false; // true quando os dados vieram da tela de edição (garantias)
+let reativacaoGarantiaInfo = null; // { diasCongelados } quando os dados vieram do botão "Reativar Garantia"
+
+function toggleTheme() {
+    const body = document.body;
+    const icon = document.getElementById('theme-icon');
+    body.classList.toggle('light-mode');
+    localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+    if(icon) icon.className = body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+}
+
+function autoExpandir(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+function calcularDataFinal() {
+    const dataInicioVal = document.getElementById('dataInicio').value;
+    const diasPrazo = parseInt(document.getElementById('inputGarantia').value) || 0;
+    const campoDataFinal = document.getElementById('dataPrazoFinal');
+    // Recalcula tanto no modo Orçamento quanto OS ao alterar início ou dias
+    if (dataInicioVal && diasPrazo > 0) {
+        let data = new Date(dataInicioVal + 'T00:00:00');
+        data.setDate(data.getDate() + diasPrazo);
+        campoDataFinal.value = data.toISOString().split('T')[0];
+    }
+}
+
+async function buscarDadosPlanilha() {
+    try {
+        const respDB = await fetch(URL_DATABASE);
+        cacheDados = await respDB.json();
+        renderizarDatalists();
+        aplicarTextoPadrao();
+        
+        const respID = await fetch(URL_READ_ID);
+        const dadosID = await respID.json();
+        
+        const dadosParaEditar = localStorage.getItem('editar_os_dados');
+        if (!dadosParaEditar) {
+            gerarNovoID(dadosID);
+        }
+        
+        await verificarEdicao(); 
+    } catch (e) { 
+        console.error("Erro ao carregar dados:", e); 
+    }
+}
+
+function gerarNovoID(dadosPlanilha) {
+    const idsExistentes = dadosPlanilha
+        .map(item => {
+            let val = (item.ID_OS || item.id_os || "0").toString().replace(/\D/g, '');
+            return parseInt(val);
+        })
+        .filter(n => !isNaN(n))
+        .sort((a, b) => a - b);
+
+    let proximo = 1;
+    for (let i = 0; i < idsExistentes.length; i++) {
+        if (idsExistentes[i] === proximo) proximo++;
+    }
+    id_os_atual = proximo.toString().padStart(3, '0');
+    document.getElementById('display-id').innerText = id_os_atual;
+}
+
+function toggleDropdown(el) {
+    const wrapper = el.parentElement;
+    const list = el.nextElementSibling;
+    const searchInput = el.querySelector('.search-input');
+    const isVisible = list.style.display === 'block';
+    fecharTodosDropdowns();
+    if (!isVisible) {
+        list.style.display = 'block';
+        wrapper.classList.add('is-searching');
+        searchInput.focus();
+        searchInput.value = ''; 
+        filtrarDropdown(searchInput);
+    }
+}
+
+function filtrarDropdown(input) {
+    const termo = input.value.toLowerCase();
+    const list = input.closest('.custom-dropdown').querySelector('.dropdown-list');
+    const items = list.querySelectorAll('.dropdown-item');
+    items.forEach(item => {
+        item.style.display = item.textContent.toLowerCase().includes(termo) ? 'block' : 'none';
+    });
+}
+
+function selecionarItemDropdown(li, nome, valorExtra, tipo) {
+    const wrapper = li.closest('.custom-dropdown');
+    const display = wrapper.querySelector('.selected-text');
+    const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+    display.innerText = nome;
+    hiddenInput.value = nome;
+    if (tipo === 'servico') {
+        const card = li.closest('.service-card');
+        const precoInput = card.querySelector('.service-price');
+        let valor = valorExtra.replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
+        precoInput.value = (parseFloat(valor) || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        atualizarSoma();
+    } else if (tipo === 'cliente') {
+        const cliente = cacheDados.find(x => x.cli_nome === nome);
+        if (cliente) {
+            document.getElementById('enderecoCliente').value = cliente.cli_end || "";
+            const campoCpf = document.getElementById('telCliente');
+            campoCpf.value = cliente.cli_doc || "";
+            if (campoCpf.value) mascaraMutuario(campoCpf);
+        }
+    }
+    fecharTodosDropdowns();
+}
+
+function fecharTodosDropdowns() {
+    document.querySelectorAll('.dropdown-list').forEach(l => l.style.display = 'none');
+    document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('is-searching'));
+}
+
+function renderizarDatalists() {
+    // Filtro adicionado para ignorar nomes que contenham "ATENÇÃO"
+    const clientes = [...new Set(cacheDados.map(d => d.cli_nome))]
+        .filter(Boolean)
+        .filter(n => !n.includes("ATENÇÃO"));
+
+    document.getElementById('lista-clientes-custom').innerHTML = clientes.map(n => 
+        `<li class="dropdown-item" onclick="selecionarItemDropdown(this, '${n}', '', 'cliente')">${n}</li>`).join('');
+    const dadosEmp = cacheDados.find(d => d.emp_nome);
+    if(dadosEmp) document.getElementById('nomePrestador').value = dadosEmp.emp_nome;
+}
+
+function gerarHtmlServicos() {
+    const servicos = [...new Set(cacheDados.map(d => d.srv_nome))].filter(Boolean);
+    return servicos.map(n => {
+        const item = cacheDados.find(d => d.srv_nome === n);
+        return `<li class="dropdown-item" onclick="selecionarItemDropdown(this, '${n}', '${item.srv_valor}', 'servico')">${n}</li>`;
+    }).join('');
+}
+
+function adicionarServico() {
+    const container = document.getElementById('services-container');
+    const div = document.createElement('div');
+    div.className = "service-card";
+    div.innerHTML = `
+        <div class="flex items-center gap-2">
+            <div class="relative custom-dropdown flex-grow min-w-0">
+                <div class="w-full p-4 rounded-2xl dark-input text-sm font-semibold flex justify-between items-center cursor-pointer" onclick="toggleDropdown(this)">
+                    <span class="selected-text truncate block w-full">Selecionar Serviço</span>
+                    <input type="text" class="search-input w-full" placeholder="Pesquisar..." oninput="filtrarDropdown(this)" onclick="event.stopPropagation()">
+                    <i class="fa-solid fa-chevron-down text-white/10 text-xs ml-2"></i>
+                </div>
+                <ul class="dropdown-list">${gerarHtmlServicos()}</ul>
+                <input type="hidden" class="service-name">
+            </div>
+            <button onclick="this.closest('.service-card').remove(); atualizarSoma();" class="text-red-500 p-2 flex-shrink-0">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex-grow relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 font-bold text-xs">R$</span>
+                <input type="text" placeholder="0,00" class="w-full dark-input pl-9 p-4 rounded-2xl text-sm font-bold service-price" onkeyup="formatarMoeda(this)">
+            </div>
+            <div class="flex items-center bg-white/5 border border-white/10 rounded-2xl p-2 gap-4 flex-shrink-0">
+                <button onclick="alterarQtde(this, -1)" class="qty-btn"><i class="fa-solid fa-minus"></i></button>
+                <span class="font-bold service-qty w-4 text-center">1</span>
+                <button onclick="alterarQtde(this, 1)" class="qty-btn"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>`;
+    container.appendChild(div);
+}
+
+function alterarQtde(btn, delta) {
+    const span = btn.parentElement.querySelector('.service-qty');
+    let val = Math.max(1, parseInt(span.innerText) + delta);
+    span.innerText = val;
+    atualizarSoma();
+}
+
+function formatarMoeda(i) {
+    let v = i.value.replace(/\D/g, "");
+    v = (v / 100).toFixed(2).replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    i.value = v;
+    atualizarSoma(); 
+}
+
+function atualizarSoma() {
+    let total = 0;
+    document.querySelectorAll('.service-card').forEach(card => {
+        let preco = parseFloat(card.querySelector('.service-price').value.replace(/\./g, "").replace(",", ".")) || 0;
+        let qtde = parseInt(card.querySelector('.service-qty').innerText) || 1;
+        total += (preco * qtde);
+    });
+    const elTotalFinalSoma = document.getElementById('totalFinal');
+    // Guarda o subtotal "cheio" (sem desconto) num atributo separado, já que
+    // o campo visível passa a exibir o total JÁ com desconto aplicado.
+    elTotalFinalSoma.dataset.subtotal = total;
+    elTotalFinalSoma.value = total.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    atualizarDesconto(); // recalcula e já deixa o campo verde com o valor descontado
+}
+
+// ── DESCONTO DO ORÇAMENTO (R$ ⇄ %, sincronizados) ──────────────────────
+let descontoUltimoCampo = 'reais'; // guarda qual campo foi editado por último
+
+// Formata o campo "Desconto (R$)" e recalcula o % e o total com desconto
+function formatarMoedaDesconto(i) {
+    let v = i.value.replace(/\D/g, "");
+    v = (v / 100).toFixed(2).replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    i.value = v;
+    descontoUltimoCampo = 'reais';
+    atualizarDesconto();
+}
+
+// Formata o campo "Desconto (%)" e recalcula o R$ e o total com desconto
+function formatarPercentualDesconto(i) {
+    let v = i.value.replace(/[^0-9,]/g, "");
+    const partes = v.split(',');
+    if (partes.length > 2) v = partes[0] + ',' + partes.slice(1).join('');
+    i.value = v;
+    descontoUltimoCampo = 'percentual';
+    atualizarDesconto();
+}
+
+// Mantém os campos de desconto (R$ e %) sincronizados com o total do orçamento
+function atualizarDesconto() {
+    const elReais = document.getElementById('descontoReais');
+    const elPerc = document.getElementById('descontoPercentual');
+    const elTotalDesc = document.getElementById('totalComDesconto');
+    const elTotalFinal = document.getElementById('totalFinal');
+    if (!elReais || !elPerc || !elTotalFinal) return;
+
+    // O subtotal "cheio" (sem desconto) fica guardado em data-subtotal, pois
+    // o próprio campo (totalFinal) passa a exibir o valor JÁ com desconto.
+    const subtotal = parseFloat(
+        elTotalFinal.dataset.subtotal !== undefined
+            ? elTotalFinal.dataset.subtotal
+            : (elTotalFinal.value || '0').replace(/\./g, '').replace(',', '.')
+    ) || 0;
+    let reais, perc;
+
+    if (descontoUltimoCampo === 'percentual') {
+        perc = parseFloat((elPerc.value || '0').replace(',', '.')) || 0;
+        if (perc > 100) { perc = 100; elPerc.value = '100'; }
+        if (perc < 0) perc = 0;
+        reais = subtotal * (perc / 100);
+        elReais.value = reais > 0 ? reais.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '';
+    } else {
+        reais = parseFloat((elReais.value || '0').replace(/\./g, '').replace(',', '.')) || 0;
+        if (reais > subtotal) { reais = subtotal; elReais.value = reais.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+        if (reais < 0) reais = 0;
+        perc = subtotal > 0 ? (reais / subtotal * 100) : 0;
+        elPerc.value = perc > 0 ? perc.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : '';
+    }
+
+    const totalComDesc = Math.max(0, subtotal - reais);
+
+    // Campo verde "Total" já sai com o desconto aplicado — não é preciso
+    // conferir em outro lugar, o valor exibido já é o valor final.
+    elTotalFinal.value = totalComDesc.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+    if (elTotalDesc) elTotalDesc.innerText = 'R$ ' + totalComDesc.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+    // No modo O.S., espelha o desconto concedido (R$ e %) logo abaixo do
+    // "Valor Já Pago" — sem repetir o total, que já aparece com desconto
+    // no campo verde principal.
+    const infoDescOS = document.getElementById('infoDescontoOS');
+    const txtDescOS = document.getElementById('descontoConcedidoTexto');
+    if (infoDescOS && txtDescOS) {
+        if (modoOS && reais > 0.009) {
+            txtDescOS.innerText = 'R$ ' + reais.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) + ' (' + perc.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + '%)';
+            infoDescOS.classList.remove('hidden');
+        } else {
+            infoDescOS.classList.add('hidden');
+        }
+    }
+
+    // O saldo devedor depende do total (que acabou de mudar acima).
+    atualizarSaldo();
+}
+
+// Formata o campo "Valor Já Pago" e recalcula o saldo devedor da O.S.
+function formatarMoedaPago(i) {
+    let v = i.value.replace(/\D/g, "");
+    v = (v / 100).toFixed(2).replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    i.value = v;
+    atualizarSaldo();
+}
+
+// Calcula Total - Pago e exibe o Saldo Devedor (nunca negativo)
+function atualizarSaldo() {
+    const elPago = document.getElementById('valorPago');
+    const elSaldo = document.getElementById('saldoDevedor');
+    if (!elPago || !elSaldo) return;
+    const totalNum = parseFloat((document.getElementById('totalFinal').value || '0').replace(/\./g, '').replace(',', '.')) || 0;
+    const pagoNum = parseFloat((elPago.value || '0').replace(/\./g, '').replace(',', '.')) || 0;
+    let saldo = totalNum - pagoNum;
+    if (saldo < 0) saldo = 0;
+    elSaldo.innerText = 'R$ ' + saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+}
+
+function alternarQuitacao() {
+    saldoQuitado = !saldoQuitado;
+    const btn = document.getElementById('btn-quitar');
+    btn.innerText = saldoQuitado ? "PAGAMENTO CONFIRMADO" : "QUITAR SALDO";
+    btn.className = saldoQuitado ? "text-[9px] font-black px-3 py-1 rounded-lg border border-green-600 text-white bg-green-600" : "text-[9px] font-black px-3 py-1 rounded-lg border border-green-500/30 text-green-500 bg-green-500/10";
+    gerarDocumento();
+}
+
+function gerarDocumento() {
+    const prestador = document.getElementById('nomePrestador').value || "ELIEZER";
+    const cliente = document.getElementById('nomeCliente').value || "Cliente";
+    const total = document.getElementById('totalFinal').value;
+    const os = document.getElementById('display-id').innerText;
+    const obs = document.getElementById('obsGeral').value;
+    const dias = document.getElementById('inputGarantia').value;
+    const dataFim = document.getElementById('dataPrazoFinal').value.split('-').reverse().join('/');
+    const chavePix = (cacheDados.find(d => d.emp_pix) || {}).emp_pix || "[PIX]";
+    
+    let servicosTextoWpp = "";
+    
+    document.querySelectorAll('.service-card').forEach(card => {
+        const n = card.querySelector('.service-name').value || card.querySelector('.selected-text').innerText;
+        const p = card.querySelector('.service-price').value;
+        const q = card.querySelector('.service-qty').innerText;
+        if(n && n !== "Selecionar Serviço") {
+            servicosTextoWpp += `• ${q}x ${n} - R$ ${p}\n`;
+        }
+    });
+
+    const totalNum = parseFloat(total.replace(/\./g, "").replace(",", ".")) || 0;
+    const sinal = (totalNum * 0.3).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    const elPagoDoc = document.getElementById('valorPago');
+    const pagoNum = parseFloat(((elPagoDoc ? elPagoDoc.value : "") || "0").replace(/\./g, "").replace(",", ".")) || 0;
+    // No modo O.S. o saldo usa o valor realmente pago; no Orçamento mantém a regra de 70%.
+    const saldoNum = modoOS ? Math.max(0, totalNum - pagoNum) : (totalNum * 0.7);
+    const saldo = saldoNum.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    
+    document.getElementById('txt-proposta').innerText = `*ORÇAMENTO TÉCNICO - ${prestador.toUpperCase()}*\n\nOlá ${cliente}! Segue o orçamento:\n\n*SERVIÇOS:*\n${servicosTextoWpp}\n*OBS:*\n${obs}\n\n*INVESTIMENTO TOTAL:* R$ ${total}\n(Material + Mão de Obra incluso)\n\n*${modoOS ? 'Garantia' : 'Vencimento'}:* ${dias} dias\n*Data Prevista:* ${dataFim}\n\nFicaremos no aguardo.`;
+    document.getElementById('txt-sinal').innerText = `*Confirmação de Agendamento*\n\nOlá, ${cliente}, tudo bem?\n\nPara formalizarmos o seu atendimento e garantirmos a reserva dos materiais e da sua data em nossa agenda, solicitamos o pagamento da entrada:\n\n💰 *Valor da Entrada (30%):* R$ ${sinal}\n🔑 *Chave PIX:* ${chavePix}\n\nAssim que realizar a transferência, por favor, nos envie o comprovante para validarmos o agendamento. 🗓️\n\nFicamos à disposição para qualquer dúvida!`;
+    if (reativacaoGarantiaInfo) {
+        // Reparo em garantia concluído: troca a mensagem de quitação de saldo
+        // por uma explicando que os dias parados foram somados à garantia.
+        const diasCongelados = reativacaoGarantiaInfo.diasCongelados || 0;
+        document.getElementById('txt-conclusao').innerText = `*Garantia Reativada* 🛡️❄️\n\nOlá, ${cliente}, tudo bem?\n\nSeu equipamento retornou do reparo em garantia e já está concluído com sucesso! ✅ Realizamos todos os testes técnicos e o sistema está operando em perfeitas condições.\n\n🧊 O aparelho ficou *${diasCongelados} dia(s)* aos cuidados da nossa assistência técnica. Conforme a legislação (Decreto nº 2.181/97), esse período fica suspenso e é somado ao prazo da sua garantia.\n\n🛡️ *Nova garantia:* *${dias} dias* no total, válida até *${dataFim}*.\n\nAgradecemos a confiança em nosso trabalho! Qualquer dúvida, estamos à disposição.\n\nAtenciosamente,\n*${prestador}*`;
+    } else {
+        document.getElementById('txt-conclusao').innerText = `*Finalização de Serviço* ❄️\n\nOlá, ${cliente}, tudo bem?\n\nInformamos que o serviço em seu equipamento foi concluído com sucesso! ✅ Realizamos todos os testes técnicos e o sistema já está operando em perfeitas condições.\n\n💳 *Status de Pagamento:* ${saldoQuitado ? "Saldo Quitado" : `Saldo de R$ ${saldo}`}\n🛡️ *Garantia:* Você tem *${dias} dias* de garantia total sobre o serviço executado.\n\nAgradecemos a confiança em nosso trabalho! Qualquer dúvida, estamos à disposição.\n\nAtenciosamente,\n*${prestador}*`;
+    }
+    
+    document.getElementById('modal-mensagens').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function fecharModal() { document.getElementById('modal-mensagens').style.display = 'none'; document.body.style.overflow = 'auto'; }
+
+function enviarWpp(id) {
+    const txt = document.getElementById(id).innerText;
+    const nomeCli = document.getElementById('nomeCliente').value;
+    const clienteAtual = cacheDados.find(c => c.cli_nome === nomeCli);
+    const tel = ((clienteAtual && clienteAtual.cli_tel) || "").replace(/\D/g, '');
+    if(!tel) return alert("Não encontrei o WhatsApp deste cliente na planilha. Selecione o cliente na lista de clientes.");
+    window.open(`https://api.whatsapp.com/send?phone=55${tel}&text=${encodeURIComponent(txt)}`, '_blank');
+}
+
+function copiarTextoProfissional(id, el) {
+    navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => {
+        const old = el.innerText; el.innerText = "COPIADO!"; el.classList.add('btn-copy-success');
+        setTimeout(() => { el.innerText = old; el.classList.remove('btn-copy-success'); }, 2000);
+    });
+}
+
+function baixarPDF() {
+    const dadosEmp = cacheDados.find(d => d.emp_nome) || {};
+    const dados = {
+        tipo: modoOS ? "ORDEM DE SERVIÇO" : "ORÇAMENTO",
+        id_os: id_os_atual,
+        edicao: osEmEdicao,
+        _salvoEm: Date.now(),
+        prestador: document.getElementById('nomePrestador').value || dadosEmp.emp_nome || "ELIEZER",
+        emp_pix: dadosEmp.emp_pix || "",
+        emp_tel: dadosEmp.emp_tel || "",
+        emp_end: dadosEmp.emp_end || "",
+        emp_cnpj: dadosEmp.emp_cnpj || "",
+        emp_logo: dadosEmp.emp_logo || "",
+        cliente: document.getElementById('nomeCliente').value || "Cliente",
+        endereco: document.getElementById('enderecoCliente').value,
+        cpf: document.getElementById('telCliente').value,
+        emissao: document.getElementById('dataInicio').value.split('-').reverse().join('/'),
+        validade: document.getElementById('dataPrazoFinal').value.split('-').reverse().join('/'),
+        total: document.getElementById('totalFinal').value,
+        pago: (document.getElementById('valorPago') ? document.getElementById('valorPago').value : ""),
+        descontoReais: (document.getElementById('descontoReais') ? document.getElementById('descontoReais').value : ""),
+        descontoPercentual: (document.getElementById('descontoPercentual') ? document.getElementById('descontoPercentual').value : ""),
+        obs: document.getElementById('obsGeral').value,
+        garantia: document.getElementById('inputGarantia').value,
+        itens: Array.from(document.querySelectorAll('.service-card')).map(c => ({
+            descricao: c.querySelector('.service-name').value || c.querySelector('.selected-text').innerText,
+            qtd: c.querySelector('.service-qty').innerText,
+            valor: c.querySelector('.service-price').value
+        }))
+    };
+    localStorage.setItem('dados_impressao', JSON.stringify(dados));
+    window.location.href = modoOS ? "imp-ordem.html" : "imp-orcamento.html";
+}
+
+function alternarModo() {
+    modoOS = !modoOS;
+    const campoDataFinal = document.getElementById('dataPrazoFinal');
+    const lblOrc = document.getElementById('lbl-orc');
+    const lblOs  = document.getElementById('lbl-os');
+
+    document.getElementById('toggleMode').classList.toggle('mode-os');
+    document.getElementById('card-principal').classList.toggle('is-os');
+
+    // Propaga is-os para todos os glass-cards da página
+    document.querySelectorAll('.glass-card').forEach(c => c.classList.toggle('is-os', modoOS));
+
+    document.getElementById('sub-title').innerText     = modoOS ? "Ordem de Serviço (OS)" : "Sistema de Orçamento";
+    document.getElementById('label-dados').innerText   = modoOS ? "Dados da O.S."          : "Dados do Orçamento";
+    document.getElementById('label-servicos').innerText= modoOS ? "Serviços Realizados"    : "Serviços do Orçamento";
+    document.getElementById('label-total').innerText   = modoOS ? "Total da O.S."          : "Total do Orçamento";
+    document.getElementById('label-data-fim').innerText= modoOS ? "Término"                : "Vencimento";
+    document.getElementById('label-prazo').innerText   = modoOS ? "Garantia"               : "Dias";
+    document.getElementById('btn-acao').innerHTML = modoOS
+        ? 'Finalizar O.S <i class="fa-solid fa-check"></i>'
+        : 'Gerar Orçamento <i class="fa-solid fa-arrow-right"></i>';
+    document.getElementById('btn-acao').classList.toggle('mode-os', modoOS);
+
+    const secPag = document.getElementById('sec-pagamento');
+    if (secPag) {
+        if (modoOS) {
+            secPag.classList.remove('hidden');
+        } else {
+            secPag.classList.add('hidden');
+            const elPago = document.getElementById('valorPago');
+            if (elPago) elPago.value = '';
+            atualizarSaldo();
+        }
+    }
+
+    // Os campos de EDIÇÃO do desconto (R$ e %) aparecem somente no modo
+    // Orçamento (não são limpos ao alternar, apenas ocultados, para não
+    // perder o valor caso o usuário troque o modo sem querer). No modo O.S.
+    // o desconto já concedido continua valendo (é só exibido de forma
+    // resumida, somente leitura, dentro da seção de pagamento).
+    const secDesc = document.getElementById('sec-desconto');
+    if (secDesc) secDesc.classList.toggle('hidden', modoOS);
+    atualizarDesconto();
+
+    if (modoOS) {
+        campoDataFinal.readOnly = false;
+        lblOs.classList.add('active-label');
+        lblOrc.classList.remove('active-label');
+    } else {
+        campoDataFinal.readOnly = true;
+        lblOrc.classList.add('active-label');
+        lblOs.classList.remove('active-label');
+    }
+    calcularDataFinal();
+    aplicarTextoPadrao();
+}
+
+function aplicarTextoPadrao() {
+    if (localStorage.getItem('lock_dates') === 'true') return;
+    const listaObs = cacheDados.map(d => d.txt_obs).filter(Boolean);
+    // Linha 1 Coluna M para Orçamento (índice 0) | Linha 2 Coluna M para OS (índice 1)
+    document.getElementById('obsGeral').value = modoOS ? (listaObs[1] || "") : (listaObs[0] || "");
+    autoExpandir(document.getElementById('obsGeral'));
+}
+
+function mostrarConfirmacaoReativacao(idOS) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('modal-reativacao');
+        document.getElementById('modal-reativacao-os').innerText = '#' + idOS;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        function limpar() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            btnOk.removeEventListener('click', onOk);
+            btnCancelar.removeEventListener('click', onCancelar);
+        }
+        function onOk() { limpar(); resolve(true); }
+        function onCancelar() { limpar(); resolve(false); }
+
+        const btnOk = document.getElementById('btn-reativacao-ok');
+        const btnCancelar = document.getElementById('btn-reativacao-cancelar');
+        btnOk.addEventListener('click', onOk);
+        btnCancelar.addEventListener('click', onCancelar);
+    });
+}
+
+async function verificarEdicao() {
+    // Resquício de sessão: se os dados foram deixados aqui há mais de 30 minutos
+    // (ex.: aba fechada no meio do caminho, sem terminar a O.S.), descartamos
+    // automaticamente para não aplicar por engano numa O.S. nova e sem relação.
+    const LIMITE_RESQUICIO_MS = 30 * 60 * 1000;
+
+    const dadosReativacaoRaw = localStorage.getItem('reativacao_garantia_info');
+    let infoReativacaoTemp = null;
+    if (dadosReativacaoRaw) {
+        try { infoReativacaoTemp = JSON.parse(dadosReativacaoRaw); } catch (e) { infoReativacaoTemp = null; }
+        const idadeMs = infoReativacaoTemp && infoReativacaoTemp.salvoEm ? (Date.now() - infoReativacaoTemp.salvoEm) : Infinity;
+        if (!infoReativacaoTemp || idadeMs > LIMITE_RESQUICIO_MS) {
+            localStorage.removeItem('reativacao_garantia_info');
+            localStorage.removeItem('editar_os_dados');
+            infoReativacaoTemp = null;
+        }
+    }
+
+    if (infoReativacaoTemp) {
+        const confirmar = await mostrarConfirmacaoReativacao(infoReativacaoTemp.idOS);
+        if (!confirmar) {
+            localStorage.removeItem('reativacao_garantia_info');
+            localStorage.removeItem('editar_os_dados');
+            infoReativacaoTemp = null;
+        }
+    }
+    reativacaoGarantiaInfo = infoReativacaoTemp;
+    localStorage.removeItem('reativacao_garantia_info');
+
+    const dadosParaEditarStale = localStorage.getItem('editar_os_dados');
+    if (dadosParaEditarStale) {
+        const osCheck = JSON.parse(dadosParaEditarStale);
+        const idadeEdicaoMs = osCheck && osCheck._salvoEm ? (Date.now() - osCheck._salvoEm) : 0;
+        if (idadeEdicaoMs > LIMITE_RESQUICIO_MS) {
+            localStorage.removeItem('editar_os_dados');
+        }
+    }
+
+    const dadosParaEditar = localStorage.getItem('editar_os_dados');
+    if (dadosParaEditar) {
+        const os = JSON.parse(dadosParaEditar);
+        osEmEdicao = true; // marca que é uma edição (atualizar no lugar, não duplicar)
+        id_os_atual = (os.ID_OS || os.id_os || "---").toString().replace(/^'/, "").padStart(3, '0');
+        document.getElementById('display-id').innerText = id_os_atual;
+        
+        if (id_os_atual !== "---" && !modoOS) alternarModo();
+        
+        document.getElementById('nomeCliente').value = os.CLIENTE || "";
+        const displayCli = document.querySelector('#dropdown-cliente .selected-text');
+        if(displayCli) displayCli.innerText = os.CLIENTE || "Selecionar Cliente";
+        
+        document.getElementById('enderecoCliente').value = os.ENDERECO || os.ENDEREÇO || "";
+        const campoCpfEdicao = document.getElementById('telCliente');
+        campoCpfEdicao.value = os.CPF || os.TELEFONE || "";
+        if (campoCpfEdicao.value) mascaraMutuario(campoCpfEdicao);
+        
+        if (os.DATA_DO_SERVICO) document.getElementById('dataInicio').value = converterDataParaIso(os.DATA_DO_SERVICO);
+        
+        if (modoOS) {
+            if (os.TERMINO_SERVICO) {
+                document.getElementById('dataPrazoFinal').value = converterDataParaIso(os.TERMINO_SERVICO);
+            } else if (os.DATA_FIM_GARANTIA) {
+                document.getElementById('dataPrazoFinal').value = converterDataParaIso(os.DATA_FIM_GARANTIA);
+            }
+            if (os.GARANTIA_DIAS) document.getElementById('inputGarantia').value = os.GARANTIA_DIAS;
+        } else {
+            calcularDataFinal();
+        }
+
+        setTimeout(() => {
+            document.getElementById('obsGeral').value = os.OBSERVACAO || os.OSERVACAO || ""; 
+            autoExpandir(document.getElementById('obsGeral'));
+        }, 300);
+
+        const container = document.getElementById('services-container');
+        container.innerHTML = "";
+        
+        const servicosTexto = (os["TIPO_DE_SERVICO"] || os["TIPO_DE_SERVIÇO"] || "").toString();
+        const valoresTextoRaw = (os["VALOR_TOTAL"] || "0,00").toString();
+
+        // Remove o marcador ##TOTAL## (valor final já com desconto, usado só
+        // pela página receber.html para calcular o saldo devedor) ANTES de
+        // qualquer outra coisa. Ele não faz parte da lista de valores dos
+        // itens — se não for removido aqui, seus dígitos acabam grudando no
+        // preço do último item (bug do "R$ 75.000.750,00"). Não precisamos
+        // restaurar esse valor aqui: o total é recalculado sozinho a partir
+        // dos itens + desconto assim que o formulário carrega.
+        let valoresTexto = valoresTextoRaw.replace(/##TOTAL##\s*[\d.,]+/i, '').trim();
+
+        // Separa o "Valor Já Pago" embutido no VALOR_TOTAL (marcador ##PG##)
+        let valorPagoSalvo = "";
+        if (valoresTexto.includes('##PG##')) {
+            const partesPG = valoresTexto.split('##PG##');
+            valoresTexto = partesPG[0].trim();
+            valorPagoSalvo = (partesPG[1] || "").trim();
+        }
+
+        // Separa o "Desconto" embutido no VALOR_TOTAL (marcador ##DESC##, formato reais|percentual)
+        let valorDescontoSalvo = "";
+        let percentualDescontoSalvo = "";
+        if (valoresTexto.includes('##DESC##')) {
+            const partesDesc = valoresTexto.split('##DESC##');
+            valoresTexto = partesDesc[0].trim();
+            const descPartes = (partesDesc[1] || "").trim().split('|');
+            valorDescontoSalvo = (descPartes[0] || "").trim();
+            percentualDescontoSalvo = (descPartes[1] || "").trim();
+        }
+
+        const listaServicos = servicosTexto.split('|');
+        const listaValores = valoresTexto.split('|');
+
+        listaServicos.forEach((srvTexto, index) => {
+            if (srvTexto.trim() !== "") {
+                let qtd = 1, nome = srvTexto.trim();
+                if (nome.includes('x ')) {
+                    const p = nome.split('x ');
+                    qtd = parseInt(p[0]) || 1;
+                    nome = p.slice(1).join('x ').trim();
+                }
+                let valorIndiv = listaValores[index] ? listaValores[index].trim() : listaValores[0].trim();
+                adicionarServicoParaEdicao(nome, qtd, valorIndiv);
+            }
+        });
+
+        atualizarSoma();
+
+        // Restaura o "Valor Já Pago" para que o Saldo Devedor mostre só o que falta
+        if (valorPagoSalvo) {
+            const elPagoEdit = document.getElementById('valorPago');
+            if (elPagoEdit) {
+                elPagoEdit.value = valorPagoSalvo;
+                atualizarSaldo();
+            }
+        }
+
+        // Restaura o desconto (R$ e %) exatamente como foi salvo no orçamento
+        if (valorDescontoSalvo) {
+            const elDescReaisEdit = document.getElementById('descontoReais');
+            const elDescPercEdit = document.getElementById('descontoPercentual');
+            if (elDescReaisEdit) elDescReaisEdit.value = valorDescontoSalvo;
+            if (elDescPercEdit) elDescPercEdit.value = percentualDescontoSalvo;
+            descontoUltimoCampo = 'reais';
+            atualizarDesconto();
+        }
+
+        localStorage.removeItem('editar_os_dados');
+    } else {
+        // Nenhuma edição pendente de O.S. Restaura o rascunho (dados_impressao)
+        // sempre que ele existir e ainda for recente — independente de COMO o
+        // usuário chegou até aqui (botão "Voltar", link do menu, PWA reaberto
+        // na mesma aba etc.). Checar só o document.referrer é pouco confiável:
+        // em navegadores mobile, em modo app/PWA instalado e em WebViews esse
+        // valor frequentemente vem vazio mesmo quando o usuário realmente
+        // voltou da tela de impressão — e era exatamente por isso que os
+        // dados do cliente pareciam "sumir" ao voltar para editar.
+        // A própria existência do rascunho já garante que ele só veio daqui:
+        // ele só é criado quando esta tela envia para impressão, e só é
+        // apagado quando o PDF é realmente gerado — então basta conferir que
+        // ele ainda existe e não passou do limite de 30 minutos.
+        let dadosRascunho = null;
+        const dadosRascunhoRaw = localStorage.getItem('dados_impressao');
+        if (dadosRascunhoRaw) {
+            try { dadosRascunho = JSON.parse(dadosRascunhoRaw); } catch (e) { dadosRascunho = null; }
+            const idadeRascunhoMs = dadosRascunho && dadosRascunho._salvoEm ? (Date.now() - dadosRascunho._salvoEm) : Infinity;
+            if (!dadosRascunho || idadeRascunhoMs > LIMITE_RESQUICIO_MS) {
+                dadosRascunho = null;
+            }
+        }
+
+        // Rascunho ausente ou expirado: garante que nenhum dado de um
+        // orçamento/O.S. anterior fique disponível para restaurar depois.
+        if (!dadosRascunho) {
+            localStorage.removeItem('dados_impressao');
+        }
+
+        if (dadosRascunho) {
+            restaurarRascunho(dadosRascunho);
+        } else if (document.getElementById('services-container').children.length === 0) {
+            adicionarServico();
+        }
+    }
+}
+
+function restaurarRascunho(dados) {
+    // Repõe o formulário exatamente como estava antes de ir para a tela de
+    // impressão (cliente, serviços, valores, pagamento e desconto), sem
+    // remover o rascunho — ele só é apagado quando o PDF é realmente gerado.
+    osEmEdicao = !!dados.edicao;
+    id_os_atual = (dados.id_os || "---").toString().replace(/^'/, "").padStart(3, '0');
+    document.getElementById('display-id').innerText = id_os_atual;
+
+    const querSerOS = dados.tipo === "ORDEM DE SERVIÇO";
+    if (querSerOS !== modoOS) alternarModo();
+
+    if (dados.prestador) document.getElementById('nomePrestador').value = dados.prestador;
+    document.getElementById('nomeCliente').value = dados.cliente || "";
+    const displayCliRascunho = document.querySelector('#dropdown-cliente .selected-text');
+    if (displayCliRascunho) displayCliRascunho.innerText = dados.cliente || "Selecionar Cliente";
+
+    document.getElementById('enderecoCliente').value = dados.endereco || "";
+    const campoCpfRascunho = document.getElementById('telCliente');
+    campoCpfRascunho.value = dados.cpf || "";
+    if (campoCpfRascunho.value) mascaraMutuario(campoCpfRascunho);
+
+    if (dados.emissao) document.getElementById('dataInicio').value = converterDataParaIso(dados.emissao);
+    if (dados.garantia) document.getElementById('inputGarantia').value = dados.garantia;
+    if (dados.validade) {
+        document.getElementById('dataPrazoFinal').value = converterDataParaIso(dados.validade);
+    } else {
+        calcularDataFinal();
+    }
+
+    setTimeout(() => {
+        document.getElementById('obsGeral').value = dados.obs || "";
+        autoExpandir(document.getElementById('obsGeral'));
+    }, 300);
+
+    const containerRascunho = document.getElementById('services-container');
+    containerRascunho.innerHTML = "";
+    (dados.itens || []).forEach(item => {
+        adicionarServicoParaEdicao(item.descricao, parseInt(item.qtd) || 1, (item.valor || "0,00").toString());
+    });
+    if (containerRascunho.children.length === 0) adicionarServico();
+
+    atualizarSoma();
+
+    if (dados.pago) {
+        const elPagoRascunho = document.getElementById('valorPago');
+        if (elPagoRascunho) {
+            elPagoRascunho.value = dados.pago;
+            atualizarSaldo();
+        }
+    }
+
+    if (dados.descontoReais) {
+        const elDescReaisRascunho = document.getElementById('descontoReais');
+        const elDescPercRascunho = document.getElementById('descontoPercentual');
+        if (elDescReaisRascunho) elDescReaisRascunho.value = dados.descontoReais;
+        if (elDescPercRascunho) elDescPercRascunho.value = dados.descontoPercentual || '';
+        descontoUltimoCampo = 'reais';
+        atualizarDesconto();
+    }
+}
+
+function adicionarServicoParaEdicao(nome, qtd, valorIndividual) {
+    adicionarServico();
+    const cards = document.querySelectorAll('.service-card');
+    const ultimoCard = cards[cards.length - 1];
+    ultimoCard.querySelector('.selected-text').innerText = nome;
+    ultimoCard.querySelector('.service-name').value = nome;
+    ultimoCard.querySelector('.service-qty').innerText = qtd;
+    const precoInput = ultimoCard.querySelector('.service-price');
+    
+    let valorLimpo = valorIndividual.replace("R$", "").trim();
+    if (!valorLimpo.includes(',') && !valorLimpo.includes('.')) {
+        valorLimpo = (parseFloat(valorLimpo) * 100).toString();
+    }
+    precoInput.value = valorLimpo;
+    formatarMoeda(precoInput);
+}
+
+function converterDataParaIso(dataBr) {
+    if (!dataBr) return "";
+    let limpa = dataBr.toString().split('T')[0];
+    let partes = limpa.includes('/') ? limpa.split('/') : limpa.split('-');
+    if (partes.length !== 3) return "";
+    return partes[0].length === 4 ? limpa : `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+}
+
+window.onload = async () => {
+    if(localStorage.getItem('theme') === 'light') toggleTheme();
+    const dataHoje = new Date().toISOString().split('T')[0];
+    document.getElementById('dataInicio').value = dataHoje;
+    document.getElementById('dataPrazoFinal').value = dataHoje;
+    await buscarDadosPlanilha();
+};
+     // Função que decide qual máscara aplicar
+function mascaraMutuario(i) {
+    let v = i.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+
+    if (v.length <= 11) {
+        // Aplica máscara de CPF: 000.000.000-00
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d)/, "$1.$2");
+        v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    } else {
+        // Aplica máscara de CNPJ: 00.000.000/0001-00
+        v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+        v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+        v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+        v = v.replace(/(\d{4})(\d)/, "$1-$2");
+    }
+    i.value = v;
+}
+
+window.addEventListener('click', e => { if (!e.target.closest('.custom-dropdown')) fecharTodosDropdowns(); });
+
+// ── Corrige o "vão preto" que às vezes sobra na tela depois de fechar o
+// teclado virtual do celular ──
+// Isso acontece porque, ao tocar num campo de texto (Desconto, Valor Pago,
+// CPF, Endereço, Observações...), o teclado abre e reduz a área visível da
+// página; quando ele fecha de novo, alguns navegadores (principalmente
+// Android/Chrome) não recalculam o layout sozinhos, deixando um espaço em
+// branco no tamanho onde o teclado estava até o usuário rolar a tela na mão.
+// A troca de 100vh por 100dvh no CSS já ajuda bastante, mas isso aqui é uma
+// segunda camada de proteção: assim que a área visível volta a crescer
+// (sinal de que o teclado fechou), forçamos o navegador a refazer o layout.
+if (window.visualViewport) {
+    let alturaAnteriorViewport = window.visualViewport.height;
+    window.visualViewport.addEventListener('resize', () => {
+        const alturaAtual = window.visualViewport.height;
+        if (alturaAtual > alturaAnteriorViewport) {
+            // Truque inofensivo: alterar e devolver o min-height do body força
+            // o navegador a recalcular o layout da página imediatamente, sem
+            // precisar esperar o usuário rolar a tela manualmente.
+            document.body.style.minHeight = alturaAtual + 'px';
+            requestAnimationFrame(() => { document.body.style.minHeight = ''; });
+        }
+        alturaAnteriorViewport = alturaAtual;
+    });
+}
+
+// ── Swipe horizontal para alternar Orçamento ↔ O.S. ──────────────────────
+(function() {
+    let xStart = null, yStart = null;
+    const LIMIAR_X  = 60;   // pixels mínimos de deslocamento horizontal
+    const LIMIAR_Y  = 40;   // pixels máximos de deslocamento vertical (evita conflito com scroll)
+
+    document.addEventListener('touchstart', e => {
+        // Ignora toque dentro de dropdowns abertos ou modal
+        if (e.target.closest('.dropdown-list') || e.target.closest('#modal-mensagens')) return;
+        xStart = e.touches[0].clientX;
+        yStart = e.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+        if (xStart === null) return;
+        const dx = e.changedTouches[0].clientX - xStart;
+        const dy = e.changedTouches[0].clientY - yStart;
+        xStart = null; yStart = null;
+
+        // Só processa se for um swipe claramente horizontal
+        if (Math.abs(dx) < LIMIAR_X || Math.abs(dy) > LIMIAR_Y) return;
+
+        // Esquerda → OS | Direita → Orçamento  (ou simplesmente alterna)
+        const deveSerOS = dx < 0;
+        if (deveSerOS !== modoOS) alternarModo();
+    }, { passive: true });
+})();
+</script>
+</body>
+</html>
