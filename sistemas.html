@@ -527,9 +527,23 @@
         atualizarSeloManutencao();
     };
 
-    function logout() {
-        localStorage.removeItem('inforos_logado');
-        window.location.href = 'index.html';
+    async function logout() {
+        const btn = document.querySelector('.btn-logout');
+        if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+        }
+        try {
+            if (typeof supabaseClient !== 'undefined' && supabaseClient.auth) {
+                await supabaseClient.auth.signOut();
+            }
+        } catch (err) {
+            console.error('Erro ao encerrar sessão no Supabase', err);
+        } finally {
+            localStorage.removeItem('inforos_logado');
+            localStorage.removeItem('manut_vistos_ids');
+            window.location.replace('index.html');
+        }
     }
 </script>
 </body>
