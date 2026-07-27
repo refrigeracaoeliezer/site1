@@ -5,7 +5,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script src="supabase-client.js"></script>
-<script src="auth-guard.js"></script>>
+<script src="auth-guard.js"></script>
     <meta charset="UTF-8">
     <title>Garantias | Refrigeração Eliezer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@
         pointer-events: none !important;
         -webkit-user-drag: none !important;
     }
-        
+
         :root {
             --bg-body: #0d1117;
             --text-main: white;
@@ -53,28 +53,38 @@
             --input-bg: rgba(255, 255, 255, 0.9);
         }
 
+        * { -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+
+        /* Glow ambiente (mesmo padrão do restante do app) */
+        .glow { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(100px); z-index: 0; }
+        .glow-a { width: 480px; height: 480px; top: -200px; right: -160px; background: rgba(30,64,175,0.10); }
+        .glow-b { width: 380px; height: 380px; bottom: -140px; left: -140px; background: rgba(16,185,129,0.06); }
+
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; }
-        
+
         .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
         .em-garantia { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
         .fora-garantia { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
         .congelada-garantia { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
 
-        .btn-acionar-garantia { margin-top: 12px; width: 100%; padding: 12px; border-radius: 14px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-acionar-garantia { margin-top: 12px; width: 100%; padding: 13px; border-radius: 14px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-acionar-garantia:active { transform: scale(0.98); }
         .btn-acionar-garantia.tipo-acionar { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); }
         .btn-acionar-garantia.tipo-acionar:hover { background: rgba(16, 185, 129, 0.22); }
         .btn-acionar-garantia.tipo-reativar { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
         .btn-acionar-garantia.tipo-reativar:hover { background: rgba(56, 189, 248, 0.22); }
         .aviso-congelada { background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 8px 12px; font-size: 10px; color: #38bdf8; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-top: 10px; }
-        
-        .search-input { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); outline: none; }
+
+        .search-input { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .search-input:focus { border-color: rgba(30,64,175,0.5); box-shadow: 0 0 0 4px rgba(30,64,175,0.12); }
         .item-servico { border-bottom: 1px dashed var(--glass-border); padding: 6px 0; color: var(--text-sub); display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
         .item-servico:last-child { border-bottom: none; }
         .item-servico-desc { flex: 1; font-size: 11px; font-style: italic; }
         .item-servico-valor { font-size: 11px; font-weight: 900; color: #60a5fa; white-space: nowrap; flex-shrink: 0; }
 
-        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; text-decoration: none; }
+        .theme-toggle:hover { background: rgba(30,64,175,0.15); border-color: rgba(30,64,175,0.4); }
 
         /* Grupo de ações (editar/excluir) agrupado numa única pílula */
         .action-group { display: flex; align-items: center; background: var(--card-sub); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; }
@@ -84,8 +94,9 @@
         .action-group .delete-btn { color: #f87171; border-left: 1px solid var(--glass-border); }
         .action-group .delete-btn:hover { background: rgba(239, 68, 68, 0.15); }
 
-        #modal-excluir { transition: all 0.3s ease; }
-        .modal-content { background: var(--bg-body); border: 1px solid var(--glass-border); color: var(--text-main); }
+        #modal-excluir, #modal-garantia, #modal-agendar, #modal-agendar-sucesso { transition: opacity 0.25s ease; }
+        .modal-content { background: var(--bg-body); border: 1px solid var(--glass-border); color: var(--text-main); border-top: 4px solid #1e40af; animation: modalPopIn 0.3s ease-out both; }
+        @keyframes modalPopIn { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         /* Linha separadora de subtotal por item */
         .subtotal-linha {
@@ -95,24 +106,53 @@
             padding: 2px 0 0;
         }
 
-        /* ── Redesign: cabeçalho fixo, tags e cards mais profissionais ── */
-        .sticky-header { position: sticky; top: 0; z-index: 30; background: var(--bg-body); padding-top: 12px; padding-bottom: 14px; transition: background 0.3s; }
+        /* ── Cabeçalho fixo ── */
+        .sticky-header { position: sticky; top: 0; z-index: 30; background: var(--bg-body); padding-top: 16px; padding-bottom: 14px; transition: background 0.3s; }
+        .brand-title { font-size: 21px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.4px; line-height: 1.05; }
+        .brand-title span { color: #1e40af; }
+        .brand-sub { font-size: 9px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.14em; margin-top: 3px; }
 
         .os-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 50px; background: var(--card-sub); border: 1px solid var(--glass-border); font-size: 9px; font-weight: 900; letter-spacing: 0.08em; color: #60a5fa; text-transform: uppercase; }
 
         .tag-orcamento { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); }
         .tag-servico { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(45, 212, 191, 0.15); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.35); }
 
-        .card-item { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-item:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+        /* ── Card com faixa de status lateral ── */
+        .card-item { position: relative; transition: transform 0.2s, box-shadow 0.2s; overflow: hidden; animation: cardFadeUp 0.35s ease-out both; }
+        .card-item:hover { box-shadow: 0 10px 34px rgba(0,0,0,0.28); }
+        .card-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 25px 0 0 25px; }
+        .card-item.st-ativa::before   { background: linear-gradient(180deg, #10b981, #059669); }
+        .card-item.st-vencida::before { background: linear-gradient(180deg, #ef4444, #b91c1c); }
+        .card-item.st-congelada::before { background: linear-gradient(180deg, #38bdf8, #0ea5e9); }
+        @keyframes cardFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .item-servico-icon { color: #3b82f6; font-size: 9px; margin-top: 3px; flex-shrink: 0; }
 
         .footer-divider { border-top: 1px solid var(--glass-border); padding-top: 14px; margin-top: 4px; }
 
+        /* ── Anel de garantia (gauge de dias restantes) ── */
+        .ring-garantia { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
+        .ring-garantia svg { transform: rotate(-90deg); width: 52px; height: 52px; }
+        .ring-garantia circle { fill: none; stroke-width: 4; }
+        .ring-garantia .ring-track { stroke: var(--card-sub); }
+        .ring-garantia .ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+        .ring-garantia .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-garantia .ring-center i { font-size: 13px; }
+        .ring-garantia .ring-center span { font-size: 8px; font-weight: 900; margin-top: 1px; letter-spacing: 0.02em; }
+
+        /* ── Barra de estatísticas rápidas ── */
+        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .stat-chip { background: var(--card-sub); border: 1px solid var(--glass-border); border-radius: 14px; padding: 9px 8px; text-align: center; }
+        .stat-chip .stat-num { font-size: 17px; font-weight: 900; line-height: 1.1; }
+        .stat-chip .stat-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-sub); margin-top: 2px; display: block; }
+        .stat-chip.stat-verde .stat-num { color: #10b981; }
+        .stat-chip.stat-vermelho .stat-num { color: #ef4444; }
+        .stat-chip.stat-azul .stat-num { color: #38bdf8; }
+
         /* Chips de filtro rápido */
         .filtro-chip {
             flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 5px;
             padding: 8px 14px;
             border-radius: 50px;
             font-size: 10px;
@@ -127,11 +167,65 @@
             white-space: nowrap;
         }
         .filtro-chip:hover { color: var(--text-main); }
-        .filtro-chip.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+        .filtro-chip.active { background: #1e40af; border-color: #1e40af; color: white; }
+
+        /* ── Skeleton (esqueleto de carregamento) ── */
+        .skeleton-card { border-radius: 25px; padding: 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+        .skel-line { border-radius: 8px; background: linear-gradient(90deg, var(--card-sub) 25%, var(--glass-border) 37%, var(--card-sub) 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
+        @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        /* ── Pop-up padrão de atualização do sistema (Refrigeração Eliezer) ── */
+        #update-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+            z-index: 99999; display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        #update-popup {
+            width: 100%; max-width: 380px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 30px 26px; text-align: center;
+            border-top: 4px solid #1e40af; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            color: var(--text-main); animation: updatePopIn 0.35s ease-out both;
+        }
+        @keyframes updatePopIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        #update-popup .update-icon {
+            width: 58px; height: 58px; margin: 0 auto 16px;
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
+            color: white; font-size: 24px;
+        }
+        #update-popup h3 { font-size: 18px; margin-bottom: 8px; }
+        #update-popup p { font-size: 13px; color: var(--text-sub); line-height: 1.5; margin-bottom: 22px; }
+        .update-actions { display: flex; gap: 10px; }
+        .btn-update-depois {
+            flex: 1; padding: 14px; background: var(--input-bg); border: 1px solid var(--glass-border);
+            border-radius: 12px; color: var(--text-main); font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-update-agora {
+            flex: 1.4; padding: 14px; background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
+            border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 13px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;
+        }
+        #update-loading { display: none; }
+        #update-loading .spinner-ring { width: 64px; height: 64px; margin: 0 auto 18px; position: relative; }
+        #update-loading .spinner-ring::before, #update-loading .spinner-ring::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
+        #update-loading .spinner-ring::before { border: 3px solid var(--glass-border); }
+        #update-loading .spinner-ring::after { border: 3px solid transparent; border-top-color: #27a9e3; border-right-color: #1e40af; animation: spinRing 0.85s linear infinite; }
+        #update-loading .spinner-ring i { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #27a9e3; }
+        @keyframes spinRing { to { transform: rotate(360deg); } }
+        #update-loading h3 { font-size: 17px; margin-bottom: 8px; }
+        #update-loading p { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
+        .update-progress-track { width: 100%; height: 6px; border-radius: 10px; background: var(--input-bg); overflow: hidden; position: relative; }
+        .update-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 40%; border-radius: 10px; background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%); animation: progressSlide 1.1s ease-in-out infinite; }
+        @keyframes progressSlide { 0% { left: -40%; width: 40%; } 50% { left: 30%; width: 55%; } 100% { left: 100%; width: 40%; } }
     </style>
     <script src="config.js"></script>
 </head>
 <body class="p-4 pb-10">
+
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
 
     <div id="modal-excluir" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
         <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
@@ -196,18 +290,18 @@
         </div>
     </div>
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto" style="position:relative; z-index:10;">
         <div class="sticky-header">
-            <header class="flex justify-between items-center mb-5">
+            <header class="flex justify-between items-center mb-4">
                 <div>
-                    <h1 class="text-xl font-black uppercase tracking-tighter">Histórico de <span class="text-blue-500">Serviços</span></h1>
-                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Refrigeração Eliezer</span>
+                    <h1 class="brand-title">Histórico de <span>Serviços</span></h1>
+                    <div class="brand-sub">Refrigeração Eliezer</div>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="history.back()" class="theme-toggle" title="Voltar">
                         <i class="fa-solid fa-arrow-left text-sm"></i>
                     </button>
-                    <a href="sistemas.html" class="theme-toggle" title="Início" style="text-decoration:none;">
+                    <a href="sistemas.html" class="theme-toggle" title="Início">
                         <i class="fa-solid fa-house text-sm"></i>
                     </a>
                     <button onclick="toggleTheme()" class="theme-toggle">
@@ -217,24 +311,65 @@
             </header>
 
             <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-20"></i>
-                <input type="text" id="inputBusca" onkeyup="filtrarHistorico()" placeholder="Buscar pelo Nome ou nº O.S" class="w-full p-4 pl-12 rounded-2xl search-input font-semibold">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-30 text-sm"></i>
+                <input type="text" id="inputBusca" placeholder="Buscar pelo nome ou nº O.S" class="w-full p-4 pl-11 pr-11 rounded-2xl search-input font-semibold text-sm">
+                <button id="btn-limpar-busca" onclick="limparBusca()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full items-center justify-center opacity-50 hover:opacity-100" style="background: var(--card-sub);" title="Limpar busca">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <div id="stats-bar" class="stats-bar" style="display:none;">
+                <div class="stat-chip stat-verde">
+                    <div class="stat-num" id="stat-ativas">0</div>
+                    <span class="stat-label">Em garantia</span>
+                </div>
+                <div class="stat-chip stat-vermelho">
+                    <div class="stat-num" id="stat-vencidas">0</div>
+                    <span class="stat-label">Vencidas</span>
+                </div>
+                <div class="stat-chip stat-azul">
+                    <div class="stat-num" id="stat-congeladas">0</div>
+                    <span class="stat-label">Congeladas</span>
+                </div>
             </div>
 
             <div class="flex gap-2 mt-3 overflow-x-auto pb-1" id="filtros-container" style="scrollbar-width: none;">
-                <button class="filtro-chip active" data-filtro="todos" onclick="setFiltro('todos')">Todos</button>
-                <button class="filtro-chip" data-filtro="garantia" onclick="setFiltro('garantia')">🟢 Em Garantia</button>
-                <button class="filtro-chip" data-filtro="fora" onclick="setFiltro('fora')">🔴 Fora da Garantia</button>
-                <button class="filtro-chip" data-filtro="orcamento" onclick="setFiltro('orcamento')">Orçamento</button>
-                <button class="filtro-chip" data-filtro="servico" onclick="setFiltro('servico')">Serviço</button>
+                <button class="filtro-chip active" data-filtro="todos" onclick="setFiltro('todos')"><i class="fa-solid fa-layer-group"></i> Todos</button>
+                <button class="filtro-chip" data-filtro="garantia" onclick="setFiltro('garantia')"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Em Garantia</button>
+                <button class="filtro-chip" data-filtro="congelada" onclick="setFiltro('congelada')"><i class="fa-solid fa-snowflake" style="color:#38bdf8;"></i> Congeladas</button>
+                <button class="filtro-chip" data-filtro="fora" onclick="setFiltro('fora')"><i class="fa-solid fa-shield" style="color:#ef4444;"></i> Fora da Garantia</button>
+                <button class="filtro-chip" data-filtro="orcamento" onclick="setFiltro('orcamento')"><i class="fa-solid fa-file-pen" style="color:#f59e0b;"></i> Orçamento</button>
+                <button class="filtro-chip" data-filtro="servico" onclick="setFiltro('servico')"><i class="fa-solid fa-screwdriver-wrench" style="color:#2dd4bf;"></i> Serviço</button>
             </div>
         </div>
 
         <div id="area-swipe">
             <div id="container-historico" class="space-y-5 mt-2">
-                <div class="flex flex-col items-center justify-center py-20">
-                    <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
-                    <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Carregando histórico</p>
+                <div class="space-y-5" id="skeleton-loader">
+                    <div class="skeleton-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div style="width:60%;">
+                                <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
+                                <div class="skel-line" style="height:16px; width:80%; margin-bottom:8px;"></div>
+                                <div class="skel-line" style="height:9px; width:55%;"></div>
+                            </div>
+                            <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
+                        </div>
+                        <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
+                        <div class="skel-line" style="height:30px; width:100%;"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div style="width:60%;">
+                                <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
+                                <div class="skel-line" style="height:16px; width:70%; margin-bottom:8px;"></div>
+                                <div class="skel-line" style="height:9px; width:50%;"></div>
+                            </div>
+                            <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
+                        </div>
+                        <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
+                        <div class="skel-line" style="height:30px; width:100%;"></div>
+                    </div>
                 </div>
             </div>
 
@@ -244,14 +379,57 @@
                 <p class="text-[11px] opacity-30 mt-1">Tente buscar por outro nome, nº de O.S ou ajuste o filtro</p>
             </div>
         </div>
+
+    </div>
+
+    <div id="update-overlay">
+        <div id="update-popup">
+            <div id="update-confirm">
+                <div class="update-icon"><i class="fa-solid fa-rotate"></i></div>
+                <h3>Nova atualização disponível</h3>
+                <p>Fizemos melhorias no sistema. Atualize agora para aproveitar as novidades e correções.</p>
+                <div class="update-actions">
+                    <button class="btn-update-depois" onclick="adiarAtualizacao()">Depois</button>
+                    <button class="btn-update-agora" onclick="aplicarAtualizacao()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar agora</button>
+                </div>
+            </div>
+            <div id="update-loading">
+                <div class="spinner-ring"><i class="fa-solid fa-arrows-rotate"></i></div>
+                <h3>Atualizando sistema...</h3>
+                <p>Aguarde um instante, a nova versão já está quase pronta.</p>
+                <div class="update-progress-track"><div class="update-progress-fill"></div></div>
+            </div>
+        </div>
     </div>
 
     <script>
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker registrado!', reg))
+      .then(reg => {
+        reg.update();
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              document.getElementById('update-overlay').style.display = 'flex';
+            }
+          });
+        });
+      })
       .catch(err => console.log('Erro ao registrar Service Worker', err));
+  }
+
+  let atualizandoAgora = false;
+  function aplicarAtualizacao() {
+    if (atualizandoAgora) return;
+    atualizandoAgora = true;
+    document.getElementById('update-confirm').style.display = 'none';
+    document.getElementById('update-loading').style.display = 'block';
+    setTimeout(() => window.location.reload(), 700);
+  }
+  function adiarAtualizacao() {
+    document.getElementById('update-overlay').style.display = 'none';
   }
 
   document.addEventListener('contextmenu', event => event.preventDefault());
@@ -302,15 +480,41 @@
     }
 
     // ── Estados visuais do histórico ───────────────────────────────────
+    const SKELETON_HTML = `
+        <div class="space-y-5">
+            <div class="skeleton-card">
+                <div class="flex justify-between items-start mb-4">
+                    <div style="width:60%;">
+                        <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
+                        <div class="skel-line" style="height:16px; width:80%; margin-bottom:8px;"></div>
+                        <div class="skel-line" style="height:9px; width:55%;"></div>
+                    </div>
+                    <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
+                </div>
+                <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
+                <div class="skel-line" style="height:30px; width:100%;"></div>
+            </div>
+            <div class="skeleton-card">
+                <div class="flex justify-between items-start mb-4">
+                    <div style="width:60%;">
+                        <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
+                        <div class="skel-line" style="height:16px; width:70%; margin-bottom:8px;"></div>
+                        <div class="skel-line" style="height:9px; width:50%;"></div>
+                    </div>
+                    <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
+                </div>
+                <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
+                <div class="skel-line" style="height:30px; width:100%;"></div>
+            </div>
+        </div>`;
+
     function mostrarSpinner(texto) {
-        document.getElementById('container-historico').innerHTML = `
-            <div class="flex flex-col items-center justify-center py-20">
-                <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/5 border-t-blue-500 mb-4"></div>
-                <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">${texto || 'Carregando histórico'}</p>
-            </div>`;
+        document.getElementById('stats-bar').style.display = 'none';
+        document.getElementById('container-historico').innerHTML = SKELETON_HTML;
     }
 
     function mostrarMensagem(titulo, sub, comBotao) {
+        document.getElementById('stats-bar').style.display = 'none';
         document.getElementById('container-historico').innerHTML = `
             <div class="flex flex-col items-center justify-center py-16 text-center">
                 <i class="fa-solid fa-cloud-arrow-down text-3xl opacity-20 mb-4"></i>
@@ -328,8 +532,41 @@
         icon.className = body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
     }
 
+    // ── Cache local (stale-while-revalidate) ────────────────────────────
+    // Mostra instantaneamente o último histórico já carregado neste
+    // aparelho (localStorage) enquanto busca, em segundo plano, a versão
+    // mais recente na planilha. Isso elimina a espera do spinner em quase
+    // todos os acessos, mesmo com a internet do técnico em campo mais lenta.
+    // Se a planilha não responder, os dados em cache continuam na tela.
+    const CACHE_HISTORICO_KEY = 'garantias_cache_v1';
+
+    function lerCacheHistorico() {
+        try {
+            const raw = localStorage.getItem(CACHE_HISTORICO_KEY);
+            if (!raw) return null;
+            const cache = JSON.parse(raw);
+            return Array.isArray(cache.dados) ? cache.dados : null;
+        } catch (e) { return null; }
+    }
+
+    function salvarCacheHistorico(historicoCompleto) {
+        try {
+            localStorage.setItem(CACHE_HISTORICO_KEY, JSON.stringify({ dados: historicoCompleto, salvoEm: Date.now() }));
+        } catch (e) { /* localStorage cheio/indisponível: segue sem cache */ }
+    }
+
     async function carregarDados() {
-        mostrarSpinner('Carregando histórico');
+        const cache = lerCacheHistorico();
+        const usouCache = !!(cache && cache.length > 0);
+
+        if (usouCache) {
+            // Exibe o que já temos salvo imediatamente — sem skeleton, sem espera.
+            renderizarCards(cache);
+            filtrarHistorico();
+        } else {
+            mostrarSpinner('Carregando histórico');
+        }
+
         // Timeout de segurança: impede carregamento infinito se a planilha não responder
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -348,7 +585,7 @@
             } catch (e) {
                 // Geralmente significa que o Apps Script devolveu uma página de login/erro (HTML)
                 console.error("Resposta não-JSON da planilha:", texto.slice(0, 300));
-                mostrarMensagem('Acesso à planilha negado', 'Publique o Apps Script como “Qualquer pessoa” e tente de novo.', true);
+                if (!usouCache) mostrarMensagem('Acesso à planilha negado', 'Publique o Apps Script como “Qualquer pessoa” e tente de novo.', true);
                 return;
             }
 
@@ -358,20 +595,25 @@
             }
 
             if (!Array.isArray(dados) || dados.length === 0) {
-                mostrarMensagem('Nenhum serviço no histórico', 'As ordens de serviço aparecerão aqui assim que forem geradas.', false);
+                if (!usouCache) mostrarMensagem('Nenhum serviço no histórico', 'As ordens de serviço aparecerão aqui assim que forem geradas.', false);
                 return;
             }
 
             const historicoCompleto = dados.slice().reverse();
             renderizarCards(historicoCompleto);
             filtrarHistorico();
+            salvarCacheHistorico(historicoCompleto);
         } catch (error) {
             clearTimeout(timeoutId);
             console.error("Erro na requisição:", error);
-            if (error.name === 'AbortError') {
-                mostrarMensagem('Conexão demorou demais', 'Verifique sua internet e toque para tentar de novo.', true);
-            } else {
-                mostrarMensagem('Erro ao conectar', 'Não foi possível acessar a planilha do histórico.', true);
+            // Se já havia cache na tela, mantém os dados salvos visíveis e
+            // falha silenciosamente — o técnico não perde o que já via.
+            if (!usouCache) {
+                if (error.name === 'AbortError') {
+                    mostrarMensagem('Conexão demorou demais', 'Verifique sua internet e toque para tentar de novo.', true);
+                } else {
+                    mostrarMensagem('Erro ao conectar', 'Não foi possível acessar a planilha do histórico.', true);
+                }
             }
         }
     }
@@ -540,7 +782,7 @@
                 formData.append('OSERVACAO', campoOS(os, "OSERVACAO", "OBSERVACAO") || "");
                 formData.append('DIA', campoOS(os, "DIA") || "");
 
-                await fetch(URL_SALVAR, { method: 'POST', mode: 'no-cors', body: formData });
+                await fetch(URL_SALVAR, { method: 'POST', body: formData });
 
                 fecharModalGarantia();
                 carregarDados();
@@ -653,7 +895,7 @@
         btn.disabled = true;
         btn.innerText = "Agendando...";
         try {
-            await fetch(URL_AGENDA, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            await fetch(URL_AGENDA, { method: 'POST', body: JSON.stringify(payload) });
             fecharModalAgendar();
             await carregarDados();
             abrirModalAgendarSucesso(cliente, dataInput, horaInput);
@@ -843,6 +1085,7 @@
         container.innerHTML = "";
         const cardsAtivos = [];
         const cardsVencidos = [];
+        let ativasCount = 0, vencidasCount = 0, congeladasCount = 0;
         lista.forEach(os => {
             const idOS        = String(campoOS(os, "ID_OS", "ID", "OS", "NUMERO") || "---").replace(/^'/, "");
             const cliente     = campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "Não identificado";
@@ -874,6 +1117,35 @@
                 badgeClass = "fora-garantia";
                 badgeText = "🔴 Fora da Garantia";
             }
+
+            // ── Anel de garantia: mostra visualmente quanto do prazo ainda resta ──
+            const statusClasse = estaCongelada ? 'st-congelada' : (estaNaGarantia ? 'st-ativa' : 'st-vencida');
+            const ringCor = estaCongelada ? '#38bdf8' : (estaNaGarantia ? '#10b981' : '#ef4444');
+            const ringIcone = estaCongelada ? 'fa-snowflake' : (estaNaGarantia ? 'fa-shield-halved' : 'fa-shield');
+            const garantiaDiasTotal = parseInt(campoOS(os, "GARANTIA_DIAS")) || 0;
+            const dataFimDate = !estaCongelada ? parseDataBR(dataGarantia) : null;
+            const diasRestantes = dataFimDate ? Math.max(0, Math.ceil((dataFimDate - new Date()) / 86400000)) : null;
+            let ringPercentual = 1;
+            if (!estaCongelada) {
+                ringPercentual = (estaNaGarantia && garantiaDiasTotal > 0 && diasRestantes !== null)
+                    ? Math.min(1, Math.max(0, diasRestantes / garantiaDiasTotal))
+                    : (estaNaGarantia ? 1 : 0);
+            }
+            const ringRaio = 21;
+            const ringCircunferencia = 2 * Math.PI * ringRaio;
+            const ringOffset = ringCircunferencia * (1 - ringPercentual);
+            const ringLabel = estaCongelada ? '' : (estaNaGarantia && diasRestantes !== null ? `${diasRestantes}d` : (!estaNaGarantia ? 'FIM' : ''));
+            const ringHtml = `
+                <div class="ring-garantia" title="${estaCongelada ? 'Garantia congelada' : (estaNaGarantia ? diasRestantes + ' dia(s) restante(s)' : 'Garantia expirada')}">
+                    <svg viewBox="0 0 52 52">
+                        <circle class="ring-track" cx="26" cy="26" r="${ringRaio}"></circle>
+                        <circle class="ring-fill" cx="26" cy="26" r="${ringRaio}" stroke="${ringCor}" stroke-dasharray="${ringCircunferencia}" stroke-dashoffset="${ringOffset}"></circle>
+                    </svg>
+                    <div class="ring-center" style="color:${ringCor}">
+                        <i class="fa-solid ${ringIcone}"></i>
+                        ${ringLabel ? `<span>${ringLabel}</span>` : ''}
+                    </div>
+                </div>`;
 
             // Remove o prefixo "Orçamento |" (ou variações) do nome do cliente antes de enviar para edição
             const clienteLimpo = String(cliente).replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
@@ -912,7 +1184,7 @@
             }
 
             const cardHtml = `
-                <div class="glass-card p-5 card-item" data-garantia="${estaNaGarantia ? 'sim' : 'nao'}" data-tipo="${ehOrcamento ? 'orcamento' : 'servico'}">
+                <div class="glass-card p-5 card-item ${statusClasse}" data-garantia="${estaNaGarantia ? 'sim' : 'nao'}" data-congelada="${estaCongelada ? 'sim' : 'nao'}" data-tipo="${ehOrcamento ? 'orcamento' : 'servico'}">
                     <div class="flex justify-between items-start gap-3 mb-4">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2 flex-wrap mb-1.5">
@@ -926,8 +1198,8 @@
                                 <i class="fa-solid fa-location-dot" style="font-size:9px;"></i> ${endereco}
                             </p>
                         </div>
-                        <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                            <span class="status-badge ${badgeClass}">${badgeText}</span>
+                        <div class="flex flex-col items-center gap-2 flex-shrink-0">
+                            ${ringHtml}
                             <div class="action-group">
                                 <button onclick="editarServico('${dadosParaEdicao}')" class="edit-btn" title="Editar Orçamento">
                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
@@ -954,6 +1226,7 @@
                             </span>
                         </div>
                     </div>
+                    <div class="mt-2"><span class="status-badge ${badgeClass}">${badgeText}</span></div>
                     ${avisoCongelada}
                     ${htmlBotaoGarantia}
                     ${htmlBotaoAgendar}
@@ -964,12 +1237,25 @@
             // as vencidas sempre embaixo das ativas.
             if (estaNaGarantia) {
                 cardsAtivos.push(cardHtml);
+                if (estaCongelada) congeladasCount++; else ativasCount++;
             } else {
                 cardsVencidos.push(cardHtml);
+                vencidasCount++;
             }
         });
 
         container.innerHTML = cardsAtivos.join('') + cardsVencidos.join('');
+
+        // Atualiza a barra de estatísticas rápidas
+        const statsBar = document.getElementById('stats-bar');
+        if (lista.length > 0) {
+            document.getElementById('stat-ativas').textContent = ativasCount;
+            document.getElementById('stat-vencidas').textContent = vencidasCount;
+            document.getElementById('stat-congeladas').textContent = congeladasCount;
+            statsBar.style.display = 'grid';
+        } else {
+            statsBar.style.display = 'none';
+        }
     }
 
     let filtroAtivo = 'todos';
@@ -984,6 +1270,8 @@
 
     function filtrarHistorico() {
         const termo = document.getElementById('inputBusca').value.toLowerCase();
+        document.getElementById('btn-limpar-busca').classList.toggle('hidden', termo.length === 0);
+        document.getElementById('btn-limpar-busca').classList.toggle('flex', termo.length > 0);
         const cards = document.querySelectorAll('.card-item');
         let visiveis = 0;
 
@@ -992,6 +1280,7 @@
 
             let matchFiltro = true;
             if (filtroAtivo === 'garantia') matchFiltro = card.dataset.garantia === 'sim';
+            else if (filtroAtivo === 'congelada') matchFiltro = card.dataset.congelada === 'sim';
             else if (filtroAtivo === 'fora') matchFiltro = card.dataset.garantia === 'nao';
             else if (filtroAtivo === 'orcamento') matchFiltro = card.dataset.tipo === 'orcamento';
             else if (filtroAtivo === 'servico') matchFiltro = card.dataset.tipo === 'servico';
@@ -1014,6 +1303,21 @@
         }
     }
 
+    function limparBusca() {
+        const input = document.getElementById('inputBusca');
+        input.value = '';
+        input.focus();
+        filtrarHistorico();
+    }
+
+    // Debounce leve na busca: evita refiltrar a cada tecla digitada,
+    // deixando a digitação mais fluida quando o histórico tem muitos cards.
+    let debounceBusca = null;
+    document.getElementById('inputBusca').addEventListener('input', () => {
+        clearTimeout(debounceBusca);
+        debounceBusca = setTimeout(filtrarHistorico, 150);
+    });
+
     window.onload = () => {
         if(localStorage.getItem('theme') === 'light') toggleTheme();
         carregarDados();
@@ -1021,7 +1325,7 @@
 
     // ── Navegação por swipe entre os tópicos (filtros) ──────────────────
     (function() {
-        const ORDEM_FILTROS = ['todos', 'garantia', 'fora', 'orcamento', 'servico'];
+        const ORDEM_FILTROS = ['todos', 'garantia', 'congelada', 'fora', 'orcamento', 'servico'];
         const areaSwipe = document.getElementById('area-swipe');
         let startX = 0, startY = 0;
 
