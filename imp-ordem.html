@@ -51,13 +51,14 @@
             transform-origin: top left; will-change: transform;
         }
         .btn-flutuante {
-            background-color: #1e40af; color: white; height: 54px; padding: 0 22px;
-            border-radius: 50px; border: none; box-shadow: 0 7px 20px rgba(0,0,0,0.5);
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-            font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; transition: 0.2s; white-space: nowrap;
+            background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
+            color: #fff; border: none; border-radius: 12px; padding: 12px 18px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; gap: 9px;
+            font-family: 'Inter', sans-serif; white-space: nowrap; transition: 0.2s;
         }
-        .btn-flutuante i { font-size: 19px; }
-        .btn-flutuante:hover { background-color: #1b3a9e; }
+        .btn-flutuante i { font-size: 16px; }
+        .btn-flutuante:hover { filter: brightness(1.08); }
         .btn-flutuante:active { filter: brightness(.88); }
         .btn-flutuante:disabled { opacity: .55; cursor: not-allowed; }
 
@@ -118,6 +119,8 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 9px;
             font-family: 'Inter', sans-serif; white-space: nowrap;
         }
+        .btn-enviar-assinatura:hover { filter: brightness(1.08); }
+        .btn-enviar-assinatura:active { filter: brightness(.88); }
         .btn-enviar-assinatura:disabled { opacity: .55; cursor: not-allowed; }
 
         /* Estilo da Notificação de Carregamento (tela cheia, com a cara do site) */
@@ -186,12 +189,57 @@
     </div>
 
     <div id="controles-flutuantes" class="no-print">
-        <button id="btn-enviar-assinatura" class="btn-enviar-assinatura" disabled title="Disponível assim que o fluxo de assinatura eletrônica for publicado">
+        <button id="btn-enviar-assinatura" class="btn-enviar-assinatura" onclick="abrirEnvioAssinatura()">
             <i class="fa-solid fa-file-signature"></i> Enviar para assinatura
         </button>
         <button id="btn-pdf" class="btn-flutuante" onclick="baixarPDF()">
             <i class="fa-solid fa-file-pdf"></i> Baixar PDF
         </button>
+    </div>
+
+    <!-- Modal: dados que só o técnico sabe antes de enviar para assinatura
+         (Adendo 2: identificação do CPF/CNPJ e do nome completo do cliente,
+         mais e-mail e ordem das assinaturas). -->
+    <div id="envio-assinatura-modal" class="no-print" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:31000; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#fff; color:#0d1117; border-radius:16px; width:100%; max-width:440px; max-height:88vh; overflow-y:auto; padding:22px; font-family:'Inter',sans-serif;">
+            <h3 style="margin:0 0 4px; font-size:18px; font-weight:800;">Enviar para assinatura</h3>
+            <p style="margin:0 0 16px; font-size:12.5px; color:#667085;">Esses dados só aparecem aqui, nunca são mostrados ao cliente diretamente — servem para conferência de identidade na hora da assinatura.</p>
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">E-mail do cliente (recebe o código de assinatura)</label>
+            <input type="email" id="ea-email" placeholder="cliente@exemplo.com" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:14px; font-size:14px; box-sizing:border-box;">
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">CPF/CNPJ do cliente</label>
+            <select id="ea-doc-status" onchange="atualizarCamposDocumento()" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:10px; font-size:14px; box-sizing:border-box;">
+                <option value="completo_previo">Tenho o CPF/CNPJ completo</option>
+                <option value="parcial_previo" selected>Tenho só parte (ex: peguei do PIX)</option>
+                <option value="desconhecido">Não tenho o CPF/CNPJ</option>
+            </select>
+
+            <div id="ea-doc-completo" style="display:none; margin-bottom:14px;">
+                <input type="text" id="ea-doc-completo-valor" placeholder="CPF ou CNPJ completo" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
+            </div>
+            <div id="ea-doc-parcial" style="display:flex; gap:8px; margin-bottom:14px;">
+                <input type="text" id="ea-doc-inicio" placeholder="Primeiros dígitos" maxlength="6" style="flex:1; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
+                <input type="text" id="ea-doc-fim" placeholder="Últimos dígitos" maxlength="6" style="flex:1; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
+            </div>
+
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:14px;">
+                <input type="checkbox" id="ea-nome-conhecido"> Já tenho o nome completo do cliente (preenchido acima na O.S.)
+            </label>
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">Ordem das assinaturas</label>
+            <select id="ea-ordem" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:18px; font-size:14px; box-sizing:border-box;">
+                <option value="tecnico_primeiro" selected>Técnico assina primeiro</option>
+                <option value="cliente_primeiro">Cliente assina primeiro</option>
+            </select>
+
+            <div id="ea-resultado" style="display:none; margin-bottom:14px; font-size:12.5px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:10px;"></div>
+
+            <div style="display:flex; gap:10px;">
+                <button type="button" onclick="fecharEnvioAssinatura()" style="flex:1; padding:13px; border-radius:10px; border:none; background:#eef0f3; color:#0d1117; font-weight:700; cursor:pointer;">Cancelar</button>
+                <button type="button" id="ea-btn-confirmar" onclick="confirmarEnvioAssinatura()" style="flex:1; padding:13px; border-radius:10px; border:none; background:#2980b9; color:#fff; font-weight:700; cursor:pointer;">Confirmar e enviar</button>
+            </div>
+        </div>
     </div>
 
     <div class="paper-canvas" id="conteudo-pdf">
@@ -703,6 +751,128 @@ async function baixarPDF() {
     })();
 
     window.onload = carregarPagina;
+    // ══════════════════════════════════════════════════════════════════
+    // ETAPA 2 — Enviar para assinatura (congela a O.S. + gera os links)
+    // ══════════════════════════════════════════════════════════════════
+    function atualizarCamposDocumento() {
+        const status = document.getElementById('ea-doc-status').value;
+        document.getElementById('ea-doc-completo').style.display = (status === 'completo_previo') ? 'block' : 'none';
+        document.getElementById('ea-doc-parcial').style.display = (status === 'parcial_previo') ? 'flex' : 'none';
+    }
+
+    function abrirEnvioAssinatura() {
+        const dados = JSON.parse(localStorage.getItem('dados_impressao') || 'null');
+        if (!dados || !dados.cliente || !Array.isArray(dados.itens) || dados.itens.length === 0) {
+            alert('Gere/carregue a O.S. normalmente antes de enviar para assinatura.');
+            return;
+        }
+        document.getElementById('ea-resultado').style.display = 'none';
+        document.getElementById('envio-assinatura-modal').style.display = 'flex';
+        atualizarCamposDocumento();
+    }
+    function fecharEnvioAssinatura() {
+        document.getElementById('envio-assinatura-modal').style.display = 'none';
+    }
+
+    async function confirmarEnvioAssinatura() {
+        const dados = JSON.parse(localStorage.getItem('dados_impressao') || 'null');
+        if (!dados) { fecharEnvioAssinatura(); return; }
+
+        const email = document.getElementById('ea-email').value.trim();
+        if (!email || !email.includes('@')) { alert('Informe um e-mail válido do cliente.'); return; }
+
+        const docStatus = document.getElementById('ea-doc-status').value;
+        const docCompleto = document.getElementById('ea-doc-completo-valor').value.trim();
+        const docInicio = document.getElementById('ea-doc-inicio').value.trim();
+        const docFim = document.getElementById('ea-doc-fim').value.trim();
+        const nomeConhecido = document.getElementById('ea-nome-conhecido').checked;
+        const ordem = document.getElementById('ea-ordem').value;
+
+        const btn = document.getElementById('ea-btn-confirmar');
+        btn.disabled = true;
+        btn.textContent = 'Gerando PDF e enviando...';
+
+        try {
+            // Reaproveita exatamente a mesma renderização/logo já usada pelo
+            // botão "Baixar PDF" — só muda o destino final (blob -> upload,
+            // em vez de blob -> download).
+            await aplicarLogoEmpresa();
+            const element = document.getElementById('conteudo-pdf');
+            const opt = {
+                margin: [0, 0, 0, 0],
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            const pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob');
+            const pdfBase64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(pdfBlob);
+            });
+
+            const snapshot = {
+                cliente: {
+                    nome: dados.cliente,
+                    email: email,
+                    documento_status: docStatus,
+                    documento_tipo: (docCompleto.replace(/\D/g, '').length > 11 || (docInicio + docFim).length > 9) ? 'CNPJ' : 'CPF',
+                    cpf_conhecido: docStatus === 'completo_previo' ? docCompleto : '',
+                    documento_parcial_inicio: docStatus === 'parcial_previo' ? docInicio : '',
+                    documento_parcial_fim: docStatus === 'parcial_previo' ? docFim : '',
+                    nome_completo_conhecido: nomeConhecido,
+                },
+                tecnico: { nome: document.getElementById('view-resp-tecnico').innerText },
+                endereco: dados.endereco,
+                itens: dados.itens,
+                total: dados.total,
+                garantia: dados.garantia,
+                obs: dados.obs,
+            };
+
+            const idOsAtual = document.getElementById('num-random').innerText.split(' ')[0];
+            const idParaEnviar = (dados.id_os && dados.id_os !== "---" && dados.id_os !== "") ? dados.id_os : idOsAtual;
+
+            const headersAuth = { 'Content-Type': 'application/json' };
+            const sessao = await supabaseClient.auth.getSession();
+            if (sessao.data && sessao.data.session) headersAuth['Authorization'] = 'Bearer ' + sessao.data.session.access_token;
+
+            const respCreate = await fetch(APP_CONFIG.ASSINATURAS_API_URL + '/api/signatures/documents/create', {
+                method: 'POST', headers: headersAuth,
+                body: JSON.stringify({
+                    service_order_number: idParaEnviar,
+                    sheet_record_id: idParaEnviar,
+                    signature_order: ordem,
+                    snapshot: snapshot,
+                    original_pdf_base64: pdfBase64,
+                })
+            });
+            const jsonCreate = await respCreate.json();
+            if (!respCreate.ok) throw new Error(jsonCreate.erro || 'Falha ao congelar a O.S.');
+
+            const respSend = await fetch(APP_CONFIG.ASSINATURAS_API_URL + '/api/signatures/documents/' + jsonCreate.id + '/send', {
+                method: 'POST', headers: headersAuth,
+            });
+            const jsonSend = await respSend.json();
+            if (!respSend.ok) throw new Error(jsonSend.erro || 'Falha ao gerar o link de assinatura.');
+
+            const linkAtivo = jsonSend.signature_order === 'cliente_primeiro' ? jsonSend.link_cliente : jsonSend.link_tecnico;
+            const resultado = document.getElementById('ea-resultado');
+            resultado.innerHTML =
+                '<strong>Enviado! Versão ' + jsonCreate.version + '.</strong><br>' +
+                'Link de assinatura (' + (jsonSend.signature_order === 'cliente_primeiro' ? 'cliente' : 'técnico') + ' assina primeiro):<br>' +
+                '<span style="word-break:break-all;">' + linkAtivo + '</span><br><br>' +
+                '<button type="button" onclick="navigator.clipboard.writeText(\'' + linkAtivo + '\')" style="padding:8px 12px; border-radius:8px; border:none; background:#2980b9; color:#fff; font-weight:700; cursor:pointer;">Copiar link</button>';
+            resultado.style.display = 'block';
+            btn.textContent = 'Enviado ✓';
+        } catch (err) {
+            console.error(err);
+            alert('Não foi possível enviar para assinatura: ' + err.message);
+            btn.disabled = false;
+            btn.textContent = 'Confirmar e enviar';
+        }
+    }
 </script>
 </body>
 </html>

@@ -52,25 +52,15 @@
             display: flex; flex-direction: column; align-items: stretch; gap: 8px;
             transform-origin: top left; will-change: transform;
         }
-        .grupo-assinatura {
-            display: flex; flex-direction: column; gap: 8px; align-items: stretch;
-        }
-        .grupo-assinatura button {
-            background-color: #2980b9; color: white; border: none; border-radius: 12px;
-            padding: 12px 18px; font-size: 16px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 9px;
-            font-family: 'Inter', sans-serif; transition: 0.2s; white-space: nowrap;
-        }
-        .grupo-assinatura button i { font-size: 17px; }
-        .grupo-assinatura button:active { filter: brightness(.9); }
         .btn-flutuante {
-            background-color: #1e40af; color: white; height: 54px; padding: 0 22px;
-            border-radius: 50px; border: none; box-shadow: 0 7px 20px rgba(0,0,0,0.5);
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-            font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; transition: 0.2s; white-space: nowrap;
+            background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
+            color: #fff; border: none; border-radius: 12px; padding: 12px 18px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; gap: 9px;
+            font-family: 'Inter', sans-serif; white-space: nowrap; transition: 0.2s;
         }
-        .btn-flutuante i { font-size: 19px; }
-        .btn-flutuante:hover { background-color: #1b3a9e; }
+        .btn-flutuante i { font-size: 16px; }
+        .btn-flutuante:hover { filter: brightness(1.08); }
         .btn-flutuante:active { filter: brightness(.88); }
         .btn-flutuante:disabled { opacity: .55; cursor: not-allowed; }
 
@@ -114,47 +104,18 @@
 
         footer { text-align: center; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 15px; width: 100%; margin-top: auto; }
 
-        .assinaturas-wrap { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; margin: 22px auto 0; width: 100%; }
-        .assinatura-bloco { display: none; width: 200px; max-width: 100%; text-align: center; }
-        .assinatura-bloco .img-ass { display: block; max-width: 130px; max-height: 44px; margin: 0 auto 2px; }
-        .linha-assinatura { border-top: 1px solid #333; margin-bottom: 5px; }
-        .assinatura-bloco .nome-ass { font-size: 12px; white-space: nowrap; }
-        .assinatura-bloco .data-ass { font-size: 9px; color: #666; margin-top: 2px; }
-        .assinatura-bloco .rotulo-ass { font-size: 9px; }
-
-        /* ── Trilha de auditoria (comprovante de assinatura eletrônica) ── */
-        .trilha-auditoria { width:100%; margin:14px auto 0; border:1px solid #d1d5db; border-radius:7px; padding:7px 9px; background:#fafafa; font-size:7.5px; color:#374151; box-sizing:border-box; }
-        .trilha-auditoria .trilha-head { display:flex; align-items:center; gap:5px; font-size:8.5px; font-weight:800; color:#0d1117; margin-bottom:5px; padding-bottom:4px; border-bottom:1px solid #e5e7eb; }
-        .trilha-auditoria .trilha-head i { color:#1e40af; }
-        .trilha-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
-        .trilha-card { border:1px solid #e5e7eb; border-radius:5px; padding:5px 7px; background:#fff; }
-        .trilha-card .tc-role { font-weight:800; color:#0d1117; font-size:7.5px; text-transform:uppercase; letter-spacing:.3px; margin-bottom:3px; }
-        .trilha-card .tc-line { display:flex; justify-content:space-between; gap:7px; margin:1px 0; align-items:baseline; }
-        .trilha-card .tc-line span:first-child { color:#6b7280; white-space:nowrap; }
-        .trilha-card .tc-line .val { font-family:ui-monospace,'Courier New',monospace; color:#111827; word-break:break-word; text-align:right; }
-        .trilha-selo { margin-top:6px; padding-top:5px; border-top:1px dashed #d1d5db; }
-        .trilha-selo .selo-row { display:flex; gap:6px; align-items:baseline; flex-wrap:wrap; }
-        .trilha-selo .selo-lbl { color:#6b7280; font-weight:700; }
-        .trilha-selo .selo-hash { font-family:ui-monospace,'Courier New',monospace; font-size:7px; color:#111827; word-break:break-all; flex:1; min-width:170px; }
-        .trilha-selo .selo-emitido { color:#6b7280; font-size:7px; margin-top:2px; }
-        .trilha-nota { margin-top:4px; font-size:6.5px; color:#9ca3af; line-height:1.3; }
-        @media (max-width:640px){ .trilha-grid{ grid-template-columns:1fr; } }
-
-        /* ── Modal de assinatura na tela (canvas) ── */
-        #assinatura-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:30000; align-items:center; justify-content:center; padding:16px; }
-        #assinatura-modal.ativo { display:flex; }
-        .assinatura-box { background:#fff; border-radius:16px; width:100%; max-width:460px; padding:22px; box-shadow:0 20px 50px rgba(0,0,0,.45); font-family:'Inter',sans-serif; }
-        .assinatura-box h3 { font-size:18px; color:#0d1117; margin:0 0 3px; font-weight:800; }
-        .assinatura-box p.sub { font-size:13px; color:#667085; margin:0 0 14px; }
-        .assinatura-pad-wrap { position:relative; border:2px dashed #cbd5e1; border-radius:12px; background:#f8fafc; touch-action:none; }
-        #assinatura-pad { display:block; width:100%; height:200px; border-radius:12px; cursor:crosshair; touch-action:none; }
-        .assinatura-hint { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:14px; pointer-events:none; }
-        .assinatura-acoes { display:flex; gap:10px; margin-top:16px; }
-        .assinatura-acoes button { flex:1; padding:13px; border-radius:10px; border:none; font-size:15px; font-weight:700; cursor:pointer; font-family:'Inter',sans-serif; }
-        .btn-limpar { background:#eef0f3; color:#0d1117; }
-        .btn-cancelar { background:#fee2e2; color:#b91c1c; }
-        .btn-confirmar { background:#2980b9; color:#fff; }
-        .btn-confirmar:disabled { opacity:.45; cursor:not-allowed; }
+        /* Botão "Enviar para assinatura" — abre o novo fluxo server-side
+           (Etapa 3), substitui a assinatura antiga feita nesta própria tela. */
+        .btn-enviar-assinatura {
+            background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
+            color: #fff; border: none; border-radius: 12px; padding: 12px 18px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.45); display: flex; align-items: center; gap: 9px;
+            font-family: 'Inter', sans-serif; white-space: nowrap;
+        }
+        .btn-enviar-assinatura:hover { filter: brightness(1.08); }
+        .btn-enviar-assinatura:active { filter: brightness(.88); }
+        .btn-enviar-assinatura:disabled { opacity: .55; cursor: not-allowed; }
 
         /* Estilo da Notificação de Carregamento (tela cheia, com a cara do site) */
         #loader-notificacao {
@@ -222,33 +183,58 @@
     </div>
 
     <div id="controles-flutuantes" class="no-print">
-        <div class="grupo-assinatura">
-            <button type="button" onclick="abrirAssinatura('tecnico')" title="Assinatura do técnico"><i class="fa-solid fa-user-gear"></i> Técnico</button>
-            <button type="button" onclick="abrirAssinatura('cliente')" title="Assinatura do cliente"><i class="fa-solid fa-pen-nib"></i> Cliente</button>
-        </div>
+        <button id="btn-enviar-assinatura" class="btn-enviar-assinatura" onclick="abrirEnvioAssinatura()">
+            <i class="fa-solid fa-file-signature"></i> Enviar para assinatura
+        </button>
         <button id="btn-pdf" class="btn-flutuante" onclick="baixarPDF()">
             <i class="fa-solid fa-file-pdf"></i> Baixar PDF
         </button>
     </div>
 
-    <!-- Modal de assinatura: cliente OU técnico assina com o dedo -->
-    <div id="assinatura-modal" class="no-print">
-        <div class="assinatura-box">
-            <h3 id="ass-titulo">Assinatura</h3>
-            <p class="sub">Assine no quadro abaixo usando o dedo ou o mouse.</p>
-            <div class="assinatura-pad-wrap">
-                <canvas id="assinatura-pad"></canvas>
-                <div class="assinatura-hint" id="assinatura-hint">Assine aqui</div>
+    <!-- Modal: dados que só o técnico sabe antes de enviar para assinatura
+         (Adendo 2: identificação do CPF/CNPJ e do nome completo do cliente,
+         mais e-mail e ordem das assinaturas). -->
+    <div id="envio-assinatura-modal" class="no-print" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:31000; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#fff; color:#0d1117; border-radius:16px; width:100%; max-width:440px; max-height:88vh; overflow-y:auto; padding:22px; font-family:'Inter',sans-serif;">
+            <h3 style="margin:0 0 4px; font-size:18px; font-weight:800;">Enviar para assinatura</h3>
+            <p style="margin:0 0 16px; font-size:12.5px; color:#667085;">Esses dados só aparecem aqui, nunca são mostrados ao cliente diretamente — servem para conferência de identidade na hora da assinatura.</p>
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">E-mail do cliente (recebe o código de assinatura)</label>
+            <input type="email" id="ea-email" placeholder="cliente@exemplo.com" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:14px; font-size:14px; box-sizing:border-box;">
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">CPF/CNPJ do cliente</label>
+            <select id="ea-doc-status" onchange="atualizarCamposDocumento()" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:10px; font-size:14px; box-sizing:border-box;">
+                <option value="completo_previo">Tenho o CPF/CNPJ completo</option>
+                <option value="parcial_previo" selected>Tenho só parte (ex: peguei do PIX)</option>
+                <option value="desconhecido">Não tenho o CPF/CNPJ</option>
+            </select>
+
+            <div id="ea-doc-completo" style="display:none; margin-bottom:14px;">
+                <input type="text" id="ea-doc-completo-valor" placeholder="CPF ou CNPJ completo" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
             </div>
-            <div class="assinatura-acoes">
-                <button type="button" class="btn-cancelar" onclick="fecharAssinatura()">Cancelar</button>
-                <button type="button" class="btn-limpar" onclick="limparAssinatura()">Limpar</button>
-                <button type="button" class="btn-confirmar" id="btn-confirmar-ass" onclick="confirmarAssinatura()" disabled>Confirmar</button>
+            <div id="ea-doc-parcial" style="display:flex; gap:8px; margin-bottom:14px;">
+                <input type="text" id="ea-doc-inicio" placeholder="Primeiros dígitos" maxlength="6" style="flex:1; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
+                <input type="text" id="ea-doc-fim" placeholder="Últimos dígitos" maxlength="6" style="flex:1; padding:11px; border:1px solid #d0d5dd; border-radius:10px; font-size:14px; box-sizing:border-box;">
+            </div>
+
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:14px;">
+                <input type="checkbox" id="ea-nome-conhecido"> Já tenho o nome completo do cliente (preenchido acima na O.S.)
+            </label>
+
+            <label style="display:block; font-size:12px; font-weight:700; margin-bottom:6px;">Ordem das assinaturas</label>
+            <select id="ea-ordem" style="width:100%; padding:11px; border:1px solid #d0d5dd; border-radius:10px; margin-bottom:18px; font-size:14px; box-sizing:border-box;">
+                <option value="tecnico_primeiro" selected>Técnico assina primeiro</option>
+                <option value="cliente_primeiro">Cliente assina primeiro</option>
+            </select>
+
+            <div id="ea-resultado" style="display:none; margin-bottom:14px; font-size:12.5px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:10px;"></div>
+
+            <div style="display:flex; gap:10px;">
+                <button type="button" onclick="fecharEnvioAssinatura()" style="flex:1; padding:13px; border-radius:10px; border:none; background:#eef0f3; color:#0d1117; font-weight:700; cursor:pointer;">Cancelar</button>
+                <button type="button" id="ea-btn-confirmar" onclick="confirmarEnvioAssinatura()" style="flex:1; padding:13px; border-radius:10px; border:none; background:#2980b9; color:#fff; font-weight:700; cursor:pointer;">Confirmar e enviar</button>
             </div>
         </div>
     </div>
-
-
 
     <div class="paper-canvas" id="conteudo-pdf">
         <header>
@@ -316,32 +302,11 @@
             <p id="view-obs" style="margin-top: 5px; color: #1e3a8a; white-space: pre-wrap;"></p>
         </div>
 
-        <div class="assinaturas-wrap">
-            <div id="campo-assinatura-tecnico" class="assinatura-bloco">
-                <img id="img-assinatura-tecnico" class="img-ass" alt="Assinatura do técnico">
-                <div class="linha-assinatura"></div>
-                <p class="nome-ass" id="nome-assinatura-tecnico"></p>
-                <p class="data-ass" id="data-assinatura-tecnico"></p>
-                <p class="rotulo-ass">Assinatura do Técnico</p>
-            </div>
-            <div id="campo-assinatura-cliente" class="assinatura-bloco">
-                <img id="img-assinatura-cliente" class="img-ass" alt="Assinatura do cliente">
-                <div class="linha-assinatura"></div>
-                <p class="nome-ass" id="nome-assinatura-cliente"></p>
-                <p class="data-ass" id="data-assinatura-cliente"></p>
-                <p class="rotulo-ass">Aprovação do Cliente</p>
-            </div>
-        </div>
-
-        <div id="trilha-auditoria" class="trilha-auditoria" style="display:none;">
-            <div class="trilha-head"><i class="fa-solid fa-shield-halved"></i> Comprovante de Assinatura Eletrônica</div>
-            <div class="trilha-grid" id="trilha-itens"></div>
-            <div class="trilha-selo">
-                <div class="selo-row"><span class="selo-lbl">Hash SHA-256 do documento:</span><span class="selo-hash" id="trilha-hash">—</span></div>
-                <div class="selo-emitido" id="trilha-emitido"></div>
-            </div>
-            <p class="trilha-nota">Assinatura eletrônica simples nos termos da MP 2.200-2/2001 e da Lei 14.063/2020. As evidências acima — traço da assinatura, data/hora, endereço IP, dispositivo e o hash do conteúdo — permitem verificar a autoria e a integridade deste documento. Qualquer alteração no conteúdo invalida o hash.</p>
-        </div>
+        <!-- A assinatura eletrônica (cliente e técnico) passa a acontecer em uma
+             página própria, fora deste PDF de trabalho, gerada pelo Worker de
+             assinaturas após o envio (ver btn-enviar-assinatura). O PDF final
+             assinado — com as assinaturas, QR Code e trilha de auditoria — é
+             um arquivo separado, gerado no servidor e armazenado no R2. -->
 
         <footer>
             <p><strong>Responsável Técnico: <span id="view-resp-tecnico">---</span></strong></p>
@@ -382,161 +347,12 @@ document.addEventListener('keydown', function(e) {
     // Banco de OS (leitura/exclusão) — usado para apagar a linha antiga em edições
     const URL_DATABASE = apiURL('os');
 
-    // ── ASSINATURA NA TELA (canvas) ───────────────────────────────────────
-    let assinaturaCanvas, assinaturaCtx, desenhando = false, temTraco = false, padVinculado = false, tipoAtual = 'cliente';
-
-    function abrirAssinatura(tipo) {
-        tipoAtual = (tipo === 'tecnico') ? 'tecnico' : 'cliente';
-        document.getElementById('ass-titulo').innerText = (tipoAtual === 'tecnico') ? 'Assinatura do técnico' : 'Assinatura do cliente';
-        document.getElementById('assinatura-modal').classList.add('ativo');
-        setupPad();
-    }
-    function fecharAssinatura() {
-        document.getElementById('assinatura-modal').classList.remove('ativo');
-    }
-    function setupPad() {
-        assinaturaCanvas = document.getElementById('assinatura-pad');
-        const rect = assinaturaCanvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        assinaturaCanvas.width = rect.width * dpr;
-        assinaturaCanvas.height = rect.height * dpr;
-        assinaturaCtx = assinaturaCanvas.getContext('2d');
-        assinaturaCtx.scale(dpr, dpr);
-        assinaturaCtx.lineWidth = 2.5;
-        assinaturaCtx.lineCap = 'round';
-        assinaturaCtx.lineJoin = 'round';
-        assinaturaCtx.strokeStyle = '#0d1117';
-        temTraco = false;
-        document.getElementById('assinatura-hint').style.display = 'flex';
-        document.getElementById('btn-confirmar-ass').disabled = true;
-        if (!padVinculado) {
-            const start = e => { e.preventDefault(); desenhando = true; const p = posPad(e); assinaturaCtx.beginPath(); assinaturaCtx.moveTo(p.x, p.y); };
-            const move = e => { if (!desenhando) return; e.preventDefault(); const p = posPad(e); assinaturaCtx.lineTo(p.x, p.y); assinaturaCtx.stroke(); if (!temTraco) { temTraco = true; document.getElementById('assinatura-hint').style.display = 'none'; document.getElementById('btn-confirmar-ass').disabled = false; } };
-            const end = () => { desenhando = false; };
-            assinaturaCanvas.addEventListener('mousedown', start);
-            assinaturaCanvas.addEventListener('mousemove', move);
-            assinaturaCanvas.addEventListener('mouseup', end);
-            assinaturaCanvas.addEventListener('mouseleave', end);
-            assinaturaCanvas.addEventListener('touchstart', start, { passive: false });
-            assinaturaCanvas.addEventListener('touchmove', move, { passive: false });
-            assinaturaCanvas.addEventListener('touchend', end);
-            padVinculado = true;
-        }
-    }
-    function posPad(e) {
-        const rect = assinaturaCanvas.getBoundingClientRect();
-        const t = e.touches && e.touches[0] ? e.touches[0] : e;
-        return { x: t.clientX - rect.left, y: t.clientY - rect.top };
-    }
-    function limparAssinatura() {
-        if (!assinaturaCtx) return;
-        assinaturaCtx.clearRect(0, 0, assinaturaCanvas.width, assinaturaCanvas.height);
-        temTraco = false;
-        document.getElementById('assinatura-hint').style.display = 'flex';
-        document.getElementById('btn-confirmar-ass').disabled = true;
-    }
-    // ── TRILHA DE AUDITORIA (assinatura eletrônica simples) ──────
-    let clienteIP = null, docFingerprint = null, dadosImpressaoCache = null;
-    const trilha = { tecnico: null, cliente: null };
-
-    function escapeHtml(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-    async function obterIP() {
-        try {
-            const r = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
-            const j = await r.json();
-            clienteIP = j.ip || null;
-        } catch (e) { clienteIP = null; }
-        return clienteIP;
-    }
-    async function sha256Hex(str) {
-        try {
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        } catch (e) { return null; }
-    }
-    function resumoDispositivo(ua) {
-        if (!ua) return 'Desconhecido';
-        let so = 'Sistema desconhecido';
-        if (/Windows/i.test(ua)) so = 'Windows';
-        else if (/Android/i.test(ua)) so = 'Android';
-        else if (/iPhone|iPad|iPod/i.test(ua)) so = 'iOS';
-        else if (/Mac OS X/i.test(ua)) so = 'macOS';
-        else if (/Linux/i.test(ua)) so = 'Linux';
-        let nav = 'Navegador';
-        if (/Edg\//i.test(ua)) nav = 'Edge';
-        else if (/OPR\//i.test(ua)) nav = 'Opera';
-        else if (/Chrome\//i.test(ua)) nav = 'Chrome';
-        else if (/Firefox\//i.test(ua)) nav = 'Firefox';
-        else if (/Safari\//i.test(ua)) nav = 'Safari';
-        return nav + ' \u00b7 ' + so;
-    }
-    function gerarToken() {
-        const rnd = (crypto.randomUUID ? crypto.randomUUID().replace(/-/g,'') : Math.random().toString(16).slice(2)).slice(0,8).toUpperCase();
-        return rnd + '-' + Date.now().toString(36).toUpperCase();
-    }
-    async function calcularFingerprint(d) {
-        if (!d) return null;
-        const base = JSON.stringify({ tipo:d.tipo, id:d.id_os, cliente:d.cliente, endereco:d.endereco, cpf:d.cpf, emissao:d.emissao, validade:d.validade, total:d.total, obs:d.obs, itens:d.itens });
-        return await sha256Hex(base);
-    }
-    function persistirTrilha() {
-        try { localStorage.setItem('trilha_assinatura', JSON.stringify({ fp: docFingerprint, trilha })); } catch (e) {}
-    }
-    // Comprovante de assinatura eletrônica desativado — exibimos apenas a assinatura (traço + nome + data).
-    // Para reativar a trilha de auditoria, basta remover as 2 linhas abaixo.
-    const MOSTRAR_COMPROVANTE = false;
-    function renderTrilha() {
-        const box = document.getElementById('trilha-auditoria');
-        if (!MOSTRAR_COMPROVANTE) { box.style.display = 'none'; return; }
-        const cont = document.getElementById('trilha-itens');
-        const cards = [];
-        ['tecnico','cliente'].forEach(t => {
-            const r = trilha[t]; if (!r) return;
-            cards.push(
-                '<div class="trilha-card">' +
-                '<div class="tc-role">' + escapeHtml(r.papel) + ' \u2014 ' + escapeHtml(r.nome) + '</div>' +
-                '<div class="tc-line"><span>Data / hora</span><span class="val">' + escapeHtml(r.dataHora) + '</span></div>' +
-                '<div class="tc-line"><span>Endere\u00e7o IP</span><span class="val">' + escapeHtml(r.ip) + '</span></div>' +
-                '<div class="tc-line"><span>Dispositivo</span><span class="val">' + escapeHtml(r.dispositivo) + '</span></div>' +
-                '<div class="tc-line"><span>ID de verifica\u00e7\u00e3o</span><span class="val">' + escapeHtml(r.id) + '</span></div>' +
-                '</div>'
-            );
-        });
-        cont.innerHTML = cards.join('');
-        document.getElementById('trilha-hash').innerText = docFingerprint || 'indispon\u00edvel neste navegador';
-        if (cards.length) document.getElementById('trilha-emitido').innerText = 'Comprovante gerado em ' + new Date().toLocaleString('pt-BR');
-        box.style.display = cards.length ? 'block' : 'none';
-    }
-
-    async function confirmarAssinatura() {
-        if (!temTraco) return;
-        const nome = (tipoAtual === 'tecnico')
-            ? (document.getElementById('view-resp-tecnico').innerText || '')
-            : (document.getElementById('view-cliente').innerText || '');
-        const agora = new Date();
-        document.getElementById('img-assinatura-' + tipoAtual).src = assinaturaCanvas.toDataURL('image/png');
-        document.getElementById('img-assinatura-' + tipoAtual).style.display = 'block';
-        document.getElementById('nome-assinatura-' + tipoAtual).innerText = nome;
-        document.getElementById('data-assinatura-' + tipoAtual).innerText = 'Assinado em ' + agora.toLocaleString('pt-BR');
-        document.getElementById('campo-assinatura-' + tipoAtual).style.display = 'block';
-        fecharAssinatura();
-        // registra as evidências da assinatura na trilha de auditoria
-        const ip = clienteIP || await obterIP();
-        if (!docFingerprint && dadosImpressaoCache) docFingerprint = await calcularFingerprint(dadosImpressaoCache);
-        trilha[tipoAtual] = {
-            nome: nome,
-            papel: (tipoAtual === 'tecnico') ? 'T\u00e9cnico' : 'Cliente',
-            dataHora: agora.toLocaleString('pt-BR'),
-            iso: agora.toISOString(),
-            ip: ip || 'N\u00e3o capturado',
-            ua: navigator.userAgent,
-            dispositivo: resumoDispositivo(navigator.userAgent),
-            id: gerarToken()
-        };
-        persistirTrilha();
-        renderTrilha();
-    }
+    // A assinatura por canvas + trilha de auditoria em localStorage foi
+    // removida desta tela. O fluxo de assinatura eletrônica (OTP, D1, R2,
+    // hash, QR Code) passa a viver na página dedicada `/assinar`, acionada
+    // pelo botão "Enviar para assinatura" acima — ver Worker
+    // "eliezer-assinaturas" (Etapas 2 a 5).
+    let dadosImpressaoCache = null;
 
     function calcularSomaData(dataString, dias) {
         try {
@@ -557,11 +373,7 @@ document.addEventListener('keydown', function(e) {
             return;
         }
 
-        // Captura evidências para a trilha de auditoria (hash do conteúdo + IP)
-        // enquanto os dados ainda estão disponíveis.
         dadosImpressaoCache = dadosLocal;
-        calcularFingerprint(dadosLocal).then(h => { docFingerprint = h; });
-        obterIP();
 
         // PREENCHE OS DADOS DA EMPRESA A PARTIR DO LOCALSTORAGE (fonte confiável,
         // enviada pela tela de criação). Isso garante que nome/CNPJ/endereço/telefone
@@ -732,7 +544,6 @@ async function baixarPDF() {
     try {
         await fetch(URL_SALVAR, { 
             method: 'POST', 
-            mode: 'no-cors', 
             body: formData 
         });
     } catch (e) { console.error("Erro ao salvar:", e); }
@@ -795,6 +606,126 @@ async function baixarPDF() {
     })();
 
     window.onload = carregarPagina;
+
+    // ══════════════════════════════════════════════════════════════════
+    // ETAPA 2 — Enviar para assinatura (congela o orçamento + gera os links)
+    // ══════════════════════════════════════════════════════════════════
+    function atualizarCamposDocumento() {
+        const status = document.getElementById('ea-doc-status').value;
+        document.getElementById('ea-doc-completo').style.display = (status === 'completo_previo') ? 'block' : 'none';
+        document.getElementById('ea-doc-parcial').style.display = (status === 'parcial_previo') ? 'flex' : 'none';
+    }
+
+    function abrirEnvioAssinatura() {
+        const dados = JSON.parse(localStorage.getItem('dados_impressao') || 'null');
+        if (!dados || !dados.cliente || !Array.isArray(dados.itens) || dados.itens.length === 0) {
+            alert('Gere/carregue o orçamento normalmente antes de enviar para assinatura.');
+            return;
+        }
+        document.getElementById('ea-resultado').style.display = 'none';
+        document.getElementById('envio-assinatura-modal').style.display = 'flex';
+        atualizarCamposDocumento();
+    }
+    function fecharEnvioAssinatura() {
+        document.getElementById('envio-assinatura-modal').style.display = 'none';
+    }
+
+    async function confirmarEnvioAssinatura() {
+        const dados = JSON.parse(localStorage.getItem('dados_impressao') || 'null');
+        if (!dados) { fecharEnvioAssinatura(); return; }
+
+        const email = document.getElementById('ea-email').value.trim();
+        if (!email || !email.includes('@')) { alert('Informe um e-mail válido do cliente.'); return; }
+
+        const docStatus = document.getElementById('ea-doc-status').value;
+        const docCompleto = document.getElementById('ea-doc-completo-valor').value.trim();
+        const docInicio = document.getElementById('ea-doc-inicio').value.trim();
+        const docFim = document.getElementById('ea-doc-fim').value.trim();
+        const nomeConhecido = document.getElementById('ea-nome-conhecido').checked;
+        const ordem = document.getElementById('ea-ordem').value;
+
+        const btn = document.getElementById('ea-btn-confirmar');
+        btn.disabled = true;
+        btn.textContent = 'Gerando PDF e enviando...';
+
+        try {
+            await aplicarLogoEmpresa();
+            const element = document.getElementById('conteudo-pdf');
+            const opt = {
+                margin: [0, 0, 0, 0],
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            const pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob');
+            const pdfBase64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(pdfBlob);
+            });
+
+            const snapshot = {
+                cliente: {
+                    nome: dados.cliente,
+                    email: email,
+                    documento_status: docStatus,
+                    documento_tipo: (docCompleto.replace(/\D/g, '').length > 11 || (docInicio + docFim).length > 9) ? 'CNPJ' : 'CPF',
+                    cpf_conhecido: docStatus === 'completo_previo' ? docCompleto : '',
+                    documento_parcial_inicio: docStatus === 'parcial_previo' ? docInicio : '',
+                    documento_parcial_fim: docStatus === 'parcial_previo' ? docFim : '',
+                    nome_completo_conhecido: nomeConhecido,
+                },
+                tecnico: { nome: document.getElementById('view-resp-tecnico').innerText },
+                endereco: dados.endereco,
+                itens: dados.itens,
+                total: document.getElementById('view-total').innerText,
+                garantia: dados.garantia,
+                obs: dados.obs,
+            };
+
+            const numCompletoHTMLea = document.getElementById('num-random').innerText;
+            const idParaEnviar = (dados.id_os && dados.id_os !== "---" && dados.id_os !== "") ? dados.id_os : numCompletoHTMLea.split('/')[0];
+
+            const headersAuth = { 'Content-Type': 'application/json' };
+            const sessao = await supabaseClient.auth.getSession();
+            if (sessao.data && sessao.data.session) headersAuth['Authorization'] = 'Bearer ' + sessao.data.session.access_token;
+
+            const respCreate = await fetch(APP_CONFIG.ASSINATURAS_API_URL + '/api/signatures/documents/create', {
+                method: 'POST', headers: headersAuth,
+                body: JSON.stringify({
+                    service_order_number: 'ORC-' + idParaEnviar,
+                    sheet_record_id: 'ORC-' + idParaEnviar,
+                    signature_order: ordem,
+                    snapshot: snapshot,
+                    original_pdf_base64: pdfBase64,
+                })
+            });
+            const jsonCreate = await respCreate.json();
+            if (!respCreate.ok) throw new Error(jsonCreate.erro || 'Falha ao congelar o orçamento.');
+
+            const respSend = await fetch(APP_CONFIG.ASSINATURAS_API_URL + '/api/signatures/documents/' + jsonCreate.id + '/send', {
+                method: 'POST', headers: headersAuth,
+            });
+            const jsonSend = await respSend.json();
+            if (!respSend.ok) throw new Error(jsonSend.erro || 'Falha ao gerar o link de assinatura.');
+
+            const linkAtivo = jsonSend.signature_order === 'cliente_primeiro' ? jsonSend.link_cliente : jsonSend.link_tecnico;
+            const resultado = document.getElementById('ea-resultado');
+            resultado.innerHTML =
+                '<strong>Enviado! Versão ' + jsonCreate.version + '.</strong><br>' +
+                'Link de assinatura (' + (jsonSend.signature_order === 'cliente_primeiro' ? 'cliente' : 'técnico') + ' assina primeiro):<br>' +
+                '<span style="word-break:break-all;">' + linkAtivo + '</span><br><br>' +
+                '<button type="button" onclick="navigator.clipboard.writeText(\'' + linkAtivo + '\')" style="padding:8px 12px; border-radius:8px; border:none; background:#2980b9; color:#fff; font-weight:700; cursor:pointer;">Copiar link</button>';
+            resultado.style.display = 'block';
+            btn.textContent = 'Enviado ✓';
+        } catch (err) {
+            console.error(err);
+            alert('Não foi possível enviar para assinatura: ' + err.message);
+            btn.disabled = false;
+            btn.textContent = 'Confirmar e enviar';
+        }
+    }
 </script>
 </body>
 </html>
