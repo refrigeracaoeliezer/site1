@@ -174,6 +174,43 @@
         }
 
         @media print { .no-print { display: none !important; } }
+
+        /* ── Pop-up genérico de aviso/confirmação — mesmo padrão visual do
+           "Gerando seu PDF": card branco, borda azul de 4px no topo, ícone
+           circular com gradiente, mesma animação de entrada. A cor da borda
+           e do ícone acompanha o tipo de aviso (azul = info, vermelho =
+           erro/ação destrutiva, verde = sucesso). ── */
+        #popup-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(13, 17, 23, 0.72);
+            backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+            z-index: 40000; align-items: center; justify-content: center; padding: 16px;
+        }
+        #popup-overlay.ativo { display: flex; }
+        .popup-card {
+            background: #fff; color: #0d1117; width: 300px; max-width: 90vw;
+            padding: 30px 28px 26px; border-radius: 18px;
+            border-top: 4px solid #1e40af;
+            text-align: center; font-family: 'Inter', 'Segoe UI', sans-serif;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+            animation: loader-surgir .25s ease;
+        }
+        .popup-icone {
+            width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af, #2980b9);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 18px rgba(30,64,175,0.4);
+        }
+        .popup-icone i { font-size: 23px; color: #fff; }
+        .popup-titulo { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+        .popup-texto { font-size: 13px; color: #667085; line-height: 1.5; margin-bottom: 20px; }
+        .popup-acoes { display: flex; gap: 10px; }
+        .popup-acoes button {
+            flex: 1; padding: 12px; border-radius: 10px; border: none;
+            font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif;
+        }
+        .popup-btn-ok { background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%); color: #fff; }
+        .popup-btn-cancelar { background: #eef0f3; color: #0d1117; }
     </style>
     <script src="config.js"></script>
 </head>
@@ -185,6 +222,19 @@
             <p class="loader-titulo">Gerando seu PDF</p>
             <p class="loader-sub">Salvando os dados e preparando o documento. Isso pode levar alguns segundos.</p>
             <div class="loader-barra"><div class="loader-barra-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- Pop-up genérico de aviso/confirmação — substitui os alert() nativos
+         do navegador, mantendo o mesmo padrão visual do "Gerando seu PDF". -->
+    <div id="popup-overlay" class="no-print">
+        <div class="popup-card" id="popup-card">
+            <div class="popup-icone" id="popup-icone"><i class="fa-solid fa-circle-exclamation" id="popup-icone-i"></i></div>
+            <p class="popup-titulo" id="popup-titulo">Atenção</p>
+            <p class="popup-texto" id="popup-texto"></p>
+            <div class="popup-acoes" id="popup-acoes">
+                <button type="button" class="popup-btn-ok" onclick="fecharPopup()">Entendi</button>
+            </div>
         </div>
     </div>
 
@@ -200,8 +250,8 @@
     <!-- Modal: dados que só o técnico sabe antes de enviar para assinatura
          (Adendo 2: identificação do CPF/CNPJ e do nome completo do cliente,
          mais e-mail e ordem das assinaturas). -->
-    <div id="envio-assinatura-modal" class="no-print" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:31000; align-items:center; justify-content:center; padding:16px;">
-        <div style="background:#fff; color:#0d1117; border-radius:16px; width:100%; max-width:440px; max-height:88vh; overflow-y:auto; padding:22px; font-family:'Inter',sans-serif;">
+    <div id="envio-assinatura-modal" class="no-print" style="display:none; position:fixed; inset:0; background:rgba(13,17,23,0.72); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); z-index:31000; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#fff; color:#0d1117; border-radius:18px; border-top:4px solid #1e40af; width:100%; max-width:440px; max-height:88vh; overflow-y:auto; padding:26px 28px; font-family:'Inter',sans-serif; box-shadow:0 20px 50px rgba(0,0,0,0.45); animation: loader-surgir .25s ease;">
             <h3 style="margin:0 0 4px; font-size:18px; font-weight:800;">Enviar para assinatura</h3>
             <p style="margin:0 0 16px; font-size:12.5px; color:#667085;">Esses dados só aparecem aqui, nunca são mostrados ao cliente diretamente — servem para conferência de identidade na hora da assinatura.</p>
 
@@ -328,6 +378,60 @@
     </div>
 <script>
 
+  // ══════════════════════════════════════════════════════════════════
+  // Pop-up genérico de aviso/confirmação (padrão visual do "Gerando seu
+  // PDF") — substitui alert()/confirm() nativos do navegador em toda a
+  // página, mantendo a borda azul (ou vermelha/verde conforme o tipo) no
+  // topo do card, igual ao restante do sistema.
+  // ══════════════════════════════════════════════════════════════════
+  const CORES_POPUP = {
+    info:  { cor: '#1e40af', gradiente: 'linear-gradient(135deg, #1e40af, #2980b9)', icone: 'fa-circle-exclamation' },
+    erro:  { cor: '#ef4444', gradiente: 'linear-gradient(135deg, #ef4444, #dc2626)', icone: 'fa-triangle-exclamation' },
+    sucesso: { cor: '#10b981', gradiente: 'linear-gradient(135deg, #10b981, #059669)', icone: 'fa-circle-check' },
+  };
+
+  function mostrarPopup(opcoes) {
+    opcoes = opcoes || {};
+    const tipo = CORES_POPUP[opcoes.tipo] || CORES_POPUP.info;
+    document.getElementById('popup-card').style.borderTopColor = tipo.cor;
+    document.getElementById('popup-icone').style.background = tipo.gradiente;
+    document.getElementById('popup-icone-i').className = 'fa-solid ' + (opcoes.icone || tipo.icone);
+    document.getElementById('popup-titulo').textContent = opcoes.titulo || 'Atenção';
+    document.getElementById('popup-texto').textContent = opcoes.texto || '';
+
+    const acoes = document.getElementById('popup-acoes');
+    acoes.innerHTML = '';
+
+    if (opcoes.confirmar) {
+      const btnCancelar = document.createElement('button');
+      btnCancelar.className = 'popup-btn-cancelar';
+      btnCancelar.textContent = opcoes.textoCancelar || 'Cancelar';
+      btnCancelar.onclick = function () { fecharPopup(); if (opcoes.aoCancelar) opcoes.aoCancelar(); };
+      acoes.appendChild(btnCancelar);
+
+      const btnConfirmar = document.createElement('button');
+      btnConfirmar.className = 'popup-btn-ok';
+      btnConfirmar.textContent = opcoes.textoConfirmar || 'Confirmar';
+      btnConfirmar.onclick = function () { fecharPopup(); if (opcoes.aoConfirmar) opcoes.aoConfirmar(); };
+      acoes.appendChild(btnConfirmar);
+    } else {
+      const btnOk = document.createElement('button');
+      btnOk.className = 'popup-btn-ok';
+      btnOk.textContent = opcoes.textoOk || 'Entendi';
+      btnOk.onclick = function () { fecharPopup(); if (opcoes.aoFechar) opcoes.aoFechar(); };
+      acoes.appendChild(btnOk);
+    }
+
+    document.getElementById('popup-overlay').classList.add('ativo');
+  }
+  function fecharPopup() {
+    document.getElementById('popup-overlay').classList.remove('ativo');
+  }
+  // Atalho equivalente ao alert() nativo, mas com o visual padronizado.
+  function mostrarAviso(texto, tipo) {
+    mostrarPopup({ texto: texto, tipo: tipo || 'erro', titulo: (tipo === 'sucesso') ? 'Sucesso' : 'Atenção' });
+  }
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
       .then(reg => console.log('Service Worker registrado!', reg))
@@ -347,7 +451,7 @@ document.addEventListener('keydown', function(e) {
         (e.keyCode === 123) // Tecla F12
     ) {
         e.preventDefault();
-        alert('Ação protegida pelo sistema.');
+        mostrarAviso('Ação protegida pelo sistema.', 'erro');
         return false;
     }
   });
@@ -585,7 +689,7 @@ async function baixarPDF() {
     // o número do ID e todo o resto vazio, caso esta tela seja aberta ou o
     // botão de PDF seja clicado antes dos dados do orçamento carregarem.
     if (!dados.cliente || dados.cliente.toString().trim() === "" || !Array.isArray(dados.itens) || dados.itens.length === 0) {
-        alert('Não foi possível gerar o PDF: dados do cliente ou dos itens ainda não foram carregados. Volte para a tela anterior e tente novamente.');
+        mostrarAviso('Não foi possível gerar o PDF: dados do cliente ou dos itens ainda não foram carregados. Volte para a tela anterior e tente novamente.', 'erro');
         return;
     }
 
@@ -763,7 +867,7 @@ async function baixarPDF() {
     function abrirEnvioAssinatura() {
         const dados = JSON.parse(localStorage.getItem('dados_impressao') || 'null');
         if (!dados || !dados.cliente || !Array.isArray(dados.itens) || dados.itens.length === 0) {
-            alert('Gere/carregue a O.S. normalmente antes de enviar para assinatura.');
+            mostrarAviso('Gere/carregue a O.S. normalmente antes de enviar para assinatura.', 'erro');
             return;
         }
         document.getElementById('ea-resultado').style.display = 'none';
@@ -779,7 +883,7 @@ async function baixarPDF() {
         if (!dados) { fecharEnvioAssinatura(); return; }
 
         const email = document.getElementById('ea-email').value.trim();
-        if (!email || !email.includes('@')) { alert('Informe um e-mail válido do cliente.'); return; }
+        if (!email || !email.includes('@')) { mostrarAviso('Informe um e-mail válido do cliente.', 'erro'); return; }
 
         const docStatus = document.getElementById('ea-doc-status').value;
         const docCompleto = document.getElementById('ea-doc-completo-valor').value.trim();
@@ -868,7 +972,7 @@ async function baixarPDF() {
             btn.textContent = 'Enviado ✓';
         } catch (err) {
             console.error(err);
-            alert('Não foi possível enviar para assinatura: ' + err.message);
+            mostrarAviso('Não foi possível enviar para assinatura: ' + err.message, 'erro');
             btn.disabled = false;
             btn.textContent = 'Confirmar e enviar';
         }
