@@ -1,1367 +1,472 @@
 <!DOCTYPE html>
-<html lang="pt-br">    
+<html lang="pt-BR">
 <head>
-     <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/a/AVvXsEjvyHVCZolj28lEOEFo6M63izh7RcOq9tc7jph7e_Or-jSWVQ5TjRb0hcc-168k9rTwL9XnC9FdUti7imfIyv6QTbWgHDZB7zroM2I3nvUK58Zf6_sARve9qfBkasedBGsBkLahFohBhq2fbLB-hPSlFVrk5haPLt0Uy2jDnTszkHq0Qn3NfzkmK8vhNLI=w104-h117">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="config.js"></script>
-<script src="supabase-client.js"></script>
-<script src="auth-guard.js"></script>
-    <meta charset="UTF-8">
-    <title>Garantias | Refrigeração Eliezer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d1117">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"> 
-    
-    <style>
-    body {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    input, select, textarea {
-        -webkit-user-select: text !important;
-        -moz-user-select: text !important;
-        -ms-user-select: text !important;
-        user-select: text !important;
-    }
-    img {
-        pointer-events: none !important;
-        -webkit-user-drag: none !important;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garantias | Refrigeração Eliezer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+  
+  body {
+    background: #f4f6f9;
+    color: #2c3e50;
+    padding: 20px;
+    min-height: 100vh;
+  }
 
-        :root {
-            --bg-body: #0d1117;
-            --text-main: white;
-            --text-sub: rgba(255, 255, 255, 0.4);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --card-sub: rgba(255, 255, 255, 0.05);
-            --input-bg: rgba(255, 255, 255, 0.05);
-        }
+  .container { max-width: 900px; margin: 0 auto; }
 
-        body.light-mode {
-            --bg-body: #f0f2f5;
-            --text-main: #1a1f26;
-            --text-sub: #4b5563;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --card-sub: rgba(0, 0, 0, 0.04);
-            --input-bg: rgba(255, 255, 255, 0.9);
-        }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
 
-        * { -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); transition: background 0.3s, color 0.3s; }
+  header h1 { font-size: 1.6rem; color: #1a3a5c; }
 
-        /* Glow ambiente (mesmo padrão do restante do app) */
-        .glow { position: fixed; border-radius: 50%; pointer-events: none; filter: blur(100px); z-index: 0; }
-        .glow-a { width: 480px; height: 480px; top: -200px; right: -160px; background: rgba(30,64,175,0.10); }
-        .glow-b { width: 380px; height: 380px; bottom: -140px; left: -140px; background: rgba(16,185,129,0.06); }
+  /* ===== BOTÃO AGENDAR (VERDE) ===== */
+  .btn-agendar {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  }
+  .btn-agendar:hover { background: #059669; transform: translateY(-1px); }
 
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 25px; }
+  /* ===== FILTROS ===== */
+  .filtros {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+  }
+  .filtro {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #6b7280;
+    transition: all 0.2s;
+  }
+  .filtro.ativo { background: #1a3a5c; color: white; }
 
-        .status-badge { padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-        .em-garantia { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
-        .fora-garantia { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
-        .congelada-garantia { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+  /* ===== CARDS ===== */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border-left: 4px solid #10b981;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
 
-        .btn-acionar-garantia { margin-top: 12px; width: 100%; padding: 13px; border-radius: 14px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-acionar-garantia:active { transform: scale(0.98); }
-        .btn-acionar-garantia.tipo-acionar { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.35); }
-        .btn-acionar-garantia.tipo-acionar:hover { background: rgba(16, 185, 129, 0.22); }
-        .btn-acionar-garantia.tipo-reativar { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
-        .btn-acionar-garantia.tipo-reativar:hover { background: rgba(56, 189, 248, 0.22); }
-        .aviso-congelada { background: rgba(56, 189, 248, 0.08); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 8px 12px; font-size: 10px; color: #38bdf8; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
 
-        .search-input { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-        .search-input:focus { border-color: rgba(30,64,175,0.5); box-shadow: 0 0 0 4px rgba(30,64,175,0.12); }
-        .item-servico { border-bottom: 1px dashed var(--glass-border); padding: 6px 0; color: var(--text-sub); display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-        .item-servico:last-child { border-bottom: none; }
-        .item-servico-desc { flex: 1; font-size: 11px; font-style: italic; }
-        .item-servico-valor { font-size: 11px; font-weight: 900; color: #60a5fa; white-space: nowrap; flex-shrink: 0; }
+  .card-title { font-weight: 600; font-size: 1.05rem; color: #1a3a5c; }
+  .card-os { font-size: 0.8rem; color: #6b7280; margin-top: 2px; }
+  .card-info { font-size: 0.88rem; color: #4b5563; margin: 4px 0; }
 
-        .theme-toggle { background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-main); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; text-decoration: none; }
-        .theme-toggle:hover { background: rgba(30,64,175,0.15); border-color: rgba(30,64,175,0.4); }
+  /* ===== BARRA DE PROGRESSO DA GARANTIA ===== */
+  .garantia-bar {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .garantia-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+  .garantia-texto {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-        /* Grupo de ações (editar/excluir) agrupado numa única pílula */
-        .action-group { display: flex; align-items: center; background: var(--card-sub); border: 1px solid var(--glass-border); border-radius: 12px; overflow: hidden; }
-        .action-group button { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; transition: 0.2s; background: transparent; }
-        .action-group .edit-btn { color: #60a5fa; }
-        .action-group .edit-btn:hover { background: rgba(59, 130, 246, 0.15); }
-        .action-group .delete-btn { color: #f87171; border-left: 1px solid var(--glass-border); }
-        .action-group .delete-btn:hover { background: rgba(239, 68, 68, 0.15); }
+  /* ===== AÇÕES DO CARD ===== */
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #f3f4f6;
+  }
 
-        #modal-excluir, #modal-garantia, #modal-agendar, #modal-agendar-sucesso { transition: opacity 0.25s ease; }
-        .modal-content { background: var(--bg-body); border: 1px solid var(--glass-border); color: var(--text-main); border-top: 4px solid #1e40af; animation: modalPopIn 0.3s ease-out both; }
-        @keyframes modalPopIn { from { opacity: 0; transform: translateY(14px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  /* ===== CORES SEMÂNTICAS ===== */
+  /* Excluir/Apagar - Vermelho suave */
+  .btn-excluir {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-excluir:hover { background: #fee2e2; border-color: #fca5a5; }
 
-        /* Linha separadora de subtotal por item */
-        .subtotal-linha {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 10px; font-weight: 900; text-transform: uppercase;
-            letter-spacing: 0.05em; opacity: 0.35;
-            padding: 2px 0 0;
-        }
+  /* Congelar - Azul/Cinza com ícone ❄️ */
+  .btn-congelar {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-congelar:hover { background: #dbeafe; border-color: #93c5fd; }
 
-        /* ── Cabeçalho fixo ── */
-        .sticky-header { position: sticky; top: 0; z-index: 30; background: var(--bg-body); padding-top: 16px; padding-bottom: 14px; transition: background 0.3s; }
-        .brand-title { font-size: 21px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.4px; line-height: 1.05; }
-        .brand-title span { color: #1e40af; }
-        .brand-sub { font-size: 9px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.14em; margin-top: 3px; }
+  /* Ver OS - Neutro */
+  .btn-ver {
+    background: #f9fafb;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ver:hover { background: #f3f4f6; }
 
-        .os-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 50px; background: var(--card-sub); border: 1px solid var(--glass-border); font-size: 9px; font-weight: 900; letter-spacing: 0.08em; color: #60a5fa; text-transform: uppercase; }
+  /* ===== OPTIMISTIC UI - ESTADOS ===== */
+  /* Card sendo congelado (opaco + overlay) */
+  .card.congelando {
+    opacity: 0.6;
+    pointer-events: none;
+    filter: grayscale(0.3);
+  }
+  .card.congelando::after {
+    content: '❄️';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0.5;
+    animation: pulse 1s infinite;
+  }
 
-        .tag-orcamento { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); }
-        .tag-servico { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px; border-radius: 50px; font-size: 8px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(45, 212, 191, 0.15); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.35); }
+  /* Card já congelado */
+  .card.congelado {
+    opacity: 0.75;
+    border-left-color: #60a5fa;
+    background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+  }
+  .card.congelado .card-title::after {
+    content: ' ❄️ Garantia Congelada';
+    font-size: 0.75rem;
+    color: #2563eb;
+    font-weight: 500;
+    margin-left: 8px;
+  }
 
-        /* ── Card com faixa de status lateral ── */
-        .card-item { position: relative; transition: transform 0.2s, box-shadow 0.2s; overflow: hidden; animation: cardFadeUp 0.35s ease-out both; }
-        .card-item:hover { box-shadow: 0 10px 34px rgba(0,0,0,0.28); }
-        .card-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 25px 0 0 25px; }
-        .card-item.st-ativa::before   { background: linear-gradient(180deg, #10b981, #059669); }
-        .card-item.st-vencida::before { background: linear-gradient(180deg, #ef4444, #b91c1c); }
-        .card-item.st-congelada::before { background: linear-gradient(180deg, #38bdf8, #0ea5e9); }
-        @keyframes cardFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  /* Card sendo excluído (fade out + slide) */
+  .card.excluindo {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+    max-height: 0;
+    margin-bottom: 0;
+    padding: 0 18px;
+    overflow: hidden;
+  }
 
-        .item-servico-icon { color: #3b82f6; font-size: 9px; margin-top: 3px; flex-shrink: 0; }
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.15); }
+  }
 
-        .footer-divider { border-top: 1px solid var(--glass-border); padding-top: 14px; margin-top: 4px; }
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.2s;
+  }
+  .modal-overlay.ativo { display: flex; }
 
-        /* ── Anel de garantia (gauge de dias restantes) ── */
-        .ring-garantia { position: relative; width: 52px; height: 52px; flex-shrink: 0; }
-        .ring-garantia svg { transform: rotate(-90deg); width: 52px; height: 52px; }
-        .ring-garantia circle { fill: none; stroke-width: 4; }
-        .ring-garantia .ring-track { stroke: var(--card-sub); }
-        .ring-garantia .ring-fill { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
-        .ring-garantia .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ring-garantia .ring-center i { font-size: 13px; }
-        .ring-garantia .ring-center span { font-size: 8px; font-weight: 900; margin-top: 1px; letter-spacing: 0.02em; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    animation: slideUp 0.3s;
+  }
+  .modal h3 { margin-bottom: 10px; color: #1a3a5c; }
+  .modal p { color: #6b7280; margin-bottom: 20px; font-size: 0.95rem; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-actions button {
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-cancelar { background: #f3f4f6; color: #374151; }
+  .btn-cancelar:hover { background: #e5e7eb; }
 
-        /* ── Barra de estatísticas rápidas ── */
-        .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-        .stat-chip { background: var(--card-sub); border: 1px solid var(--glass-border); border-radius: 14px; padding: 9px 8px; text-align: center; }
-        .stat-chip .stat-num { font-size: 17px; font-weight: 900; line-height: 1.1; }
-        .stat-chip .stat-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-sub); margin-top: 2px; display: block; }
-        .stat-chip.stat-verde .stat-num { color: #10b981; }
-        .stat-chip.stat-vermelho .stat-num { color: #ef4444; }
-        .stat-chip.stat-azul .stat-num { color: #38bdf8; }
+  /* Botão confirmar EXCLUIR - vermelho suave */
+  .btn-confirmar-excluir {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  .btn-confirmar-excluir:hover { background: #fecaca; }
 
-        /* Chips de filtro rápido */
-        .filtro-chip {
-            flex-shrink: 0;
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 8px 14px;
-            border-radius: 50px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            background: var(--input-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-sub);
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-        .filtro-chip:hover { color: var(--text-main); }
-        .filtro-chip.active { background: #1e40af; border-color: #1e40af; color: white; }
+  /* Botão confirmar CONGELAR - azul */
+  .btn-confirmar-congelar {
+    background: #dbeafe;
+    color: #2563eb;
+  }
+  .btn-confirmar-congelar:hover { background: #bfdbfe; }
 
-        /* ── Skeleton (esqueleto de carregamento) ── */
-        .skeleton-card { border-radius: 25px; padding: 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); }
-        .skel-line { border-radius: 8px; background: linear-gradient(90deg, var(--card-sub) 25%, var(--glass-border) 37%, var(--card-sub) 63%); background-size: 400% 100%; animation: skeletonShine 1.4s ease infinite; }
-        @keyframes skeletonShine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* ── Pop-up padrão de atualização do sistema (Refrigeração Eliezer) ── */
-        #update-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-            z-index: 99999; display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        #update-popup {
-            width: 100%; max-width: 380px;
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px; padding: 30px 26px; text-align: center;
-            border-top: 4px solid #1e40af; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            color: var(--text-main); animation: updatePopIn 0.35s ease-out both;
-        }
-        @keyframes updatePopIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        #update-popup .update-icon {
-            width: 58px; height: 58px; margin: 0 auto 16px;
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
-            color: white; font-size: 24px;
-        }
-        #update-popup h3 { font-size: 18px; margin-bottom: 8px; }
-        #update-popup p { font-size: 13px; color: var(--text-sub); line-height: 1.5; margin-bottom: 22px; }
-        .update-actions { display: flex; gap: 10px; }
-        .btn-update-depois {
-            flex: 1; padding: 14px; background: var(--input-bg); border: 1px solid var(--glass-border);
-            border-radius: 12px; color: var(--text-main); font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.3s;
-        }
-        .btn-update-agora {
-            flex: 1.4; padding: 14px; background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%);
-            border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 13px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;
-        }
-        #update-loading { display: none; }
-        #update-loading .spinner-ring { width: 64px; height: 64px; margin: 0 auto 18px; position: relative; }
-        #update-loading .spinner-ring::before, #update-loading .spinner-ring::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
-        #update-loading .spinner-ring::before { border: 3px solid var(--glass-border); }
-        #update-loading .spinner-ring::after { border: 3px solid transparent; border-top-color: #27a9e3; border-right-color: #1e40af; animation: spinRing 0.85s linear infinite; }
-        #update-loading .spinner-ring i { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #27a9e3; }
-        @keyframes spinRing { to { transform: rotate(360deg); } }
-        #update-loading h3 { font-size: 17px; margin-bottom: 8px; }
-        #update-loading p { font-size: 13px; color: var(--text-sub); margin-bottom: 20px; }
-        .update-progress-track { width: 100%; height: 6px; border-radius: 10px; background: var(--input-bg); overflow: hidden; position: relative; }
-        .update-progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 40%; border-radius: 10px; background: linear-gradient(135deg, #1e40af 0%, #27a9e3 100%); animation: progressSlide 1.1s ease-in-out infinite; }
-        @keyframes progressSlide { 0% { left: -40%; width: 40%; } 50% { left: 30%; width: 55%; } 100% { left: 100%; width: 40%; } }
-    </style>
-    <script src="config.js"></script>
+  /* ===== TOAST DE ERRO/SUCESSO ===== */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 14px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(400px);
+    transition: transform 0.3s;
+    z-index: 200;
+    border-left: 4px solid #10b981;
+  }
+  .toast.ativo { transform: translateX(0); }
+  .toast.erro { border-left-color: #dc2626; color: #dc2626; }
+  .toast.sucesso { border-left-color: #10b981; color: #059669; }
+</style>
 </head>
-<body class="p-4 pb-10">
+<body>
+<div class="container">
+  <header>
+    <h1>🧊 Histórico & Garantias</h1>
+    <button class="btn-agendar" onclick="alert('Abrir modal de agendamento')">
+      + Agendar Serviço
+    </button>
+  </header>
 
-<div class="glow glow-a"></div>
-<div class="glow glow-b"></div>
+  <div class="filtros">
+    <button class="filtro ativo">Todos</button>
+    <button class="filtro">Orçamento</button>
+    <button class="filtro">Serviço</button>
+  </div>
 
-    <div id="modal-excluir" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
-            <div class="w-16 h-16 bg-red-500/15 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-red-500/35">
-                <i class="fa-solid fa-trash-can"></i>
-            </div>
-            <h3 class="text-xl font-black uppercase mb-2">Excluir Serviço?</h3>
-            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-msg-id">Esta ação não poderá ser desfeita na sua planilha de controle.</p>
-            <div class="flex gap-3">
-                <button onclick="fecharModal()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
-                <button id="btn-confirmar-exclusao" class="flex-1 py-4 rounded-2xl bg-red-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-red-500/20 hover:bg-red-600 transition">Sim, Apagar</button>
-            </div>
-        </div>
+  <!-- CARD 1: Garantia ativa -->
+  <div class="card" id="card-1" data-id="1">
+    <div class="card-header">
+      <div>
+        <div class="card-title">João Silva</div>
+        <div class="card-os">O.S. #2024-0847</div>
+      </div>
+      <span style="background:#dcfce7;color:#166534;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">Ativo</span>
     </div>
-
-    <div id="modal-garantia" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
-            <div id="modal-garantia-icone" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <h3 id="modal-garantia-titulo" class="text-xl font-black uppercase mb-2">Acionar Garantia?</h3>
-            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-garantia-msg">A garantia será congelada.</p>
-            <div class="flex gap-3">
-                <button onclick="fecharModalGarantia()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
-                <button id="btn-confirmar-garantia" class="flex-1 py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Confirmar</button>
-            </div>
-        </div>
+    <div class="card-info">🔧 Instalação de Split 12.000 BTUs</div>
+    <div class="card-info">📅 15/07/2026</div>
+    <div class="garantia-bar"><div class="garantia-fill" style="width:70%"></div></div>
+    <div class="garantia-texto">
+      <span>Garantia: 90 dias</span>
+      <span>Faltam 63 dias</span>
     </div>
-
-    <div id="modal-agendar" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl">
-            <div class="w-16 h-16 bg-blue-500/15 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-blue-500/35">
-                <i class="fa-solid fa-calendar-plus"></i>
-            </div>
-            <h3 class="text-xl font-black uppercase mb-1 text-center">Agendar Serviço</h3>
-            <p class="text-xs font-medium opacity-60 mb-6 text-center px-2" id="modal-agendar-cliente">Orçamento</p>
-            <div class="space-y-4 mb-8">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Data</label>
-                    <input type="date" id="agendar-data" class="w-full p-3 rounded-xl search-input font-semibold">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase opacity-50 mb-1.5">Hora</label>
-                    <input type="time" id="agendar-hora" class="w-full p-3 rounded-xl search-input font-semibold">
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="fecharModalAgendar()" class="flex-1 py-4 rounded-2xl bg-white/5 font-bold uppercase text-[10px] tracking-widest border border-white/10 hover:bg-white/10 transition">Cancelar</button>
-                <button id="btn-confirmar-agendar" class="flex-1 py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Confirmar</button>
-            </div>
-        </div>
+    <div class="card-actions">
+      <button class="btn-ver">📄 Ver O.S.</button>
+      <button class="btn-congelar" onclick="congelarGarantia('card-1')">❄️ Congelar</button>
+      <button class="btn-excluir" onclick="excluirServico('card-1')">🗑️ Excluir</button>
     </div>
+  </div>
 
-    <div id="modal-agendar-sucesso" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-        <div class="modal-content w-full max-w-sm p-8 rounded-[22px] shadow-2xl text-center">
-            <div class="w-16 h-16 bg-green-500/15 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-green-500/35">
-                <i class="fa-solid fa-calendar-check"></i>
-            </div>
-            <h3 class="text-xl font-black uppercase mb-2">Serviço Agendado!</h3>
-            <p class="text-xs font-medium opacity-60 mb-8 px-4" id="modal-agendar-sucesso-msg">O serviço foi adicionado à agenda com sucesso.</p>
-            <button onclick="fecharModalAgendarSucesso()" class="w-full py-4 rounded-2xl bg-blue-500 text-white font-bold uppercase text-[10px] tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition">Ok, entendi</button>
-        </div>
+  <!-- CARD 2: Outro serviço -->
+  <div class="card" id="card-2" data-id="2">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Maria Oliveira</div>
+        <div class="card-os">O.S. #2024-0846</div>
+      </div>
+      <span style="background:#dcfce7;color:#166534;padding:4px 10px;border-radius:12px;font-size:0.75rem;font-weight:600;">Ativo</span>
     </div>
-
-    <div class="max-w-4xl mx-auto" style="position:relative; z-index:10;">
-        <div class="sticky-header">
-            <header class="flex justify-between items-center mb-4">
-                <div>
-                    <h1 class="brand-title">Histórico de <span>Serviços</span></h1>
-                    <div class="brand-sub">Refrigeração Eliezer</div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="history.back()" class="theme-toggle" title="Voltar">
-                        <i class="fa-solid fa-arrow-left text-sm"></i>
-                    </button>
-                    <a href="sistemas.html" class="theme-toggle" title="Início">
-                        <i class="fa-solid fa-house text-sm"></i>
-                    </a>
-                    <button onclick="toggleTheme()" class="theme-toggle">
-                        <i id="theme-icon" class="fa-solid fa-sun"></i>
-                    </button>
-                </div>
-            </header>
-
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 opacity-30 text-sm"></i>
-                <input type="text" id="inputBusca" placeholder="Buscar pelo nome ou nº O.S" class="w-full p-4 pl-11 pr-11 rounded-2xl search-input font-semibold text-sm">
-                <button id="btn-limpar-busca" onclick="limparBusca()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full items-center justify-center opacity-50 hover:opacity-100" style="background: var(--card-sub);" title="Limpar busca">
-                    <i class="fa-solid fa-xmark text-xs"></i>
-                </button>
-            </div>
-
-            <div id="stats-bar" class="stats-bar" style="display:none;">
-                <div class="stat-chip stat-verde">
-                    <div class="stat-num" id="stat-ativas">0</div>
-                    <span class="stat-label">Em garantia</span>
-                </div>
-                <div class="stat-chip stat-vermelho">
-                    <div class="stat-num" id="stat-vencidas">0</div>
-                    <span class="stat-label">Vencidas</span>
-                </div>
-                <div class="stat-chip stat-azul">
-                    <div class="stat-num" id="stat-congeladas">0</div>
-                    <span class="stat-label">Congeladas</span>
-                </div>
-            </div>
-
-            <div class="flex gap-2 mt-3 overflow-x-auto pb-1" id="filtros-container" style="scrollbar-width: none;">
-                <button class="filtro-chip active" data-filtro="todos" onclick="setFiltro('todos')"><i class="fa-solid fa-layer-group"></i> Todos</button>
-                <button class="filtro-chip" data-filtro="garantia" onclick="setFiltro('garantia')"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Em Garantia</button>
-                <button class="filtro-chip" data-filtro="congelada" onclick="setFiltro('congelada')"><i class="fa-solid fa-snowflake" style="color:#38bdf8;"></i> Congeladas</button>
-                <button class="filtro-chip" data-filtro="fora" onclick="setFiltro('fora')"><i class="fa-solid fa-shield" style="color:#ef4444;"></i> Fora da Garantia</button>
-                <button class="filtro-chip" data-filtro="orcamento" onclick="setFiltro('orcamento')"><i class="fa-solid fa-file-pen" style="color:#f59e0b;"></i> Orçamento</button>
-                <button class="filtro-chip" data-filtro="servico" onclick="setFiltro('servico')"><i class="fa-solid fa-screwdriver-wrench" style="color:#2dd4bf;"></i> Serviço</button>
-            </div>
-        </div>
-
-        <div id="area-swipe">
-            <div id="container-historico" class="space-y-5 mt-2">
-                <div class="space-y-5" id="skeleton-loader">
-                    <div class="skeleton-card">
-                        <div class="flex justify-between items-start mb-4">
-                            <div style="width:60%;">
-                                <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
-                                <div class="skel-line" style="height:16px; width:80%; margin-bottom:8px;"></div>
-                                <div class="skel-line" style="height:9px; width:55%;"></div>
-                            </div>
-                            <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
-                        </div>
-                        <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
-                        <div class="skel-line" style="height:30px; width:100%;"></div>
-                    </div>
-                    <div class="skeleton-card">
-                        <div class="flex justify-between items-start mb-4">
-                            <div style="width:60%;">
-                                <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
-                                <div class="skel-line" style="height:16px; width:70%; margin-bottom:8px;"></div>
-                                <div class="skel-line" style="height:9px; width:50%;"></div>
-                            </div>
-                            <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
-                        </div>
-                        <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
-                        <div class="skel-line" style="height:30px; width:100%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="sem-resultados" class="hidden flex-col items-center justify-center py-16 text-center">
-                <i class="fa-solid fa-magnifying-glass text-3xl opacity-20 mb-4"></i>
-                <p class="text-sm font-black uppercase tracking-widest opacity-50">Nenhum resultado encontrado</p>
-                <p class="text-[11px] opacity-30 mt-1">Tente buscar por outro nome, nº de O.S ou ajuste o filtro</p>
-            </div>
-        </div>
-
+    <div class="card-info">🔧 Manutenção preventiva</div>
+    <div class="card-info">📅 10/07/2026</div>
+    <div class="garantia-bar"><div class="garantia-fill" style="width:45%"></div></div>
+    <div class="garantia-texto">
+      <span>Garantia: 30 dias</span>
+      <span>Faltam 13 dias</span>
     </div>
-
-    <div id="update-overlay">
-        <div id="update-popup">
-            <div id="update-confirm">
-                <div class="update-icon"><i class="fa-solid fa-rotate"></i></div>
-                <h3>Nova atualização disponível</h3>
-                <p>Fizemos melhorias no sistema. Atualize agora para aproveitar as novidades e correções.</p>
-                <div class="update-actions">
-                    <button class="btn-update-depois" onclick="adiarAtualizacao()">Depois</button>
-                    <button class="btn-update-agora" onclick="aplicarAtualizacao()"><i class="fa-solid fa-arrows-rotate"></i> Atualizar agora</button>
-                </div>
-            </div>
-            <div id="update-loading">
-                <div class="spinner-ring"><i class="fa-solid fa-arrows-rotate"></i></div>
-                <h3>Atualizando sistema...</h3>
-                <p>Aguarde um instante, a nova versão já está quase pronta.</p>
-                <div class="update-progress-track"><div class="update-progress-fill"></div></div>
-            </div>
-        </div>
+    <div class="card-actions">
+      <button class="btn-ver">📄 Ver O.S.</button>
+      <button class="btn-congelar" onclick="congelarGarantia('card-2')">❄️ Congelar</button>
+      <button class="btn-excluir" onclick="excluirServico('card-2')">🗑️ Excluir</button>
     </div>
+  </div>
+</div>
 
-    <script>
+<!-- MODAL CONFIRMAR EXCLUSÃO -->
+<div class="modal-overlay" id="modal-excluir">
+  <div class="modal">
+    <h3>🗑️ Excluir Serviço?</h3>
+    <p>Esta ação não poderá ser desfeita na sua planilha de controle.</p>
+    <div class="modal-actions">
+      <button class="btn-cancelar" onclick="fecharModal('modal-excluir')">Cancelar</button>
+      <button class="btn-confirmar-excluir" id="btn-confirmar-excluir">Sim, Apagar</button>
+    </div>
+  </div>
+</div>
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => {
-        reg.update();
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              document.getElementById('update-overlay').style.display = 'flex';
-            }
-          });
-        });
-      })
-      .catch(err => console.log('Erro ao registrar Service Worker', err));
+<!-- MODAL CONFIRMAR CONGELAR -->
+<div class="modal-overlay" id="modal-congelar">
+  <div class="modal">
+    <h3>❄️ Congelar Garantia?</h3>
+    <p>A garantia será congelada e o prazo será pausado até o descongelamento.</p>
+    <div class="modal-actions">
+      <button class="btn-cancelar" onclick="fecharModal('modal-congelar')">Cancelar</button>
+      <button class="btn-confirmar-congelar" id="btn-confirmar-congelar">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span id="toast-msg">Mensagem</span>
+</div>
+
+<script>
+  // ===== SIMULADOR DE SERVIDOR =====
+  // Troque por false para simular erro e ver a reversão do Optimistic UI
+  const SERVIDOR_FUNCIONA = true;
+  const simularServidor = (falhar = false) => new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (falhar || !SERVIDOR_FUNCIONA) reject(new Error('Erro no servidor'));
+      else resolve({ ok: true });
+    }, 1200);
+  });
+
+  // ===== TOAST =====
+  function mostrarToast(msg, tipo = 'sucesso') {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+    toastMsg.textContent = msg;
+    toast.className = 'toast ativo ' + tipo;
+    setTimeout(() => toast.classList.remove('ativo'), 3000);
   }
 
-  let atualizandoAgora = false;
-  function aplicarAtualizacao() {
-    if (atualizandoAgora) return;
-    atualizandoAgora = true;
-    document.getElementById('update-confirm').style.display = 'none';
-    document.getElementById('update-loading').style.display = 'block';
-    setTimeout(() => window.location.reload(), 700);
-  }
-  function adiarAtualizacao() {
-    document.getElementById('update-overlay').style.display = 'none';
+  // ===== MODAIS =====
+  function fecharModal(id) {
+    document.getElementById(id).classList.remove('ativo');
   }
 
-  document.addEventListener('contextmenu', event => event.preventDefault());
-  document.addEventListener('keydown', function(e) {
-    if (
-        (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) || 
-        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j')) || 
-        (e.keyCode === 123)
-    ) {
-        e.preventDefault();
-        return false;
+  // ===== OPTIMISTIC UI - CONGELAR =====
+  let cardCongelarAtual = null;
+  function congelarGarantia(cardId) {
+    cardCongelarAtual = cardId;
+    document.getElementById('modal-congelar').classList.add('ativo');
+  }
+
+  document.getElementById('btn-confirmar-congelar').addEventListener('click', async () => {
+    const card = document.getElementById(cardCongelarAtual);
+    fecharModal('modal-congelar');
+
+    // 1. OTTIMISTICO: Muda a UI imediatamente
+    card.classList.add('congelando');
+
+    try {
+      await simularServidor();
+      // 2. Sucesso: aplica o estado final
+      card.classList.remove('congelando');
+      card.classList.add('congelado');
+      // Troca o botão de congelar para "descongelar"
+      const btn = card.querySelector('.btn-congelar');
+      btn.innerHTML = '🔥 Descongelar';
+      btn.onclick = () => descongelarGarantia(cardCongelarAtual);
+      mostrarToast('❄️ Garantia congelada com sucesso!', 'sucesso');
+    } catch (erro) {
+      // 3. ERRO: reverte a mudança
+      card.classList.remove('congelando');
+      mostrarToast('⚠️ Erro ao congelar. Tente novamente.', 'erro');
     }
   });
-        
-    const URL_DATABASE = apiURL('os');
-    const URL_SALVAR = apiURL('os');
-    const URL_AGENDA = apiURL('agenda');
-    let idParaExcluirGlobal = null;
 
-    // Guarda a linha completa (todos os campos originais da planilha) de cada OS
-    // renderizada, para poder regravar sem perder nenhum dado ao acionar/reativar garantia.
-    let cacheOS = {};
+  function descongelarGarantia(cardId) {
+    const card = document.getElementById(cardId);
+    card.classList.remove('congelado');
+    const btn = card.querySelector('.btn-congelar');
+    btn.innerHTML = '❄️ Congelar';
+    btn.onclick = () => congelarGarantia(cardId);
+    mostrarToast('🔥 Garantia descongelada!', 'sucesso');
+  }
 
-    // idOS (string) -> true se já existe um agendamento NÃO concluído na agenda
-    // pra essa O.S. (marca "(OS #idOS)" na DESCRICAO). Usado só pra decidir se
-    // o botão "Agendar Serviço" aparece ou não em cada card de orçamento.
-    let agendaPendentesPorOS = {};
+  // ===== OPTIMISTIC UI - EXCLUIR =====
+  let cardExcluirAtual = null;
+  function excluirServico(cardId) {
+    cardExcluirAtual = cardId;
+    document.getElementById('modal-excluir').classList.add('ativo');
+  }
 
-    async function carregarAgendaPendentes() {
-        try {
-            const res = await fetch(URL_AGENDA + '&t=' + Date.now());
-            const lista = await res.json();
-            const mapa = {};
-            (Array.isArray(lista) ? lista : []).forEach(item => {
-                const desc = (item.DESCRICAO || "").toString();
-                const status = (item.STATUS || "").toString().toLowerCase().trim();
-                const m = desc.match(/\(OS\s*#\s*([^)]+)\)/i);
-                if (m && status !== "concluido") {
-                    mapa[m[1].trim()] = true;
-                }
-            });
-            agendaPendentesPorOS = mapa;
-        } catch (error) {
-            console.error("Erro ao carregar status da agenda:", error);
-            // Falha silenciosa: se não conseguir carregar, os botões continuam
-            // aparecendo normalmente (comportamento anterior), sem travar a tela.
-        }
+  document.getElementById('btn-confirmar-excluir').addEventListener('click', async () => {
+    const card = document.getElementById(cardExcluirAtual);
+    fecharModal('modal-excluir');
+
+    // 1. OTTIMISTICO: começa a animação de saída imediatamente
+    card.classList.add('excluindo');
+
+    try {
+      await simularServidor();
+      // 2. Sucesso: remove do DOM depois da animação
+      setTimeout(() => card.remove(), 400);
+      mostrarToast('🗑️ Serviço excluído com sucesso!', 'sucesso');
+    } catch (erro) {
+      // 3. ERRO: reverte a animação
+      card.classList.remove('excluindo');
+      mostrarToast('⚠️ Erro ao excluir. Tente novamente.', 'erro');
     }
-
-    // ── Estados visuais do histórico ───────────────────────────────────
-    const SKELETON_HTML = `
-        <div class="space-y-5">
-            <div class="skeleton-card">
-                <div class="flex justify-between items-start mb-4">
-                    <div style="width:60%;">
-                        <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
-                        <div class="skel-line" style="height:16px; width:80%; margin-bottom:8px;"></div>
-                        <div class="skel-line" style="height:9px; width:55%;"></div>
-                    </div>
-                    <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
-                </div>
-                <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
-                <div class="skel-line" style="height:30px; width:100%;"></div>
-            </div>
-            <div class="skeleton-card">
-                <div class="flex justify-between items-start mb-4">
-                    <div style="width:60%;">
-                        <div class="skel-line" style="height:9px; width:40%; margin-bottom:10px;"></div>
-                        <div class="skel-line" style="height:16px; width:70%; margin-bottom:8px;"></div>
-                        <div class="skel-line" style="height:9px; width:50%;"></div>
-                    </div>
-                    <div class="skel-line" style="height:52px; width:52px; border-radius:50%;"></div>
-                </div>
-                <div class="skel-line" style="height:56px; width:100%; margin-bottom:14px;"></div>
-                <div class="skel-line" style="height:30px; width:100%;"></div>
-            </div>
-        </div>`;
-
-    function mostrarSpinner(texto) {
-        document.getElementById('stats-bar').style.display = 'none';
-        document.getElementById('container-historico').innerHTML = SKELETON_HTML;
-    }
-
-    function mostrarMensagem(titulo, sub, comBotao) {
-        document.getElementById('stats-bar').style.display = 'none';
-        document.getElementById('container-historico').innerHTML = `
-            <div class="flex flex-col items-center justify-center py-16 text-center">
-                <i class="fa-solid fa-cloud-arrow-down text-3xl opacity-20 mb-4"></i>
-                <p class="text-sm font-black uppercase tracking-widest opacity-50">${titulo}</p>
-                ${sub ? `<p class="text-[11px] opacity-30 mt-1">${sub}</p>` : ''}
-                ${comBotao ? `<button onclick="carregarDados()" class="mt-5 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-black uppercase text-[11px] tracking-widest"><i class="fa-solid fa-rotate-right mr-2"></i>Tentar novamente</button>` : ''}
-            </div>`;
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        const icon = document.getElementById('theme-icon');
-        body.classList.toggle('light-mode');
-        localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
-        icon.className = body.classList.contains('light-mode') ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    }
-
-    // ── Cache local (stale-while-revalidate) ────────────────────────────
-    // Mostra instantaneamente o último histórico já carregado neste
-    // aparelho (localStorage) enquanto busca, em segundo plano, a versão
-    // mais recente na planilha. Isso elimina a espera do spinner em quase
-    // todos os acessos, mesmo com a internet do técnico em campo mais lenta.
-    // Se a planilha não responder, os dados em cache continuam na tela.
-    const CACHE_HISTORICO_KEY = 'garantias_cache_v1';
-
-    function lerCacheHistorico() {
-        try {
-            const raw = localStorage.getItem(CACHE_HISTORICO_KEY);
-            if (!raw) return null;
-            const cache = JSON.parse(raw);
-            return Array.isArray(cache.dados) ? cache.dados : null;
-        } catch (e) { return null; }
-    }
-
-    function salvarCacheHistorico(historicoCompleto) {
-        try {
-            localStorage.setItem(CACHE_HISTORICO_KEY, JSON.stringify({ dados: historicoCompleto, salvoEm: Date.now() }));
-        } catch (e) { /* localStorage cheio/indisponível: segue sem cache */ }
-    }
-
-    async function carregarDados() {
-        const cache = lerCacheHistorico();
-        const usouCache = !!(cache && cache.length > 0);
-
-        if (usouCache) {
-            // Exibe o que já temos salvo imediatamente — sem skeleton, sem espera.
-            renderizarCards(cache);
-            filtrarHistorico();
-        } else {
-            mostrarSpinner('Carregando histórico');
-        }
-
-        // Timeout de segurança: impede carregamento infinito se a planilha não responder
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
-        try {
-            const [response] = await Promise.all([
-                fetch(URL_DATABASE + '&t=' + Date.now(), { redirect: "follow", signal: controller.signal }),
-                carregarAgendaPendentes()
-            ]);
-            clearTimeout(timeoutId);
-
-            // Lê como texto primeiro para conseguir diagnosticar respostas que não são JSON
-            const texto = await response.text();
-            let dados;
-            try {
-                dados = JSON.parse(texto);
-            } catch (e) {
-                // Geralmente significa que o Apps Script devolveu uma página de login/erro (HTML)
-                console.error("Resposta não-JSON da planilha:", texto.slice(0, 300));
-                if (!usouCache) mostrarMensagem('Acesso à planilha negado', 'Publique o Apps Script como “Qualquer pessoa” e tente de novo.', true);
-                return;
-            }
-
-            // Aceita array puro OU objeto que embrulha a lista (data / registros / result / historico / dados)
-            if (!Array.isArray(dados)) {
-                dados = dados.data || dados.registros || dados.result || dados.historico || dados.dados || [];
-            }
-
-            if (!Array.isArray(dados) || dados.length === 0) {
-                if (!usouCache) mostrarMensagem('Nenhum serviço no histórico', 'As ordens de serviço aparecerão aqui assim que forem geradas.', false);
-                return;
-            }
-
-            const historicoCompleto = dados.slice().reverse();
-            renderizarCards(historicoCompleto);
-            filtrarHistorico();
-            salvarCacheHistorico(historicoCompleto);
-        } catch (error) {
-            clearTimeout(timeoutId);
-            console.error("Erro na requisição:", error);
-            // Se já havia cache na tela, mantém os dados salvos visíveis e
-            // falha silenciosamente — o técnico não perde o que já via.
-            if (!usouCache) {
-                if (error.name === 'AbortError') {
-                    mostrarMensagem('Conexão demorou demais', 'Verifique sua internet e toque para tentar de novo.', true);
-                } else {
-                    mostrarMensagem('Erro ao conectar', 'Não foi possível acessar a planilha do histórico.', true);
-                }
-            }
-        }
-    }
-
-    function abrirModalExcluir(id) {
-        idParaExcluirGlobal = id;
-        document.getElementById('modal-msg-id').innerText = `Tem certeza que deseja excluir a OS #${id}?`;
-        document.getElementById('modal-excluir').classList.remove('hidden');
-    }
-
-    function fecharModal() {
-        document.getElementById('modal-excluir').classList.add('hidden');
-        idParaExcluirGlobal = null;
-    }
-
-    document.getElementById('btn-confirmar-exclusao').onclick = async function() {
-        if (!idParaExcluirGlobal) return;
-        const btn = this;
-        btn.innerText = "Excluindo...";
-        btn.disabled = true;
-        try {
-            const response = await fetch(`${URL_DATABASE}&deleteID=${idParaExcluirGlobal}`, { redirect: "follow" });
-            const res = await response.json();
-            if (res.status === "success") {
-                fecharModal();
-                carregarDados();
-            } else { alert("Erro ao excluir na planilha."); }
-        } catch (error) { alert("Erro de conexão ao tentar excluir."); }
-        finally {
-            btn.innerText = "Sim, Apagar";
-            btn.disabled = false;
-        }
-    };
-
-    function verificarGarantia(dataFimGarantia) {
-        if (!dataFimGarantia || dataFimGarantia === "---") return false;
-        const hoje = new Date();
-        const partes = dataFimGarantia.toString().split('/');
-        if (partes.length !== 3) return false;
-        const dataFim = new Date(partes[2], partes[1] - 1, partes[0]);
-        return hoje <= dataFim;
-    }
-
-    // ── Congelamento de garantia (Decreto 2.181/97, art. 21 c/c CDC) ────────
-    // Enquanto o aparelho está em reparo dentro da garantia, o prazo fica
-    // suspenso. Guardamos isso na própria coluna DATA_FIM_GARANTIA, sem criar
-    // coluna nova na planilha, usando um separador (mesmo padrão do ##PG##
-    // já usado na coluna VALOR_TOTAL): "DD/MM/AAAA##CONGELADA##DD/MM/AAAA"
-    // (data original de fim da garantia + data em que foi acionada).
-
-    function parseDataBR(str) {
-        if (!str) return null;
-        const partes = str.toString().trim().split('/');
-        if (partes.length !== 3) return null;
-        const d = new Date(partes[2], partes[1] - 1, partes[0]);
-        return isNaN(d.getTime()) ? null : d;
-    }
-
-    function formatarDataParaBR(date) {
-        const dd = String(date.getDate()).padStart(2, '0');
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const yyyy = date.getFullYear();
-        return `${dd}/${mm}/${yyyy}`;
-    }
-
-    function somarDiasData(str, dias) {
-        const d = parseDataBR(str);
-        if (!d) return str;
-        d.setDate(d.getDate() + dias);
-        return formatarDataParaBR(d);
-    }
-
-    // O marcador de congelamento agora é gravado como timestamp ISO completo
-    // (com hora), para calcular corretamente quantos dias inteiros se passaram.
-    // Registros antigos (gravados só com DD/MM/AAAA, sem hora) continuam
-    // funcionando, só que com a precisão de dia que já tinham antes.
-    function parseDataCongelamento(str) {
-        if (!str) return null;
-        const iso = new Date(str);
-        if (!isNaN(iso.getTime()) && str.toString().includes('T')) return iso;
-        return parseDataBR(str);
-    }
-
-    // Lê o valor BRUTO (ainda não formatado) da coluna DATA_FIM_GARANTIA e,
-    // se tiver o marcador, devolve { fimOriginal, dataCongelamento }. Senão, null.
-    function extrairCongelamento(dataFimGarantiaRaw) {
-        if (!dataFimGarantiaRaw) return null;
-        const raw = dataFimGarantiaRaw.toString();
-        if (!raw.includes('##CONGELADA##')) return null;
-        const [fimOriginal, dataCongelamento] = raw.split('##CONGELADA##').map(s => s.trim());
-        return { fimOriginal, dataCongelamento };
-    }
-
-    let acaoGarantiaPendente = null; // { idOS, tipo: 'acionar' | 'reativar' }
-
-    function abrirModalGarantia(idOS, tipo) {
-        acaoGarantiaPendente = { idOS, tipo };
-
-        // Garante que o botão de confirmação sempre abre destravado, mesmo que
-        // uma tentativa anterior tenha ficado presa em "Processando..." por algum motivo.
-        const btnConfirmar = document.getElementById('btn-confirmar-garantia');
-        btnConfirmar.disabled = false;
-        btnConfirmar.innerText = "Confirmar";
-
-        const icone = document.getElementById('modal-garantia-icone');
-        const titulo = document.getElementById('modal-garantia-titulo');
-        const msg = document.getElementById('modal-garantia-msg');
-
-        if (tipo === 'acionar') {
-            icone.className = "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border";
-            icone.style.background = "rgba(16,185,129,0.15)";
-            icone.style.color = "#10b981";
-            icone.style.borderColor = "rgba(16,185,129,0.35)";
-            titulo.innerText = "Acionar Garantia?";
-            msg.innerText = `A garantia da OS #${idOS} será congelada a partir de hoje. O prazo volta a contar normalmente quando você reativar, com os dias parados somados ao final.`;
-        } else {
-            icone.style.background = "rgba(56,189,248,0.15)";
-            icone.style.color = "#38bdf8";
-            icone.style.borderColor = "rgba(56,189,248,0.35)";
-            titulo.innerText = "Reativar Garantia?";
-            msg.innerText = `O reparo da OS #${idOS} foi concluído? Os dias em que a garantia ficou parada serão somados ao prazo final e ela volta a contar normalmente.`;
-        }
-        document.getElementById('modal-garantia').classList.remove('hidden');
-    }
-
-    function fecharModalGarantia() {
-        document.getElementById('modal-garantia').classList.add('hidden');
-        acaoGarantiaPendente = null;
-    }
-
-    document.getElementById('btn-confirmar-garantia').onclick = async function() {
-        if (!acaoGarantiaPendente) return;
-        const { idOS, tipo } = acaoGarantiaPendente;
-        const os = cacheOS[idOS];
-        if (!os) { alert("Não encontrei os dados dessa OS. Recarregue a página e tente de novo."); return; }
-
-        const btn = this;
-        const textoOriginal = btn.innerText;
-        btn.innerText = "Processando...";
-        btn.disabled = true;
-
-        try {
-            const dataFimRaw = campoOS(os, "DATA_FIM_GARANTIA", "FIM_GARANTIA", "GARANTIA_FIM") || "";
-            const idLimpo = idOS.toString().replace(/'/g, '').trim();
-
-            if (tipo === 'acionar') {
-                // Congela direto na planilha (apaga e regrava a linha, só a garantia muda).
-                // Guardamos a hora exata (não só a data) para que "reativar no mesmo dia"
-                // não conte um dia inteiro de congelamento por engano.
-                const hoje = new Date().toISOString();
-                const novaDataFim = `${dataFimRaw}##CONGELADA##${hoje}`;
-
-                await fetch(`${URL_DATABASE}&deleteID=${encodeURIComponent(idLimpo)}`, { redirect: "follow" });
-
-                const formData = new URLSearchParams();
-                formData.append('ID_OS', "'" + idLimpo);
-                formData.append('CLIENTE', campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "");
-                formData.append('ENDERECO', campoOS(os, "ENDERECO", "ENDEREÇO") || "");
-                formData.append('CPF', campoOS(os, "CPF") || "");
-                formData.append('DATA_DO_SERVICO', campoOS(os, "DATA_DO_SERVICO") || "");
-                formData.append('TIPO_DE_SERVICO', campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "");
-                formData.append('TECNICO_RESPONSVEL', campoOS(os, "TECNICO_RESPONSVEL") || "");
-                formData.append('VALOR_TOTAL', campoOS(os, "VALOR_TOTAL", "VALOR", "TOTAL") || "");
-                formData.append('GARANTIA_DIAS', campoOS(os, "GARANTIA_DIAS") || "");
-                formData.append('DATA_FIM_GARANTIA', novaDataFim);
-                formData.append('OSERVACAO', campoOS(os, "OSERVACAO", "OBSERVACAO") || "");
-                formData.append('DIA', campoOS(os, "DIA") || "");
-
-                await fetch(URL_SALVAR, { method: 'POST', body: formData });
-
-                fecharModalGarantia();
-                carregarDados();
-            } else {
-                // Reativar: não salva aqui. Manda os dados pro criar-orcamento.html
-                // (fluxo normal de edição/O.S.), com a garantia já somada e um aviso
-                // pra trocar a mensagem de finalização pela mensagem de garantia.
-                const info = extrairCongelamento(dataFimRaw);
-                if (!info) { alert("Essa OS não está com a garantia congelada."); btn.innerText = textoOriginal; btn.disabled = false; return; }
-
-                const diasCongelados = Math.max(0, Math.floor((new Date() - parseDataCongelamento(info.dataCongelamento)) / 86400000));
-                const novaDataFim = somarDiasData(info.fimOriginal, diasCongelados);
-                const garantiaDiasOriginal = parseInt(campoOS(os, "GARANTIA_DIAS")) || 0;
-                const novoTotalDias = garantiaDiasOriginal + diasCongelados;
-
-                const osAtualizada = { ...os, DATA_FIM_GARANTIA: novaDataFim, GARANTIA_DIAS: novoTotalDias.toString(), _salvoEm: Date.now() };
-
-                localStorage.setItem('editar_os_dados', JSON.stringify(osAtualizada));
-                localStorage.setItem('reativacao_garantia_info', JSON.stringify({ idOS: idLimpo, diasCongelados, salvoEm: Date.now() }));
-
-                window.location.href = "criar-orcamento.html";
-            }
-        } catch (e) {
-            console.error("Erro ao atualizar garantia:", e);
-            alert("Erro ao atualizar a garantia. Verifique sua conexão e tente novamente.");
-            btn.innerText = textoOriginal;
-            btn.disabled = false;
-        }
-    };
-
-    function editarServico(dadosString) {
-        const os = JSON.parse(decodeURIComponent(dadosString));
-        const diasDaColunaL = os["DIA"] || 90; 
-        const pacoteCompleto = { ...os, "GARANTIA_DIAS_CALCULADOS": diasDaColunaL, _salvoEm: Date.now() };
-        localStorage.setItem('editar_os_dados', JSON.stringify(pacoteCompleto));
-        window.location.href = "criar-orcamento.html"; 
-    }
-
-    // ── Agendar Serviço (a partir de um Orçamento) ──────────────────────
-    // Reaproveita cliente/endereço/itens já cadastrados na O.S. — só pede
-    // dia e hora. A descrição salva na agenda ganha a marca "(OS #idOS)" no
-    // final, mesmo truque que o receber.html já usa pra reconhecer uma O.S.
-    // dentro de um campo de texto, sem precisar de coluna nova na planilha.
-    let idOSAgendarPendente = null;
-
-    // Gera uma descrição curta e legível a partir do texto de itens salvo em
-    // TIPO_DE_SERVICO (ex.: "2x Limpeza de split | Troca de gás") reaproveitando
-    // o mesmo parser de quantidade ("Nx ...") já usado no restante da página.
-    function descricaoParaAgenda(servicosTexto) {
-        const itens = (servicosTexto || "").toString().split('|').map(s => s.trim()).filter(s => s !== '');
-        if (itens.length === 0) return "";
-        return itens.map(s => {
-            const { quantidade, descricao } = extrairQuantidade(s);
-            return quantidade > 1 ? `${quantidade}x ${descricao}` : descricao;
-        }).join('; ');
-    }
-
-    function abrirModalAgendar(idOS) {
-        idOSAgendarPendente = idOS;
-        const os = cacheOS[idOS];
-        const nomeCliente = os
-            ? String(campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "").replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim()
-            : "";
-        document.getElementById('modal-agendar-cliente').innerText = nomeCliente
-            ? `${nomeCliente} — OS #${idOS}`
-            : `OS #${idOS}`;
-        document.getElementById('agendar-data').value = "";
-        document.getElementById('agendar-hora').value = "";
-
-        const btn = document.getElementById('btn-confirmar-agendar');
-        btn.disabled = false;
-        btn.innerText = "Confirmar";
-
-        document.getElementById('modal-agendar').classList.remove('hidden');
-    }
-
-    function fecharModalAgendar() {
-        document.getElementById('modal-agendar').classList.add('hidden');
-        idOSAgendarPendente = null;
-    }
-
-    document.getElementById('btn-confirmar-agendar').onclick = async function() {
-        if (!idOSAgendarPendente) return;
-        const idOS = idOSAgendarPendente;
-        const os = cacheOS[idOS];
-        if (!os) { alert("Não encontrei os dados dessa OS. Recarregue a página e tente de novo."); return; }
-
-        const dataInput = document.getElementById('agendar-data').value;
-        const horaInput = document.getElementById('agendar-hora').value;
-        if (!dataInput || !horaInput) { alert("Informe o dia e a hora do serviço."); return; }
-
-        const cliente = String(campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "").replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
-        const endereco = campoOS(os, "ENDERECO", "ENDEREÇO") || "";
-        const servicosTexto = campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "";
-        const descItens = descricaoParaAgenda(servicosTexto);
-        const descricaoFinal = `[Serviço] ${descItens} (OS #${idOS})`.trim();
-
-        const payload = {
-            action: "cadastrar",
-            os_id: idOS,
-            cliente: cliente,
-            endereco: endereco,
-            descricao: descricaoFinal,
-            valor: "",
-            data_servico: dataInput.split('-').reverse().join('/'),
-            hora: horaInput
-        };
-
-        const btn = this;
-        btn.disabled = true;
-        btn.innerText = "Agendando...";
-        try {
-            await fetch(URL_AGENDA, { method: 'POST', body: JSON.stringify(payload) });
-            fecharModalAgendar();
-            await carregarDados();
-            abrirModalAgendarSucesso(cliente, dataInput, horaInput);
-        } catch (error) {
-            console.error("Erro ao agendar serviço:", error);
-            alert("Erro ao agendar. Verifique sua conexão e tente novamente.");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Confirmar";
-        }
-    };
-
-    function abrirModalAgendarSucesso(cliente, dataInput, horaInput) {
-        const dataBR = dataInput.split('-').reverse().join('/');
-        const nomeTexto = cliente ? `${cliente} — ` : "";
-        document.getElementById('modal-agendar-sucesso-msg').innerText =
-            `${nomeTexto}${dataBR} às ${horaInput}. Você já pode acompanhar em Agenda de Serviços.`;
-        document.getElementById('modal-agendar-sucesso').classList.remove('hidden');
-    }
-
-    function fecharModalAgendarSucesso() {
-        document.getElementById('modal-agendar-sucesso').classList.add('hidden');
-    }
-
-    function formatarDataBR(dataPlanilha) {
-        if (!dataPlanilha || dataPlanilha === "---") return "---";
-        if (dataPlanilha.toString().includes('T')) {
-            const d = new Date(dataPlanilha);
-            return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-        }
-        return dataPlanilha;
-    }
-
-    // ── extrai quantidade do prefixo "Nx" ou "NX" ──────────────
-    // Ex: "4x Limpeza..." → 4 | "1X Troca..." → 1 | "Instalação..." → 1
-    function extrairQuantidade(textoServico) {
-        const match = textoServico.trim().match(/^(\d+)\s*[xX]\s*/);
-        if (match) {
-            return {
-                quantidade: parseInt(match[1]),
-                descricao: textoServico.trim().slice(match[0].length).trim()
-            };
-        }
-        return { quantidade: 1, descricao: textoServico.trim() };
-    }
-
-    // ── calcula o valor total real com base nos itens e qty, e gera uma prévia curta da descrição ─────
-    // A planilha guarda VALOR_TOTAL como valor unitário do serviço.
-    // Se houver múltiplos itens separados por "|", divide igualmente e multiplica pela qty.
-    // Converte um valor monetário em texto (formato BR "2.100,00" ou "600,00",
-    // ou já numérico "2100.5") para um número JS correto.
-    function parseValorBR(valorTexto) {
-        let str = valorTexto.toString().trim().replace(/[^\d,.\-]/g, '');
-        if (str === '') return 0;
-
-        const temVirgula = str.includes(',');
-        const temPonto = str.includes('.');
-
-        if (temVirgula && temPonto) {
-            // Ex: "2.100,00" -> ponto é separador de milhar, vírgula é decimal
-            str = str.replace(/\./g, '').replace(',', '.');
-        } else if (temVirgula) {
-            // Ex: "600,01" -> vírgula é decimal
-            str = str.replace(',', '.');
-        } else if (temPonto) {
-            // Só ponto: pode ser decimal ("600.01") ou milhar ("2.100").
-            // Se houver exatamente 3 dígitos após o último ponto, trata como milhar.
-            const partes = str.split('.');
-            const ultima = partes[partes.length - 1];
-            if (partes.length > 1 && ultima.length === 3) {
-                str = partes.join('');
-            }
-            // caso contrário mantém o ponto como decimal
-        }
-
-        return parseFloat(str) || 0;
-    }
-
-    function calcularValorRealEHtml(servicosTexto, valorTotalPlanilha) {
-        valorTotalPlanilha = valorTotalPlanilha.toString();
-
-        // Remove o marcador ##TOTAL## (valor final já com desconto, usado
-        // pela página receber.html) antes de qualquer outra coisa — assim
-        // como ##PG## e ##DESC## abaixo, ele não é valor de item nenhum, e
-        // se sobrar aqui seus dígitos entram na soma e distorcem o total
-        // exibido no card.
-        valorTotalPlanilha = valorTotalPlanilha.replace(/##TOTAL##\s*[\d.,]+/i, '').trim();
-
-        // Remove o marcador de "Valor Já Pago" (##PG##) antes de qualquer cálculo
-        valorTotalPlanilha = valorTotalPlanilha.split('##PG##')[0].trim();
-
-        // Remove e guarda o desconto (##DESC##, formato "reais|percentual").
-        // O desconto é aplicado sobre o total agregado da O.S. (não por item),
-        // então precisa sair da string ANTES de somar/dividir os valores dos
-        // serviços — senão os caracteres "##DESC## 10,00|10" acabam entrando
-        // no cálculo do valor e distorcendo o total exibido.
-        let descontoReais = 0;
-        if (valorTotalPlanilha.includes('##DESC##')) {
-            const partesDesc = valorTotalPlanilha.split('##DESC##');
-            valorTotalPlanilha = partesDesc[0].trim();
-            const descPartes = (partesDesc[1] || '').trim().split('|');
-            descontoReais = parseValorBR(descPartes[0] || '0');
-        }
-
-        const itens = servicosTexto
-            .toString()
-            .split('|')
-            .map(s => s.trim())
-            .filter(s => s !== '');
-
-        if (itens.length === 0) {
-            return {
-                html: '<div class="text-[11px] opacity-30 italic">Nenhum serviço registrado</div>',
-                totalReal: Math.max(0, parseValorBR(valorTotalPlanilha) - descontoReais)
-            };
-        }
-
-        // A coluna VALOR_TOTAL pode vir de duas formas:
-        // 1) Um valor único para toda a nota (ex: "2.100,00") -> divide igualmente entre os itens.
-        // 2) Um valor por item, separado por "|" na mesma ordem dos serviços
-        //    (ex: "600,00 | 750,00") -> usa o valor de cada item diretamente, sem dividir.
-        const valoresBrutos = valorTotalPlanilha
-            .split('|')
-            .map(s => s.trim())
-            .filter(s => s !== '');
-
-        let totalReal = 0;
-
-        if (valoresBrutos.length === itens.length && valoresBrutos.length > 1) {
-            // Um valor próprio por item
-            itens.forEach((srv, i) => {
-                const { quantidade } = extrairQuantidade(srv);
-                totalReal += parseValorBR(valoresBrutos[i]) * quantidade;
-            });
-        } else {
-            // Valor único: divide igualmente entre os itens (comportamento antigo)
-            const valorBase = parseValorBR(valorTotalPlanilha);
-            const valorPorItem = valorBase / itens.length;
-            itens.forEach(srv => {
-                const { quantidade } = extrairQuantidade(srv);
-                totalReal += valorPorItem * quantidade;
-            });
-        }
-
-        // Corrige erros de ponto flutuante (ex: 599.9999999999999 ou 600.0000000001)
-        totalReal = Math.round(totalReal * 100) / 100;
-
-        // Aplica o desconto concedido ao cliente (extraído acima) sobre o
-        // total agregado, para que o VALOR TOTAL exibido aqui já saia igual
-        // ao total final cobrado na O.S., não o valor cheio dos serviços.
-        if (descontoReais > 0) {
-            totalReal = Math.max(0, Math.round((totalReal - descontoReais) * 100) / 100);
-        }
-
-        // Gera apenas uma prévia curta do início da descrição (sem valores ao lado)
-        const textoCompleto = itens
-            .map(srv => extrairQuantidade(srv).descricao)
-            .join(' • ');
-
-        const LIMITE = 110;
-        const previa = textoCompleto.length > LIMITE
-            ? textoCompleto.slice(0, LIMITE).trim() + '…'
-            : textoCompleto;
-
-        const html = `<p class="text-[11px] italic leading-relaxed" style="color: var(--text-sub)">${previa}</p>`;
-
-        return { html, totalReal };
-    }
-
-    // Busca um campo aceitando variações de nome (acentos, maiúsculas, espaços, underscores)
-    function campoOS(obj, ...nomes) {
-        for (const n of nomes) {
-            if (obj[n] !== undefined && obj[n] !== null && obj[n] !== '') return obj[n];
-        }
-        const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/gi, '').toUpperCase();
-        const mapa = {};
-        for (const k in obj) mapa[norm(k)] = obj[k];
-        for (const n of nomes) {
-            const v = mapa[norm(n)];
-            if (v !== undefined && v !== null && v !== '') return v;
-        }
-        return undefined;
-    }
-
-    function renderizarCards(lista) {
-        const container = document.getElementById('container-historico');
-        container.innerHTML = "";
-        const cardsAtivos = [];
-        const cardsVencidos = [];
-        let ativasCount = 0, vencidasCount = 0, congeladasCount = 0;
-        lista.forEach(os => {
-            const idOS        = String(campoOS(os, "ID_OS", "ID", "OS", "NUMERO") || "---").replace(/^'/, "");
-            const cliente     = campoOS(os, "CLIENTE", "NOME", "CLIENTE_NOME") || "Não identificado";
-            const endereco    = campoOS(os, "ENDERECO", "ENDEREÇO") || "---";
-            const servicosTexto = campoOS(os, "TIPO_DE_SERVICO", "TIPO_DE_SERVIÇO", "SERVICO", "SERVIÇO") || "";
-            const valorPlanilha = campoOS(os, "VALOR_TOTAL", "VALOR", "TOTAL") || "0";
-            const dataFimGarantiaRaw = campoOS(os, "DATA_FIM_GARANTIA", "FIM_GARANTIA", "GARANTIA_FIM");
-            const infoCongelamento = extrairCongelamento(dataFimGarantiaRaw);
-            const estaCongelada = !!infoCongelamento;
-            const dataGarantia = formatarDataBR(estaCongelada ? infoCongelamento.fimOriginal : dataFimGarantiaRaw);
-
-            // Calcula valor real multiplicado pelas quantidades
-            const { html: htmlServicos, totalReal } = calcularValorRealEHtml(servicosTexto, valorPlanilha);
-
-            const totalFormatado = totalReal.toLocaleString('pt-BR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-
-            const estaNaGarantia = estaCongelada ? true : verificarGarantia(dataGarantia);
-            let badgeClass, badgeText;
-            if (estaCongelada) {
-                badgeClass = "congelada-garantia";
-                badgeText = "🧊 Garantia Congelada";
-            } else if (estaNaGarantia) {
-                badgeClass = "em-garantia";
-                badgeText = "🟢 Em Garantia";
-            } else {
-                badgeClass = "fora-garantia";
-                badgeText = "🔴 Fora da Garantia";
-            }
-
-            // ── Anel de garantia: mostra visualmente quanto do prazo ainda resta ──
-            const statusClasse = estaCongelada ? 'st-congelada' : (estaNaGarantia ? 'st-ativa' : 'st-vencida');
-            const ringCor = estaCongelada ? '#38bdf8' : (estaNaGarantia ? '#10b981' : '#ef4444');
-            const ringIcone = estaCongelada ? 'fa-snowflake' : (estaNaGarantia ? 'fa-shield-halved' : 'fa-shield');
-            const garantiaDiasTotal = parseInt(campoOS(os, "GARANTIA_DIAS")) || 0;
-            const dataFimDate = !estaCongelada ? parseDataBR(dataGarantia) : null;
-            const diasRestantes = dataFimDate ? Math.max(0, Math.ceil((dataFimDate - new Date()) / 86400000)) : null;
-            let ringPercentual = 1;
-            if (!estaCongelada) {
-                ringPercentual = (estaNaGarantia && garantiaDiasTotal > 0 && diasRestantes !== null)
-                    ? Math.min(1, Math.max(0, diasRestantes / garantiaDiasTotal))
-                    : (estaNaGarantia ? 1 : 0);
-            }
-            const ringRaio = 21;
-            const ringCircunferencia = 2 * Math.PI * ringRaio;
-            const ringOffset = ringCircunferencia * (1 - ringPercentual);
-            const ringLabel = estaCongelada ? '' : (estaNaGarantia && diasRestantes !== null ? `${diasRestantes}d` : (!estaNaGarantia ? 'FIM' : ''));
-            const ringHtml = `
-                <div class="ring-garantia" title="${estaCongelada ? 'Garantia congelada' : (estaNaGarantia ? diasRestantes + ' dia(s) restante(s)' : 'Garantia expirada')}">
-                    <svg viewBox="0 0 52 52">
-                        <circle class="ring-track" cx="26" cy="26" r="${ringRaio}"></circle>
-                        <circle class="ring-fill" cx="26" cy="26" r="${ringRaio}" stroke="${ringCor}" stroke-dasharray="${ringCircunferencia}" stroke-dashoffset="${ringOffset}"></circle>
-                    </svg>
-                    <div class="ring-center" style="color:${ringCor}">
-                        <i class="fa-solid ${ringIcone}"></i>
-                        ${ringLabel ? `<span>${ringLabel}</span>` : ''}
-                    </div>
-                </div>`;
-
-            // Remove o prefixo "Orçamento |" (ou variações) do nome do cliente antes de enviar para edição
-            const clienteLimpo = String(cliente).replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
-            const osParaEdicao = { ...os };
-            for (const k of ["CLIENTE", "NOME", "CLIENTE_NOME"]) {
-                if (osParaEdicao[k] !== undefined) osParaEdicao[k] = clienteLimpo;
-            }
-            const dadosParaEdicao = encodeURIComponent(JSON.stringify(osParaEdicao));
-
-            // Extrai a tag "Orçamento" para exibição separada do nome (mantém visível nesta tela)
-            const ehOrcamento = /^\s*Or[çc]amento\s*\|\s*/i.test(String(cliente));
-            const nomeExibicao = String(cliente).replace(/^\s*Or[çc]amento\s*\|\s*/i, "").trim();
-
-            // Guarda a linha completa para o fluxo de acionar/reativar garantia
-            cacheOS[idOS] = os;
-
-            // Botão de garantia só aparece em Serviço (nunca em Orçamento)
-            let htmlBotaoGarantia = "";
-            if (!ehOrcamento) {
-                if (estaCongelada) {
-                    htmlBotaoGarantia = `<button onclick="abrirModalGarantia('${idOS}', 'reativar')" class="btn-acionar-garantia tipo-reativar"><i class="fa-solid fa-rotate-right"></i> Reativar Garantia</button>`;
-                } else if (estaNaGarantia) {
-                    htmlBotaoGarantia = `<button onclick="abrirModalGarantia('${idOS}', 'acionar')" class="btn-acionar-garantia tipo-acionar"><i class="fa-solid fa-shield-halved"></i> Acionar Garantia</button>`;
-                }
-            }
-            const avisoCongelada = estaCongelada
-                ? `<div class="aviso-congelada"><i class="fa-solid fa-circle-info"></i> Congelada desde ${formatarDataBR(infoCongelamento.dataCongelamento)}</div>`
-                : "";
-
-            // Botão "Agendar Serviço" só aparece em Orçamento — e some assim que
-            // já existe um agendamento pendente pra essa O.S. na agenda (evita
-            // o cliente clicar de novo achando que precisa reagendar à toa).
-            let htmlBotaoAgendar = "";
-            if (ehOrcamento && !agendaPendentesPorOS[idOS]) {
-                htmlBotaoAgendar = `<button onclick="abrirModalAgendar('${idOS}')" class="btn-acionar-garantia" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.35);"><i class="fa-solid fa-calendar-plus"></i> Agendar Serviço</button>`;
-            }
-
-            const cardHtml = `
-                <div class="glass-card p-5 card-item ${statusClasse}" data-garantia="${estaNaGarantia ? 'sim' : 'nao'}" data-congelada="${estaCongelada ? 'sim' : 'nao'}" data-tipo="${ehOrcamento ? 'orcamento' : 'servico'}">
-                    <div class="flex justify-between items-start gap-3 mb-4">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap mb-1.5">
-                                <span class="os-chip"><i class="fa-solid fa-hashtag" style="font-size:8px;"></i> OS ${idOS}</span>
-                                ${ehOrcamento
-                                    ? '<span class="tag-orcamento"><i class="fa-solid fa-file-pen" style="font-size:8px;"></i> Orçamento</span>'
-                                    : '<span class="tag-servico"><i class="fa-solid fa-screwdriver-wrench" style="font-size:8px;"></i> Serviço</span>'}
-                            </div>
-                            <h2 class="text-lg font-bold leading-tight truncate">${nomeExibicao}</h2>
-                            <p class="text-[10px] uppercase font-bold mt-1 flex items-center gap-1.5" style="color: var(--text-sub)">
-                                <i class="fa-solid fa-location-dot" style="font-size:9px;"></i> ${endereco}
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-center gap-2 flex-shrink-0">
-                            ${ringHtml}
-                            <div class="action-group">
-                                <button onclick="editarServico('${dadosParaEdicao}')" class="edit-btn" title="Editar Orçamento">
-                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                </button>
-                                <button onclick="abrirModalExcluir('${idOS}')" class="delete-btn" title="Excluir OS">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rounded-xl p-4 mb-4" style="background: var(--card-sub)">
-                        <span class="text-[9px] font-black uppercase block mb-2 tracking-widest opacity-30">Prévia do Orçamento</span>
-                        ${htmlServicos}
-                    </div>
-                    <div class="footer-divider grid grid-cols-2 gap-4">
-                        <div>
-                            <span class="block mb-1 text-[10px] font-bold uppercase opacity-30">Valor Total</span>
-                            <span class="text-blue-400 text-lg font-black">R$ ${totalFormatado}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="block mb-1 text-[10px] font-bold uppercase opacity-30">Término da Garantia</span>
-                            <span class="${estaNaGarantia ? 'text-green-400' : 'text-red-400'} text-sm font-bold flex items-center justify-end gap-1.5">
-                                <i class="fa-regular fa-calendar" style="font-size:10px;"></i> ${dataGarantia}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="mt-2"><span class="status-badge ${badgeClass}">${badgeText}</span></div>
-                    ${avisoCongelada}
-                    ${htmlBotaoGarantia}
-                    ${htmlBotaoAgendar}
-                </div>
-            `;
-
-            // Garantias ainda ativas (inclusive congeladas) sempre em cima;
-            // as vencidas sempre embaixo das ativas.
-            if (estaNaGarantia) {
-                cardsAtivos.push(cardHtml);
-                if (estaCongelada) congeladasCount++; else ativasCount++;
-            } else {
-                cardsVencidos.push(cardHtml);
-                vencidasCount++;
-            }
-        });
-
-        container.innerHTML = cardsAtivos.join('') + cardsVencidos.join('');
-
-        // Atualiza a barra de estatísticas rápidas
-        const statsBar = document.getElementById('stats-bar');
-        if (lista.length > 0) {
-            document.getElementById('stat-ativas').textContent = ativasCount;
-            document.getElementById('stat-vencidas').textContent = vencidasCount;
-            document.getElementById('stat-congeladas').textContent = congeladasCount;
-            statsBar.style.display = 'grid';
-        } else {
-            statsBar.style.display = 'none';
-        }
-    }
-
-    let filtroAtivo = 'todos';
-
-    function setFiltro(filtro) {
-        filtroAtivo = filtro;
-        document.querySelectorAll('.filtro-chip').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.filtro === filtro);
-        });
-        filtrarHistorico();
-    }
-
-    function filtrarHistorico() {
-        const termo = document.getElementById('inputBusca').value.toLowerCase();
-        document.getElementById('btn-limpar-busca').classList.toggle('hidden', termo.length === 0);
-        document.getElementById('btn-limpar-busca').classList.toggle('flex', termo.length > 0);
-        const cards = document.querySelectorAll('.card-item');
-        let visiveis = 0;
-
-        cards.forEach(card => {
-            const matchTexto = card.innerText.toLowerCase().includes(termo);
-
-            let matchFiltro = true;
-            if (filtroAtivo === 'garantia') matchFiltro = card.dataset.garantia === 'sim';
-            else if (filtroAtivo === 'congelada') matchFiltro = card.dataset.congelada === 'sim';
-            else if (filtroAtivo === 'fora') matchFiltro = card.dataset.garantia === 'nao';
-            else if (filtroAtivo === 'orcamento') matchFiltro = card.dataset.tipo === 'orcamento';
-            else if (filtroAtivo === 'servico') matchFiltro = card.dataset.tipo === 'servico';
-
-            const visivel = matchTexto && matchFiltro;
-            card.style.display = visivel ? 'block' : 'none';
-            if (visivel) visiveis++;
-        });
-
-        const semResultados = document.getElementById('sem-resultados');
-        const container = document.getElementById('container-historico');
-        if (cards.length > 0 && visiveis === 0) {
-            semResultados.classList.remove('hidden');
-            semResultados.classList.add('flex');
-            container.classList.add('hidden');
-        } else {
-            semResultados.classList.add('hidden');
-            semResultados.classList.remove('flex');
-            container.classList.remove('hidden');
-        }
-    }
-
-    function limparBusca() {
-        const input = document.getElementById('inputBusca');
-        input.value = '';
-        input.focus();
-        filtrarHistorico();
-    }
-
-    // Debounce leve na busca: evita refiltrar a cada tecla digitada,
-    // deixando a digitação mais fluida quando o histórico tem muitos cards.
-    let debounceBusca = null;
-    document.getElementById('inputBusca').addEventListener('input', () => {
-        clearTimeout(debounceBusca);
-        debounceBusca = setTimeout(filtrarHistorico, 150);
-    });
-
-    window.onload = () => {
-        if(localStorage.getItem('theme') === 'light') toggleTheme();
-        carregarDados();
-    };
-
-    // ── Navegação por swipe entre os tópicos (filtros) ──────────────────
-    (function() {
-        const ORDEM_FILTROS = ['todos', 'garantia', 'congelada', 'fora', 'orcamento', 'servico'];
-        const areaSwipe = document.getElementById('area-swipe');
-        let startX = 0, startY = 0;
-
-        areaSwipe.addEventListener('touchstart', (e) => {
-            startX = e.changedTouches[0].screenX;
-            startY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        areaSwipe.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].screenX;
-            const endY = e.changedTouches[0].screenY;
-            const deltaX = endX - startX;
-            const deltaY = endY - startY;
-
-            const DISTANCIA_MINIMA = 60;
-            // Ignora se o gesto foi curto demais ou predominantemente vertical (scroll da lista)
-            if (Math.abs(deltaX) < DISTANCIA_MINIMA || Math.abs(deltaX) < Math.abs(deltaY) * 1.5) return;
-
-            const indiceAtual = ORDEM_FILTROS.indexOf(filtroAtivo);
-            let novoIndice = indiceAtual;
-
-            if (deltaX < 0) {
-                // Deslizou para a esquerda -> próximo tópico
-                novoIndice = Math.min(indiceAtual + 1, ORDEM_FILTROS.length - 1);
-            } else {
-                // Deslizou para a direita -> tópico anterior
-                novoIndice = Math.max(indiceAtual - 1, 0);
-            }
-
-            if (novoIndice !== indiceAtual) {
-                setFiltro(ORDEM_FILTROS[novoIndice]);
-                const chip = document.querySelector(`.filtro-chip[data-filtro="${ORDEM_FILTROS[novoIndice]}"]`);
-                if (chip) chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            }
-        }, { passive: true });
-    })();
+  });
 </script>
 </body>
 </html>
